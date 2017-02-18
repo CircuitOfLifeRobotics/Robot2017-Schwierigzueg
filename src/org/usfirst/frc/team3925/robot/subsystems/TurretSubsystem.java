@@ -13,7 +13,7 @@ public class TurretSubsystem extends Subsystem {
 	
 	private static TurretSubsystem instance;
 	
-	private CANTalon talon;
+	private CANTalon turret;
 	private NetworkTable table;
 	
 	private boolean valuesExist;
@@ -28,11 +28,20 @@ public class TurretSubsystem extends Subsystem {
 	}
 	
 	private TurretSubsystem() {
-		talon = new CANTalon(TALON_ID_TURRET);
-		talon.changeControlMode(TalonControlMode.Position);
+		turret = new CANTalon(TALON_ID_TURRET);
+		turret.changeControlMode(TalonControlMode.Position);
 		// TODO: change profile so that both are used
-		talon.setPID(TALON_P_TURRET, TALON_I_TURRET, TALON_D_TURRET, TALON_F_TURRET, TALON_IZONE_TURRET,
+		turret.setPID(TALON_P_TURRET, TALON_I_TURRET, TALON_D_TURRET, TALON_F_TURRET, TALON_IZONE_TURRET,
 				TALON_RAMPRATE_TURRET, TALON_PROFILE_TURRET);
+		
+		
+		turret.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_TURRET[2]);
+		turret.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_TURRET[3]);
+		
+		turret.enableLimitSwitch(TALON_BOOLCONSTANTS_TURRET[0], TALON_BOOLCONSTANTS_TURRET[1]);
+		
+		turret.enableBrakeMode(TALON_BOOLCONSTANTS_TURRET[4]);	
+		
 		
 		// TODO: correct name of network table
 		table = NetworkTable.getTable("CameraStream");
@@ -47,7 +56,7 @@ public class TurretSubsystem extends Subsystem {
 	}
 	
 	public void setSetpointDegs(double setpoint) {
-		talon.set(setpoint);
+		turret.set(setpoint);
 	}
 	
 }
