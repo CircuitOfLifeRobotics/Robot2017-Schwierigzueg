@@ -3,6 +3,7 @@ package org.usfirst.frc.team3925.robot;
 
 import org.usfirst.frc.team3925.robot.commands.ManualDrive;
 import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
+import org.usfirst.frc.team3925.robot.subsystems.TurretSubsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -110,7 +111,11 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 	}
-
+	
+	@Override
+	public void testInit() {
+	}
+	
 	/**
 	 * This function is called periodically during test mode
 	 */

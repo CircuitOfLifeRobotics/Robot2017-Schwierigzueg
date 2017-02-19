@@ -5,62 +5,76 @@ import org.usfirst.frc.team3925.robot.OI;
 import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ManualDrive extends Command {
 	
 	private static ManualDrive instance;
 	
 	private double responsiveness, scaleConstant, fwd, turn, prelimL, prelimR, l, r;
-	private OI stick;
+	private OI controls;
 	private DriveTrainSubsystem driveTrain;
 	
 	public static ManualDrive getInstance() {
-		if (instance==null)
+		if (instance == null)
 			instance = new ManualDrive();
 		return instance;
 	}
 	
 	private ManualDrive() {
 		driveTrain = DriveTrainSubsystem.getInstance();
-		stick = OI.getInstance();
+		controls = OI.getInstance();
 		responsiveness = 2;
 	}
 	
 	@Override
 	protected void initialize() {
 		driveTrain.setRaw(0, 0);
-		driveTrain.setBrake(false);
+		driveTrain.setBrake(true);
 	}
 	
 	@Override
 	protected void execute() {
-		fwd = stick.getForward();
-		//TODO: do proper inversion
-		turn = -stick.getTurn();
+		responsiveness = controls.getSensitivity();
+		responsiveness = (double)((int)(responsiveness * 5)) / 5;
+		SmartDashboard.putNumber("Sensitivity", responsiveness);
 		
-		if (responsiveness==1) {
+		fwd = -controls.getForward();
+		// TODO: do proper inversion
+		turn = -controls.getTurn();
+		
+		SmartDashboard.putNumber("fwd",fwd);
+		SmartDashboard.putNumber("turn",turn);
+		
+		if (responsiveness == 1) {
 			prelimL = fwd + turn;
 			prelimR = fwd - turn;
-		}else {
-			prelimL = Math.signum(fwd)*Math.pow(fwd, responsiveness) + Math.signum(turn)*Math.pow(turn, responsiveness);
-			prelimR = Math.signum(fwd)*Math.pow(fwd, responsiveness) - Math.signum(turn)*Math.pow(turn, responsiveness);
+		} else {
+			prelimL = Math.signum(fwd) * Math.pow(Math.abs(fwd), responsiveness)
+					+ Math.signum(turn) * Math.pow(Math.abs(turn), responsiveness);
+			prelimR = Math.signum(fwd) * Math.pow(Math.abs(fwd), responsiveness)
+					- Math.signum(turn) * Math.pow(Math.abs(turn), responsiveness);
+			SmartDashboard.putNumber("prelimL",prelimL);
+			SmartDashboard.putNumber("prelimR",prelimR);
 		}
 		
-		if (Math.abs(prelimL)>1) {
-			scaleConstant = 1/Math.abs(prelimL);
-			l = scaleConstant*prelimL;
-			r = scaleConstant*prelimR;
-		}else if (Math.abs(prelimR)>1) {
-			scaleConstant = 1/Math.abs(prelimR);
-			l = scaleConstant*prelimL;
-			r = scaleConstant*prelimR;
-		}else {
+		if (Math.abs(prelimL) > 1) {
+			scaleConstant = 1 / Math.abs(prelimL);
+			l = scaleConstant * prelimL;
+			r = scaleConstant * prelimR;
+		} else if (Math.abs(prelimR) > 1) {
+			scaleConstant = 1 / Math.abs(prelimR);
+			l = scaleConstant * prelimL;
+			r = scaleConstant * prelimR;
+		} else {
 			l = prelimL;
 			r = prelimR;
 		}
 		
-		//TODO: do proper left inversion
-		driveTrain.setRaw(-l, r);
+		SmartDashboard.putNumber("Left power", l);
+		SmartDashboard.putNumber("Right power", l);
+		
+		driveTrain.setRaw(l, r);
 	}
 	
 	@Override

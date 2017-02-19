@@ -17,6 +17,7 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 	
+	public final static double MIN_CONFIG_WAIT_TIME;
 	public final static int TALON_ID_TURRET;
 	public final static double TALON_P_TURRET;
 	public final static double TALON_I_TURRET;
@@ -68,6 +69,8 @@ public class RobotMap {
 	
 	//TODO: correct ports
 	static {
+		MIN_CONFIG_WAIT_TIME = 0.5;
+		
 		TALON_ID_TURRET = 0;
 		TALON_P_TURRET = 1;
 		TALON_I_TURRET = 0;
