@@ -1,9 +1,19 @@
 
 package org.usfirst.frc.team3925.robot.subsystems;
 
-import static org.usfirst.frc.team3925.robot.RobotMap.*;
+import static org.usfirst.frc.team3925.robot.RobotMap.SOLENOID_PORT_A_CLIMB;
+import static org.usfirst.frc.team3925.robot.RobotMap.SOLENOID_PORT_A_SHIFT;
+import static org.usfirst.frc.team3925.robot.RobotMap.SOLENOID_PORT_B_CLIMB;
+import static org.usfirst.frc.team3925.robot.RobotMap.SOLENOID_PORT_B_SHIFT;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_BOOLCONSTANTS_DRIVETRAIN;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_A;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_B;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_C;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_A;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_B;
+import static org.usfirst.frc.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_C;
 
-import org.usfirst.frc.team3925.robot.RobotMap;
+import org.usfirst.frc.team3925.robot.Constants;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
@@ -15,6 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrainSubsystem extends Subsystem {
 	
 	private static DriveTrainSubsystem instance;
+	
+	//TODO: Revert For debugging
 	private CANTalon leftA, leftB, leftC, rightA, rightB, rightC;
 	private DoubleSolenoid shifter, climber;
 	
@@ -32,12 +44,18 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_B);
 		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_C);
 		
-		leftA.changeControlMode(TalonControlMode.PercentVbus);
-		leftB.changeControlMode(TalonControlMode.PercentVbus);
-		leftC.changeControlMode(TalonControlMode.PercentVbus);
-		rightA.changeControlMode(TalonControlMode.PercentVbus);
-		rightB.changeControlMode(TalonControlMode.PercentVbus);
-		rightC.changeControlMode(TalonControlMode.PercentVbus);
+		leftA.changeControlMode(TalonControlMode.Position);
+		leftB.changeControlMode(TalonControlMode.Follower);
+		leftC.changeControlMode(TalonControlMode.Follower);
+		rightA.changeControlMode(TalonControlMode.Position);
+		rightB.changeControlMode(TalonControlMode.Follower);
+		rightC.changeControlMode(TalonControlMode.Follower);
+		
+		leftB.set(leftA.getDeviceID());
+		leftC.set(leftA.getDeviceID());
+		
+		rightB.set(rightA.getDeviceID());
+		rightC.set(rightA.getDeviceID());
 		
 		SmartDashboard.putData("Left A", leftA);
 		SmartDashboard.putData("Left B", leftB);
@@ -135,4 +153,7 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC.enableBrakeMode(engaged);
 	}
 	
+	public double getConversionFactor(){
+		return (1 / ((Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI) / 12)) * Constants.ENCODER_TICKS_PER_REV;
+	}
 }
