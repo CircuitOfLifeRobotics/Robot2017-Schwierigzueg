@@ -17,6 +17,7 @@ import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrainSubsystem extends Subsystem {
@@ -110,6 +111,15 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
 		
 		rightC.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
+		
+		
+		LiveWindow.addActuator("Drivetrain", "LeftA", leftA);
+		LiveWindow.addActuator("Drivetrain", "LeftB", leftB);
+		LiveWindow.addActuator("Drivetrain", "LeftC", leftC);
+		
+		LiveWindow.addActuator("Drivetrain", "RightA", rightA);
+		LiveWindow.addActuator("Drivetrain", "RightB", rightB);
+		LiveWindow.addActuator("Drivetrain", "RightC", rightC);
 	}
 
 	@Override
