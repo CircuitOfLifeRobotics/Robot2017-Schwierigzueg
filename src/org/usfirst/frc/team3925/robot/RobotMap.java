@@ -17,6 +17,8 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 	
+	public final static double MIN_CONFIG_WAIT_TIME;
+	
 	public final static int TALON_ID_TURRET;
 	public final static double TALON_P_TURRET;
 	public final static double TALON_I_TURRET;
@@ -25,6 +27,16 @@ public class RobotMap {
 	public final static int TALON_IZONE_TURRET;
 	public final static double TALON_RAMPRATE_TURRET;
 	public final static int TALON_PROFILE_TURRET;
+	
+	public final static int TALON_ID_HOOD;
+	public final static double TALON_P_HOOD;
+	public final static double TALON_I_HOOD;
+	public final static double TALON_D_HOOD;
+	public final static double TALON_F_HOOD;
+	public final static int TALON_IZONE_HOOD;
+	public final static double TALON_RAMPRATE_HOOD;
+	public final static int TALON_PROFILE_HOOD;
+	
 	
 	public final static int TALON_ID_FLYWHEEL;
 	public final static double TALON_P_FLYWHEEL;
@@ -35,17 +47,10 @@ public class RobotMap {
 	public final static double TALON_RAMPRATE_FLYWHEEL;
 	public final static int TALON_PROFILE_FLYWHEEL;
 	
-	
 	public final static int TALON_ID_INTAKE;
-	public final static double TALON_P_INTAKE;
-	public final static double TALON_I_INTAKE;
-	public final static double TALON_D_INTAKE;
-	public final static double TALON_F_INTAKE;
-	public final static int TALON_IZONE_INTAKE;
-	public final static double TALON_RAMPRATE_INTAKE;
-	public final static int TALON_PROFILE_INTAKE;
 	
-	
+	public final static int TALON_ID_ELEVATOR_LOWER;
+	public final static int TALON_ID_ELEVATOR_UPPER;
 	
 	public final static int TALON_ID_DRIVE_LEFT_A;
 	public final static int TALON_ID_DRIVE_LEFT_B;
@@ -68,7 +73,29 @@ public class RobotMap {
 	
 	//TODO: correct ports
 	static {
-		TALON_ID_TURRET = 0;
+		MIN_CONFIG_WAIT_TIME = 0.5;
+		
+		//TALON ID CONSTANTS
+		TALON_ID_DRIVE_LEFT_A = 0;
+		TALON_ID_DRIVE_LEFT_B = 1;
+		TALON_ID_DRIVE_LEFT_C = 2;
+		TALON_ID_DRIVE_RIGHT_A = 3;
+		TALON_ID_ELEVATOR_UPPER = 4;
+		TALON_ID_ELEVATOR_LOWER = 5;
+		TALON_ID_INTAKE = 6;
+		TALON_ID_FLYWHEEL = 7;
+		TALON_ID_HOOD = 8;
+		TALON_ID_TURRET = 9;
+		TALON_ID_DRIVE_RIGHT_B = 10;
+		TALON_ID_DRIVE_RIGHT_C = 11;
+		
+		//SOLENOID PORTS
+		SOLENOID_PORT_A_SHIFT = 0;
+		SOLENOID_PORT_B_SHIFT = 1;
+		SOLENOID_PORT_A_CLIMB = 2;
+		SOLENOID_PORT_B_CLIMB = 3;
+		
+		//TURRET PID CONSTANTS
 		TALON_P_TURRET = 1;
 		TALON_I_TURRET = 0;
 		TALON_D_TURRET = 0;
@@ -76,9 +103,8 @@ public class RobotMap {
 		TALON_IZONE_TURRET = 1;
 		TALON_RAMPRATE_TURRET = 100;
 		TALON_PROFILE_TURRET = 0;
-
 		
-		TALON_ID_FLYWHEEL = 0;
+		//FLYWHEEL PID CONSTANTS
 		TALON_P_FLYWHEEL = 1;
 		TALON_I_FLYWHEEL = 0;
 		TALON_D_FLYWHEEL = 0;
@@ -87,33 +113,23 @@ public class RobotMap {
 		TALON_RAMPRATE_FLYWHEEL = 100;
 		TALON_PROFILE_FLYWHEEL = 0;
 		
-		TALON_ID_INTAKE = 0;
-		TALON_P_INTAKE = 1;
-		TALON_I_INTAKE = 0;
-		TALON_D_INTAKE = 0;
-		TALON_F_INTAKE = 0;
-		TALON_IZONE_INTAKE = 1;
-		TALON_RAMPRATE_INTAKE = 100;
-		TALON_PROFILE_INTAKE = 0;
+		//HOOD PID CONSTANTS
+		TALON_P_HOOD = 1;
+		TALON_I_HOOD = 0;
+		TALON_D_HOOD = 0;
+		TALON_F_HOOD = 0;
+		TALON_IZONE_HOOD = 1;
+		TALON_RAMPRATE_HOOD = 100;
+		TALON_PROFILE_HOOD = 0;
 		
+		//SWITCH AND BRAKE CONSTANTS
 		//{fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen, revSwitchNormalyOpen, brakeModeEnabled}
+		//configuration is same for every talon in system
 		TALON_BOOLCONSTANTS_DRIVETRAIN = new boolean[]{false,false,false,false,true};
 		TALON_BOOLCONSTANTS_SHOOTER = new boolean[]{false,false,false,false,false};
 		TALON_BOOLCONSTANTS_TURRET = new boolean[]{true,false,false,false,true}; 
 		TALON_BOOLCONSTANTS_INTAKE = new boolean[]{false,false,false,false,true}; 
 		TALON_BOOLCONSTANTS_HOOD = new boolean[]{false,false,false,false,true}; 
-		
-		TALON_ID_DRIVE_LEFT_A = 0;
-		TALON_ID_DRIVE_LEFT_B = 1;
-		TALON_ID_DRIVE_LEFT_C = 2;
-		TALON_ID_DRIVE_RIGHT_A = 3;
-		TALON_ID_DRIVE_RIGHT_B = 10;
-		TALON_ID_DRIVE_RIGHT_C = 11;
-		
-		SOLENOID_PORT_A_SHIFT = 0;
-		SOLENOID_PORT_B_SHIFT = 1;
-		SOLENOID_PORT_A_CLIMB = 2;
-		SOLENOID_PORT_B_CLIMB = 3;
 	}
 	
 }
