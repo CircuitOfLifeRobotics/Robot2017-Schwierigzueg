@@ -28,51 +28,21 @@ public class DriveTrainSubsystem extends Subsystem {
 	
 	private DriveTrainSubsystem() {
 		
+		//construct stuff
 		leftA = new CANTalon(TALON_ID_DRIVE_LEFT_A);
 		leftB = new CANTalon(TALON_ID_DRIVE_LEFT_B);
 		leftC = new CANTalon(TALON_ID_DRIVE_LEFT_C);
 		rightA = new CANTalon(TALON_ID_DRIVE_RIGHT_A);
 		rightB = new CANTalon(TALON_ID_DRIVE_RIGHT_B);
 		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_C);
-		
-		
-		leftA.changeControlMode(TalonControlMode.Position);
-		leftB.changeControlMode(TalonControlMode.Follower);
-		leftC.changeControlMode(TalonControlMode.Follower);
-		
-		rightA.changeControlMode(TalonControlMode.Position);
-		rightB.changeControlMode(TalonControlMode.Follower);
-		rightC.changeControlMode(TalonControlMode.Follower);
-		
-		
-		leftA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		rightA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		
-		
-		leftB.set(leftA.getDeviceID());
-		leftC.set(leftA.getDeviceID());
-		
-		rightB.set(rightA.getDeviceID());
-		rightC.set(rightA.getDeviceID());
-		
-		
-		leftA.setInverted(true);
-		rightA.setInverted(true);
-		rightB.setInverted(true);
-	
-		
-		SmartDashboard.putData("Left A", leftA);
-		SmartDashboard.putData("Left B", leftB);
-		SmartDashboard.putData("Left C", leftC);
-		SmartDashboard.putData("Right A", rightA);
-		SmartDashboard.putData("Right B", rightB);
-		SmartDashboard.putData("Right C", rightC);
-		
-		
 		shifter = new DoubleSolenoid(SOLENOID_PORT_A_SHIFT, SOLENOID_PORT_B_SHIFT);
 		climber = new DoubleSolenoid(SOLENOID_PORT_A_CLIMB, SOLENOID_PORT_B_CLIMB);
 		
+		//configure encoders
+		leftA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		rightA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		
+		//configure brake mode and switches
 		leftA.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		leftA.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
 		leftA.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
@@ -103,14 +73,37 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
 		rightC.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
 		
+		//change modes
+		leftA.changeControlMode(TalonControlMode.PercentVbus);
+		leftB.changeControlMode(TalonControlMode.Follower);
+		leftC.changeControlMode(TalonControlMode.Follower);
 		
-		LiveWindow.addActuator("Drivetrain", "LeftA", leftA);
-		LiveWindow.addActuator("Drivetrain", "LeftB", leftB);
-		LiveWindow.addActuator("Drivetrain", "LeftC", leftC);
+		rightA.changeControlMode(TalonControlMode.PercentVbus);
+		rightB.changeControlMode(TalonControlMode.Follower);
+		rightC.changeControlMode(TalonControlMode.Follower);
 		
-		LiveWindow.addActuator("Drivetrain", "RightA", rightA);
-		LiveWindow.addActuator("Drivetrain", "RightB", rightB);
-		LiveWindow.addActuator("Drivetrain", "RightC", rightC);
+		leftB.set(leftA.getDeviceID());
+		leftC.set(leftA.getDeviceID());
+		
+		rightB.set(rightA.getDeviceID());
+		rightC.set(rightA.getDeviceID());
+		
+		leftA.setInverted(true);
+		leftB.reverseOutput(true);
+		leftC.reverseOutput(false);
+		
+		rightA.setInverted(true);
+		rightB.reverseOutput(false);
+		rightC.reverseOutput(false);
+		
+		//put stuff on smart dashboard
+		SmartDashboard.putData("Left A", leftA);
+		SmartDashboard.putData("Left B", leftB);
+		SmartDashboard.putData("Left C", leftC);
+		SmartDashboard.putData("Right A", rightA);
+		SmartDashboard.putData("Right B", rightB);
+		SmartDashboard.putData("Right C", rightC);
+		
 	}
 
 	@Override
@@ -119,14 +112,9 @@ public class DriveTrainSubsystem extends Subsystem {
 		
 	}
 	
-	@Deprecated
 	public void setRaw(double left, double right) {
 		leftA.set(left);
-//		leftB.set(left);
-//		leftC.set(left);
 		rightA.set(right);
-//		rightB.set(right);
-//		rightC.set(right);
 	}
 	
 	public void setShifter(boolean engaged) {
@@ -163,6 +151,29 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightA.setSetpoint(feet * getConversionFactor());
 	}
 	
+	public void setLeftAInverted(boolean inverted) {
+		leftA.setInverted(inverted);
+	}
+	
+	public void setLeftBInverted(boolean inverted) {
+		leftB.reverseOutput(inverted);
+	}
+	
+	public void setLeftCInverted(boolean inverted) {
+		leftC.reverseOutput(inverted);
+	}
+	
+	public void setRightAInverted(boolean inverted) {
+		rightA.setInverted(inverted);
+	}
+	
+	public void setRightBInverted(boolean inverted) {
+		rightB.reverseOutput(inverted);
+	}
+	
+	public void setRightCInverted(boolean inverted) {
+		rightC.reverseOutput(inverted);
+	}
 
 	public double getConversionFactor(){
 		return (1 / ((Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI) / 12)) * Constants.ENCODER_TICKS_PER_REV;

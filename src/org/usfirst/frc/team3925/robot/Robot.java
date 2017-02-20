@@ -107,11 +107,11 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		
-		manualDrive.start();
+		//manualDrive.start();
 	}
 
 	/**
-	 * This functsion is called periodically during operator control
+	 * This function is called periodically during operator control
 	 */
 	@Override
 	public void teleopPeriodic() {
@@ -120,8 +120,6 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testInit() {
-		drivetrain.setControlModes(TalonControlMode.PercentVbus);
-		
 	}
 	
 	/**
