@@ -145,6 +145,15 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB.enableBrakeMode(engaged);
 		rightC.enableBrakeMode(engaged);
 	}
+	public void setControlModes(TalonControlMode controlMode){
+		leftA.changeControlMode(controlMode);
+		leftB.changeControlMode(controlMode);
+		leftC.changeControlMode(controlMode);
+		
+		rightA.changeControlMode(controlMode);
+		rightB.changeControlMode(controlMode);
+		rightC.changeControlMode(controlMode);
+	}
 	public void setSetpoint(double left, double right){
 		leftA.setSetpoint(left);
 		rightA.setSetpoint(right);

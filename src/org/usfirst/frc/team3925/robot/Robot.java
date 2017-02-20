@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -42,7 +43,7 @@ public class Robot extends IterativeRobot {
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
 		manualDrive = ManualDrive.getInstance();
-		drivetrain.getInstance();
+		drivetrain = drivetrain.getInstance();
 	}
 
 	/**
@@ -94,6 +95,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		drivetrain.setSetpointFeet(10);
 	}
 
 	@Override
@@ -109,16 +111,17 @@ public class Robot extends IterativeRobot {
 	}
 
 	/**
-	 * This function is called periodically during operator control
+	 * This functsion is called periodically during operator control
 	 */
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drivetrain.setSetpointFeet(10);
 	}
 	
 	@Override
 	public void testInit() {
+		drivetrain.setControlModes(TalonControlMode.PercentVbus);
+		
 	}
 	
 	/**
