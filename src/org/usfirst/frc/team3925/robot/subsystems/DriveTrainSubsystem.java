@@ -4,6 +4,7 @@ import static org.usfirst.frc.team3925.robot.RobotMap.*;
 import org.usfirst.frc.team3925.robot.Constants;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -26,6 +27,7 @@ public class DriveTrainSubsystem extends Subsystem {
 	}
 	
 	private DriveTrainSubsystem() {
+		
 		leftA = new CANTalon(TALON_ID_DRIVE_LEFT_A);
 		leftB = new CANTalon(TALON_ID_DRIVE_LEFT_B);
 		leftC = new CANTalon(TALON_ID_DRIVE_LEFT_C);
@@ -33,12 +35,19 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB = new CANTalon(TALON_ID_DRIVE_RIGHT_B);
 		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_C);
 		
+		
 		leftA.changeControlMode(TalonControlMode.Position);
 		leftB.changeControlMode(TalonControlMode.Follower);
 		leftC.changeControlMode(TalonControlMode.Follower);
+		
 		rightA.changeControlMode(TalonControlMode.Position);
 		rightB.changeControlMode(TalonControlMode.Follower);
 		rightC.changeControlMode(TalonControlMode.Follower);
+		
+		
+		leftA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		rightA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		
 		
 		leftB.set(leftA.getDeviceID());
 		leftC.set(leftA.getDeviceID());
@@ -46,9 +55,11 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB.set(rightA.getDeviceID());
 		rightC.set(rightA.getDeviceID());
 		
+		
 		leftA.setInverted(true);
 		rightA.setInverted(true);
 		rightB.setInverted(true);
+	
 		
 		SmartDashboard.putData("Left A", leftA);
 		SmartDashboard.putData("Left B", leftB);
@@ -57,8 +68,6 @@ public class DriveTrainSubsystem extends Subsystem {
 		SmartDashboard.putData("Right B", rightB);
 		SmartDashboard.putData("Right C", rightC);
 		
-		shifter = new DoubleSolenoid(SOLENOID_PORT_A_SHIFT, SOLENOID_PORT_B_SHIFT);
-		climber = new DoubleSolenoid(SOLENOID_PORT_A_CLIMB, SOLENOID_PORT_B_CLIMB);
 		
 		shifter = new DoubleSolenoid(SOLENOID_PORT_A_SHIFT, SOLENOID_PORT_B_SHIFT);
 		climber = new DoubleSolenoid(SOLENOID_PORT_A_CLIMB, SOLENOID_PORT_B_CLIMB);
@@ -66,49 +75,32 @@ public class DriveTrainSubsystem extends Subsystem {
 		
 		leftA.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		leftA.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		leftA.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		leftA.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
-		
 		
 		leftB.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		leftB.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		leftB.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		leftB.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
-		
 		
 		leftC.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		leftC.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		leftC.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		leftC.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
 		
 		rightA.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		rightA.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		rightA.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		rightA.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
-		
 		
 		rightB.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		rightB.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		rightB.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		rightB.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
-		
-		
 		
 		rightC.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
 		rightC.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[3]);
-		
 		rightC.enableLimitSwitch(TALON_BOOLCONSTANTS_DRIVETRAIN[0], TALON_BOOLCONSTANTS_DRIVETRAIN[1]);
-		
 		rightC.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
 		
 		
@@ -127,13 +119,14 @@ public class DriveTrainSubsystem extends Subsystem {
 		
 	}
 	
+	@Deprecated
 	public void setRaw(double left, double right) {
 		leftA.set(left);
-		leftB.set(left);
-		leftC.set(left);
+//		leftB.set(left);
+//		leftC.set(left);
 		rightA.set(right);
-		rightB.set(right);
-		rightC.set(right);
+//		rightB.set(right);
+//		rightC.set(right);
 	}
 	
 	public void setShifter(boolean engaged) {
@@ -151,6 +144,14 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightA.enableBrakeMode(engaged);
 		rightB.enableBrakeMode(engaged);
 		rightC.enableBrakeMode(engaged);
+	}
+	public void setSetpoint(double left, double right){
+		leftA.setSetpoint(left);
+		rightA.setSetpoint(right);
+	}
+	public void setSetpointFeet(double feet){
+		leftA.setSetpoint(feet * getConversionFactor());
+		rightA.setSetpoint(feet * getConversionFactor());
 	}
 	
 

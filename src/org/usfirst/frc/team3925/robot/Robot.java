@@ -114,6 +114,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		drivetrain.setSetpointFeet(10);
 	}
 	
 	@Override
