@@ -39,8 +39,8 @@ public class DriveTrainSubsystem extends Subsystem {
 		climber = new DoubleSolenoid(SOLENOID_PORT_A_CLIMB, SOLENOID_PORT_B_CLIMB);
 		
 		//configure encoders
-		leftA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		rightA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftA.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rightA.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
 		//configure brake mode and switches
 		leftA.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_DRIVETRAIN[2]);
@@ -74,11 +74,11 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC.enableBrakeMode(TALON_BOOLCONSTANTS_DRIVETRAIN[4]);
 		
 		//change modes
-		leftA.changeControlMode(TalonControlMode.PercentVbus);
+		leftA.changeControlMode(TalonControlMode.Position);
 		leftB.changeControlMode(TalonControlMode.Follower);
 		leftC.changeControlMode(TalonControlMode.Follower);
 		
-		rightA.changeControlMode(TalonControlMode.PercentVbus);
+		rightA.changeControlMode(TalonControlMode.Position);
 		rightB.changeControlMode(TalonControlMode.Follower);
 		rightC.changeControlMode(TalonControlMode.Follower);
 		
@@ -88,10 +88,13 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB.set(rightA.getDeviceID());
 		rightC.set(rightA.getDeviceID());
 		
+		leftA.setEncPosition(0);
 		leftA.setInverted(true);
 		leftB.reverseOutput(true);
 		leftC.reverseOutput(true);
+		leftA.reverseSensor(false);
 		
+		rightA.setEncPosition(0);
 		rightA.setInverted(true);
 		rightB.reverseOutput(false);
 		rightC.reverseOutput(true);
@@ -151,8 +154,16 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightA.setSetpoint(right);
 	}
 	public void setSetpointFeet(double feet){
-		leftA.setSetpoint(feet * getConversionFactor());
-		rightA.setSetpoint(feet * getConversionFactor());
+		System.out.println(getConversionFactor());
+		leftA.setSetpoint((feet * getConversionFactor()));
+		rightA.setSetpoint((feet * getConversionFactor()));
+		SmartDashboard.putNumber("LEFTVALUE", leftA.getSetpoint());
+		SmartDashboard.putNumber("RIGHTVALUE", rightA.getSetpoint());
+		
+		SmartDashboard.putNumber("ERROR", leftA.getClosedLoopError());
+		
+		SmartDashboard.putNumber("CURRENTLEFTVALUE", leftA.getPosition());
+		SmartDashboard.putNumber("CURRENTRIGHTVALUE", rightA.getPosition());
 	}
 	
 	public void setLeftAInverted(boolean inverted) {

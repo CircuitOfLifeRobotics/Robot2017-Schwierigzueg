@@ -19,6 +19,15 @@ public class RobotMap {
 	
 	public final static double MIN_CONFIG_WAIT_TIME;
 	
+	public final static double TALON_P_DRIVETRAIN;
+	public final static double TALON_I_DRIVETRAIN;
+	public final static double TALON_D_DRIVETRAIN;
+	public final static double TALON_F_DRIVETRAIN;
+	public final static int TALON_IZONE_DRIVETRAIN;
+	public final static double TALON_RAMPRATE_DRIVETRAIN;
+	public final static int TALON_PROFILE_DRIVETRAIN;
+
+	
 	public final static int TALON_ID_TURRET;
 	public final static double TALON_P_TURRET;
 	public final static double TALON_I_TURRET;
@@ -94,6 +103,15 @@ public class RobotMap {
 		SOLENOID_PORT_B_SHIFT = 1;
 		SOLENOID_PORT_A_CLIMB = 2;
 		SOLENOID_PORT_B_CLIMB = 3;
+		
+		//DRIVETRAIN PID CONSTANTS
+		TALON_P_DRIVETRAIN = 1;
+		TALON_I_DRIVETRAIN = 0;
+		TALON_D_DRIVETRAIN = 0;
+		TALON_F_DRIVETRAIN = 0;
+		TALON_IZONE_DRIVETRAIN = 1;
+		TALON_RAMPRATE_DRIVETRAIN = 100;
+		TALON_PROFILE_DRIVETRAIN = 0;
 		
 		//TURRET PID CONSTANTS
 		TALON_P_TURRET = 1;
