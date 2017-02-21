@@ -3,6 +3,8 @@ package org.usfirst.frc.team3925.robot.commands;
 import org.usfirst.frc.team3925.robot.Robot;
 import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
 
+import com.ctre.CANTalon.TalonControlMode;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 public class POST extends Command{
@@ -13,7 +15,7 @@ public class POST extends Command{
 	
 	@Override
 	protected void initialize() {
-		
+		drivetrain.setControlModes(TalonControlMode.PercentVbus);
 	}
 
 	@Override

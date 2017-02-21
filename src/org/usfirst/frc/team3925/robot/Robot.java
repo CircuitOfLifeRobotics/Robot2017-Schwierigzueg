@@ -31,7 +31,7 @@ public class Robot extends IterativeRobot {
 	
 	ManualDrive manualDrive;
 	
-	DriveTrainSubsystem drivetrain;
+	public static DriveTrainSubsystem drivetrain;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -116,6 +116,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		drivetrain.setSetpointFeet(10);
 	}
 	
 	@Override

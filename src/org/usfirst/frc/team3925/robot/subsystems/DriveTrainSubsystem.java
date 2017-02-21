@@ -90,11 +90,11 @@ public class DriveTrainSubsystem extends Subsystem {
 		
 		leftA.setInverted(true);
 		leftB.reverseOutput(true);
-		leftC.reverseOutput(false);
+		leftC.reverseOutput(true);
 		
 		rightA.setInverted(true);
 		rightB.reverseOutput(false);
-		rightC.reverseOutput(false);
+		rightC.reverseOutput(true);
 		
 		//put stuff on smart dashboard
 		SmartDashboard.putData("Left A", leftA);
@@ -133,7 +133,7 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB.enableBrakeMode(engaged);
 		rightC.enableBrakeMode(engaged);
 	}
-	public void setControlModes(TalonControlMode controlMode){
+	public void setAllControlModes(TalonControlMode controlMode){
 		leftA.changeControlMode(controlMode);
 		leftB.changeControlMode(controlMode);
 		leftC.changeControlMode(controlMode);
@@ -141,6 +141,10 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightA.changeControlMode(controlMode);
 		rightB.changeControlMode(controlMode);
 		rightC.changeControlMode(controlMode);
+	}
+	public void setControlModes(TalonControlMode controlMode){
+		leftA.changeControlMode(controlMode);
+		rightA.changeControlMode(controlMode);
 	}
 	public void setSetpoint(double left, double right){
 		leftA.setSetpoint(left);
