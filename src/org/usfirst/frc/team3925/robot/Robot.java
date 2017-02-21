@@ -96,6 +96,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		drivetrain.setSetpointFeet(10);
+	
 	}
 
 	@Override
