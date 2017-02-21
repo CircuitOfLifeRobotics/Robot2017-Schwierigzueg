@@ -1,10 +1,12 @@
 package org.usfirst.frc.team3925.robot;
 
-import javax.naming.TimeLimitExceededException;
+import static org.usfirst.frc.team3925.robot.RobotMap.MIN_CONFIG_WAIT_TIME;
+
+import org.usfirst.frc.team3925.robot.commands.SetShifterHigh;
+import org.usfirst.frc.team3925.robot.commands.SetShifterLow;
+import org.usfirst.frc.team3925.robot.commands.ToggleClimber;
 
 import com.team3925.team3925.robot.util.ControlMode;
-
-import static org.usfirst.frc.team3925.robot.RobotMap.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,9 +26,10 @@ public class OI {
 	private ControlMode mode;
 	private Joystick wheel, stick, other, xbox;
 	private Command findJoysticks;
-	private Button setLowGear, setHighGear, triggerClimb;
+	private Button setLowGear, setHighGear, triggerClimb, setGearCam, setShooterCam;
 	private double deadZone;
 	private boolean hasJoysticks;
+	private boolean debug = false;
 	
 	public static OI getInstance() {
 		if (instance == null)
@@ -56,6 +59,18 @@ public class OI {
 		
 		mode = ControlMode.NONE;
 		
+		setGearCam = new Button() {
+			@Override
+			public boolean get() {
+				return false;
+			}
+		};
+		setShooterCam = new Button() {
+			@Override
+			public boolean get() {
+				return false;
+			}
+		};
 		setLowGear = new Button() {
 			@Override
 			public boolean get() {
@@ -108,7 +123,7 @@ public class OI {
 					}
 				}
 				//check for invalid configurations
-				if (numWheels > 1 || numSticks > 1 || numXboxs > 1 || numOther > 1)
+				if (numWheels > 1 || numSticks > 1 || numXboxs > 1 || numOther > 1 && debug)
 					System.out.println("Unknown controller setup; " + numWheels + " wheels, " + numSticks + " sticks, "
 							+ numXboxs + " xboxs, " + numOther + " other.");
 				else if (numWheels == 1) {
@@ -129,7 +144,7 @@ public class OI {
 								timeConfiguredCorrectly = Timer.getFPGATimestamp();
 								hasJoysticks = true;
 							}
-						} else
+						} else if (debug)
 							System.out.println("Unknown controller setup; " + numWheels + " wheels, " + numSticks
 									+ " sticks, " + numXboxs + " xboxs, " + numOther + " other.");
 					} else {
@@ -158,7 +173,7 @@ public class OI {
 							hasJoysticks = true;
 						}
 					}
-				} else
+				} else if (debug)
 					System.out.println("Unknown controller setup; " + numWheels + " wheels, " + numSticks + " sticks, "
 							+ numXboxs + " xboxs, " + numOther + " other.");
 			}
@@ -175,42 +190,57 @@ public class OI {
 					setLowGear = new JoystickButton(wheel, 5);
 					setHighGear = new JoystickButton(wheel, 6);
 					triggerClimb = new JoystickButton(wheel, 11);
+					setGearCam = new JoystickButton(wheel, 0);
+					setShooterCam = new JoystickButton(wheel, 1);
 					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Launchpad");
 					break;
 				case WHEEL_STICK_XBOX:
 					setLowGear = new JoystickButton(wheel, 5);
 					setHighGear = new JoystickButton(wheel, 6);
 					triggerClimb = new JoystickButton(wheel, 11);
+					setGearCam = new JoystickButton(wheel, 0);
+					setShooterCam = new JoystickButton(wheel, 1);
 					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Xbox");
 					break;
 				case XBOX_CUSTOM:
 					setLowGear = new JoystickButton(xbox, 5);
 					setHighGear = new JoystickButton(xbox, 6);
 					triggerClimb = new JoystickButton(xbox, 9);
+					setGearCam = new JoystickButton(xbox, 0);
+					setShooterCam = new JoystickButton(xbox, 1);
 					SmartDashboard.putString("Controls Configuration", "Xbox | Launchpad");
 					break;
 				case XBOX_STICK:
 					setLowGear = new JoystickButton(xbox, 5);
 					setHighGear = new JoystickButton(xbox, 6);
 					triggerClimb = new JoystickButton(xbox, 9);
+					setGearCam = new JoystickButton(xbox, 0);
+					setShooterCam = new JoystickButton(xbox, 1);
 					SmartDashboard.putString("Controls Configuration", "Xbox | Stick");
 					break;
 				case XBOX:
 					setLowGear = new JoystickButton(xbox, 5);
 					setHighGear = new JoystickButton(xbox, 6);
 					triggerClimb = new JoystickButton(xbox, 9);
+					setGearCam = new JoystickButton(xbox, 0);
+					setShooterCam = new JoystickButton(xbox, 1);
 					SmartDashboard.putString("Controls Configuration", "Xbox | PROGRAMMER PRO MODE");
 					break;
 				case WHEEL:
 					setLowGear = new JoystickButton(wheel, 5);
 					setHighGear = new JoystickButton(wheel, 6);
 					triggerClimb = new JoystickButton(wheel, 11);
+					setGearCam = new JoystickButton(wheel, 0);
+					setShooterCam = new JoystickButton(wheel, 1);
 					SmartDashboard.putString("Controls Configuration", "Wheel | NASCAR PRO MODE");
 					break;
 				default:
 					start();
 					break;
 				}
+				setLowGear.whenPressed(SetShifterLow.getInstance());
+				setHighGear.whenPressed(SetShifterHigh.getInstance());
+				triggerClimb.whenPressed(ToggleClimber.getInstance());
 			}
 			
 			@Override
@@ -300,18 +330,6 @@ public class OI {
 			else
 				return val;
 		}
-	}
-	
-	public Button getLowGearTrigger() {
-		return setLowGear;
-	}
-	
-	public Button getHighGearTrigger() {
-		return setHighGear;
-	}
-	
-	public Button getClimbingTrigger() {
-		return triggerClimb;
 	}
 	
 }
