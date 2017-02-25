@@ -95,8 +95,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		drivetrain.setSetpointFeet(10);
-	
+		drivetrain.setSetpointFeet(1);
 	}
 
 	@Override
@@ -108,7 +107,6 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		
-		//manualDrive.start();
 	}
 
 	/**
@@ -117,7 +115,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drivetrain.setSetpointFeet(10);
+		drivetrain.setRaw(1, 1);
 	}
 	
 	@Override

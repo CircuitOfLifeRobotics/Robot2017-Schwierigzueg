@@ -13,9 +13,7 @@ public class ToggleShifter extends Command {
 	private boolean engaged;
 	
 	public static ToggleShifter getInstance() {
-		if (instance==null)
-			instance = new ToggleShifter();
-		return instance;
+		return instance == null ? instance = new ToggleShifter() : instance;
 	}
 	
 	private ToggleShifter() {

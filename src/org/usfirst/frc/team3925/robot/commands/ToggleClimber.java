@@ -13,9 +13,7 @@ public class ToggleClimber extends Command {
 	private boolean engaged;
 	
 	public static ToggleClimber getInstance() {
-		if (instance==null)
-			instance = new ToggleClimber();
-		return instance;
+		return instance == null ? instance = new ToggleClimber() : instance;
 	}
 	
 	private ToggleClimber() {

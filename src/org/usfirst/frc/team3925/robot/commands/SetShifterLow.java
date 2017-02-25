@@ -11,9 +11,7 @@ public class SetShifterLow extends Command{
 	private static SetShifterLow instance;
 	
 	public static SetShifterLow getInstance() {
-		if (instance==null)
-			instance = new SetShifterLow();
-		return instance;
+		return instance == null ? instance = new SetShifterLow() : instance;
 	}
 	
 	private SetShifterLow() {

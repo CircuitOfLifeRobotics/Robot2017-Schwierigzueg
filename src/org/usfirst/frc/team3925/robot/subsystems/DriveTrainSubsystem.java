@@ -8,6 +8,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,9 +22,7 @@ public class DriveTrainSubsystem extends Subsystem {
 	private DoubleSolenoid shifter, climber;
 	
 	public static DriveTrainSubsystem getInstance() {
-		if (instance==null)
-			instance = new DriveTrainSubsystem();
-		return instance;
+		return instance == null ? instance = new DriveTrainSubsystem() : instance;
 	}
 	
 	private DriveTrainSubsystem() {
@@ -133,13 +132,8 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightC.set(rightCSetpoint);
 	}
 	public void setRaw(double left, double right){
-//		leftA.set(left);
-//		rightA.set(right);
-		leftA.setSetpoint(3700);
-		rightA.setSetpoint(3700);
-		SmartDashboard.putNumber("LEFT ENC POSITION", rightA.getEncPosition());
-		SmartDashboard.putNumber("RIGHT ENC POSITION", rightA.getSetpoint());
-//		SmartDashboard.putNumber("Right A Pin State A", rightA.getPinStateQuadA());
+		leftA.set(left);
+		rightA.set(right);
 	}
 	
 	public void setShifter(boolean engaged) {

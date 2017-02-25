@@ -2,6 +2,8 @@ package org.usfirst.frc.team3925.robot;
 
 import javax.naming.TimeLimitExceededException;
 
+import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
+
 import com.team3925.team3925.robot.util.ControlMode;
 
 import static org.usfirst.frc.team3925.robot.RobotMap.*;
@@ -29,9 +31,7 @@ public class OI {
 	private boolean hasJoysticks;
 	
 	public static OI getInstance() {
-		if (instance == null)
-			instance = new OI();
-		return instance;
+		return instance == null ? instance = new OI() : instance;
 	}
 	
 	public static boolean isWheel(Joystick stick) {

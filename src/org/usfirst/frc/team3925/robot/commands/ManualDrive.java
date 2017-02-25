@@ -18,9 +18,7 @@ public class ManualDrive extends Command {
 	private DriveTrainSubsystem driveTrain;
 	
 	public static ManualDrive getInstance() {
-		if (instance == null)
-			instance = new ManualDrive();
-		return instance;
+		return instance == null ? instance = new ManualDrive() : instance;
 	}
 	
 	private ManualDrive() {

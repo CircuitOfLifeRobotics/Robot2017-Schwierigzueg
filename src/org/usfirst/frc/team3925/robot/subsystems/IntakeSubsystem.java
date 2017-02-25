@@ -15,9 +15,7 @@ public class IntakeSubsystem extends Command {
 	private CANTalon external, internalLo, internalHi;
 	
 	public static IntakeSubsystem getInstance() {
-		if (instance==null)
-			instance = new IntakeSubsystem();
-		return instance;
+		return instance == null ? instance = new IntakeSubsystem() : instance;
 	}
 	
 	private IntakeSubsystem() {
