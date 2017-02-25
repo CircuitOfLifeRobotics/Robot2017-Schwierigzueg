@@ -65,6 +65,12 @@ public class RobotMap {
 	public final static int SOLENOID_PORT_A_SHIFT;
 	public final static int SOLENOID_PORT_B_SHIFT;
 	
+	public static final int LED_PORT_RING;
+	public static final int LED_PORT_BLUE_B;
+	public static final int LED_PORT_BLUE_A;
+	public static final int LED_PORT_RED_B;
+	public static final int LED_PORT_RED_A;
+	
 	public static final boolean[] TALON_BOOLCONSTANTS_TURRET;
 	public static final boolean[] TALON_BOOLCONSTANTS_SHOOTER;
 	public static final boolean[] TALON_BOOLCONSTANTS_DRIVETRAIN;
@@ -88,6 +94,12 @@ public class RobotMap {
 		TALON_ID_TURRET = 9;
 		TALON_ID_DRIVE_RIGHT_B = 10;
 		TALON_ID_DRIVE_RIGHT_C = 11;
+		
+		LED_PORT_RING = 0;
+		LED_PORT_BLUE_B = 1;
+		LED_PORT_BLUE_A = 2;
+		LED_PORT_RED_B = 3;
+		LED_PORT_RED_A = 4;
 		
 		//SOLENOID PORTS
 		SOLENOID_PORT_A_SHIFT = 0;
@@ -121,6 +133,8 @@ public class RobotMap {
 		TALON_IZONE_HOOD = 1;
 		TALON_RAMPRATE_HOOD = 100;
 		TALON_PROFILE_HOOD = 0;
+		
+		
 		
 		//SWITCH AND BRAKE CONSTANTS
 		//{fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen, revSwitchNormalyOpen, brakeModeEnabled}
