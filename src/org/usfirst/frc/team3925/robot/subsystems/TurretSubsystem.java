@@ -17,9 +17,7 @@ public class TurretSubsystem extends Subsystem {
 	private NetworkTable table;
 	
 	public static TurretSubsystem getInstance() {
-		if (instance==null)
-			instance = new TurretSubsystem();
-		return instance;
+		return instance == null ? instance = new TurretSubsystem() : instance;
 	}
 	
 	private TurretSubsystem() {

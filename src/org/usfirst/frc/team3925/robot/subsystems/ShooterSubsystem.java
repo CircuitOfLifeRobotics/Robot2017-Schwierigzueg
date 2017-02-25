@@ -15,9 +15,7 @@ public class ShooterSubsystem extends Command {
 	CANTalon flywheel;
 	
 	public static ShooterSubsystem getInstance() {
-		if (instance==null)
-			instance = new ShooterSubsystem();
-		return instance;
+		return instance == null ? instance = new ShooterSubsystem() : instance;
 	}
 	
 	public ShooterSubsystem() {

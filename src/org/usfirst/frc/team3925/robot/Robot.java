@@ -5,10 +5,13 @@ import org.usfirst.frc.team3925.robot.commands.ManualDrive;
 import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
 import org.usfirst.frc.team3925.robot.subsystems.TurretSubsystem;
 
+import com.ctre.CANTalon.TalonControlMode;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -28,6 +31,8 @@ public class Robot extends IterativeRobot {
 	
 	ManualDrive manualDrive;
 	
+	public static DriveTrainSubsystem drivetrain;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -37,8 +42,8 @@ public class Robot extends IterativeRobot {
 		oi = OI.getInstance();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
-		
 		manualDrive = ManualDrive.getInstance();
+		drivetrain = drivetrain.getInstance();
 	}
 
 	/**
@@ -90,6 +95,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		drivetrain.setSetpointFeet(1);
 	}
 
 	@Override
@@ -101,7 +107,6 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		
-		manualDrive.start();
 	}
 
 	/**
@@ -110,6 +115,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		drivetrain.setRaw(1, 1);
 	}
 	
 	@Override

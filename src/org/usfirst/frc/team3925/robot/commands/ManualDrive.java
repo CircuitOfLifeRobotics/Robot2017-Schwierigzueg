@@ -4,6 +4,8 @@ package org.usfirst.frc.team3925.robot.commands;
 import org.usfirst.frc.team3925.robot.OI;
 import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
 
+import com.ctre.CANTalon.TalonControlMode;
+
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,9 +18,7 @@ public class ManualDrive extends Command {
 	private DriveTrainSubsystem driveTrain;
 	
 	public static ManualDrive getInstance() {
-		if (instance == null)
-			instance = new ManualDrive();
-		return instance;
+		return instance == null ? instance = new ManualDrive() : instance;
 	}
 	
 	private ManualDrive() {
@@ -31,6 +31,7 @@ public class ManualDrive extends Command {
 	protected void initialize() {
 		driveTrain.setRaw(0, 0);
 		driveTrain.setBrake(true);
+		driveTrain.setControlModes(TalonControlMode.PercentVbus);
 	}
 	
 	@Override

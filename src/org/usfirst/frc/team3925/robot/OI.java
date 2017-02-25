@@ -6,6 +6,8 @@ import org.usfirst.frc.team3925.robot.commands.SetShifterHigh;
 import org.usfirst.frc.team3925.robot.commands.SetShifterLow;
 import org.usfirst.frc.team3925.robot.commands.ToggleClimber;
 
+import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
+
 import com.team3925.team3925.robot.util.ControlMode;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,9 +34,7 @@ public class OI {
 	private boolean debug = false;
 	
 	public static OI getInstance() {
-		if (instance == null)
-			instance = new OI();
-		return instance;
+		return instance == null ? instance = new OI() : instance;
 	}
 	
 	public static boolean isWheel(Joystick stick) {
