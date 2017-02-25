@@ -87,10 +87,13 @@ public class DriveTrainSubsystem extends Subsystem {
 		rightB.set(rightA.getDeviceID());
 		rightC.set(rightA.getDeviceID());
 		
+		leftA.setEncPosition(0);
 		leftA.setInverted(true);
 		leftB.reverseOutput(true);
 		leftC.reverseOutput(true);
+		leftA.reverseSensor(false);
 		
+		rightA.setEncPosition(0);
 		rightA.setInverted(true);
 		rightB.reverseOutput(false);
 		rightC.reverseOutput(true);
@@ -206,7 +209,7 @@ public class DriveTrainSubsystem extends Subsystem {
 	}
 
 	public double getConversionFactor(){
-		return ((1 / (Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI) / 12)) * Constants.ENCODER_TICKS_PER_REV;
+		return ((1 / ((Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI) / 12)) * Constants.ENCODER_TICKS_PER_REV);
 	}
 	
 }
