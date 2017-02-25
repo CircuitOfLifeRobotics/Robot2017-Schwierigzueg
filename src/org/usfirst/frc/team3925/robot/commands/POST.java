@@ -15,7 +15,7 @@ public class POST extends Command{
 	
 	@Override
 	protected void initialize() {
-		drivetrain.setControlModes(TalonControlMode.PercentVbus);
+		drivetrain.setAllControlModes(TalonControlMode.PercentVbus);
 	}
 
 	@Override

@@ -47,6 +47,15 @@ public class RobotMap {
 	public final static double TALON_RAMPRATE_FLYWHEEL;
 	public final static int TALON_PROFILE_FLYWHEEL;
 	
+	
+	public final static double TALON_P_DRIVETRAIN;
+	public final static double TALON_I_DRIVETRAIN;
+	public final static double TALON_D_DRIVETRAIN;
+	public final static double TALON_F_DRIVETRAIN;
+	public final static int TALON_IZONE_DRIVETRAIN;
+	public final static double TALON_RAMPRATE_DRIVETRAIN;
+	public final static int TALON_PROFILE_DRIVETRAIN;
+	
 	public final static int TALON_ID_INTAKE;
 	
 	public final static int TALON_ID_ELEVATOR_LOWER;
@@ -121,6 +130,15 @@ public class RobotMap {
 		TALON_IZONE_HOOD = 1;
 		TALON_RAMPRATE_HOOD = 100;
 		TALON_PROFILE_HOOD = 0;
+		
+		//DRIVETRAIN PID CONSTANTS
+		TALON_P_DRIVETRAIN = 1;
+		TALON_I_DRIVETRAIN = 2;
+		TALON_D_DRIVETRAIN = 3;
+		TALON_F_DRIVETRAIN = 0;
+		TALON_IZONE_DRIVETRAIN = 1;
+		TALON_RAMPRATE_DRIVETRAIN = 100;
+		TALON_PROFILE_DRIVETRAIN = 0;
 		
 		//SWITCH AND BRAKE CONSTANTS
 		//{fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen, revSwitchNormalyOpen, brakeModeEnabled}
