@@ -31,7 +31,6 @@ public class Robot extends IterativeRobot {
 	
 	ManualDrive manualDrive;
 	
-	public static DriveTrainSubsystem drivetrain;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -43,7 +42,6 @@ public class Robot extends IterativeRobot {
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
 		manualDrive = ManualDrive.getInstance();
-		drivetrain = drivetrain.getInstance();
 	}
 
 	/**
@@ -105,7 +103,7 @@ public class Robot extends IterativeRobot {
 		// this line or comment it out.
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		
+		manualDrive.start();
 	}
 
 	/**
