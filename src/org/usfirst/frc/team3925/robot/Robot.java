@@ -1,19 +1,36 @@
 
 package org.usfirst.frc.team3925.robot;
 
-import org.usfirst.frc.team3925.robot.commands.ManualDrive;
-import org.usfirst.frc.team3925.robot.subsystems.DriveTrainSubsystem;
-import org.usfirst.frc.team3925.robot.subsystems.TurretSubsystem;
-
-import com.ctre.CANTalon.TalonControlMode;
+import com.team3925.team3925.robot.commands_subsystems.CenterAuto;
+import com.team3925.team3925.robot.commands_subsystems.DriveGear;
+import com.team3925.team3925.robot.commands_subsystems.DrivePath;
+import com.team3925.team3925.robot.commands_subsystems.KeepTurretAimed;
+import com.team3925.team3925.robot.commands_subsystems.KeepTurretHeading;
+import com.team3925.team3925.robot.commands_subsystems.LeftBackAutoRoutine;
+import com.team3925.team3925.robot.commands_subsystems.ManualDriveTrain;
+import com.team3925.team3925.robot.commands_subsystems.PanTurret;
+import com.team3925.team3925.robot.commands_subsystems.RESET_AUTO;
+import com.team3925.team3925.robot.commands_subsystems.TestCommand;
+import com.team3925.team3925.robot.commands_subsystems.WaitForGear;
+import com.team3925.team3925.robot.commands_subsystems.WaitForTarget;
+import com.team3925.team3925.robot.commands_subsystems.ZeroTurret;
+import com.team3925.team3925.robot.triggers.OnCommandEnd;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+/*
+ * POPULATED: FALSE
+ * WHEN: 
+ * TESTED: FALSE
+ * WHEN: 
+ */
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,14 +40,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-
-	public static OI oi;
 	
-	Command autonomousCommand;
-	SendableChooser<Command> chooser = new SendableChooser<>();
+	private SendableChooser<Command> chooser = new SendableChooser<>();
 	
-	ManualDrive manualDrive;
-	
+	private CommandGroup autoDriveSequence, backgroundTurretSequence, autoTurretSequence, leftBack, centerAuto;
+	private Command testCommand;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -38,12 +52,32 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		oi = OI.getInstance();
-		// chooser.addObject("My Auto", new MyAutoCommand());
+		testCommand = new TestCommand();
+//		chooser.addObject("Gear Left | Cross Line", );
 		SmartDashboard.putData("Auto mode", chooser);
-		manualDrive = ManualDrive.getInstance();
+		
+		//keeps turret aimed until command stops (loses aim), then keeps heading and pans while searching for target
+		backgroundTurretSequence = new CommandGroup();
+		backgroundTurretSequence.addSequential(KeepTurretAimed.getInstance());
+		backgroundTurretSequence.addSequential(WaitForTarget.getInstance());
+		backgroundTurretSequence.addParallel(KeepTurretHeading.getInstance(), 10);
+		backgroundTurretSequence.addSequential(PanTurret.getInstance());
+		
+		//restarts background turret sequence once target is seen (WaitForTarget command ends)
+		OnCommandEnd loseSightOfTarget = new OnCommandEnd(WaitForTarget.getInstance());
+		loseSightOfTarget.cancelWhenActive(backgroundTurretSequence);
+		loseSightOfTarget.whenActive(backgroundTurretSequence);
+		
+		//initializes the turret and starts the background sequence
+		autoTurretSequence = new CommandGroup();
+		autoTurretSequence.addSequential(ZeroTurret.getInstance());
+//		autoTurretSequence.addSequential(PanTurret.getInstance());
+//		autoTurretSequence.addParallel(WaitForTarget.getInstance());
+		autoTurretSequence.addSequential(backgroundTurretSequence);
+		leftBack = new LeftBackAutoRoutine();
+		centerAuto = new CenterAuto();
 	}
-
+	
 	/**
 	 * This function is called once each time the robot enters Disabled mode.
 	 * You can use it to reset any subsystem information you want to clear when
@@ -51,15 +85,19 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		manualDrive.cancel();
-		DriveTrainSubsystem.getInstance().setBrake(true);
+		if (autoDriveSequence!=null)
+			autoDriveSequence.cancel();
+		if (autoTurretSequence!=null)
+			autoTurretSequence.cancel();
+//		if (backgroundTurretSequence!=null)
+//			backgroundTurretSequence.cancel();
 	}
-
+	
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 	}
-
+	
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
@@ -73,20 +111,31 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
+		String auto = SmartDashboard.getString("Auto Selector", "Default");
+		switch (auto) {
+		case "Default":
+			//does all autonomous driving
+			autoDriveSequence = new CommandGroup();
+			autoDriveSequence.addSequential(new DrivePath(null));
+//			autoDriveSequence.addSequential(DriveGear.getInstance());
+//			autoDriveSequence.addSequential(WaitForGear.getInstance());
+			autoDriveSequence.addSequential(new DrivePath(null));
+			break;
+		default:
+			break;
+		}
+		
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
-
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
+		
+//		 schedule the autonomous command (example)
+		centerAuto.start();
 	}
-
+	
 	/**
 	 * This function is called periodically during autonomous
 	 */
@@ -94,18 +143,17 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 	}
-
+	
 	@Override
 	public void teleopInit() {
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (autonomousCommand != null)
-			autonomousCommand.cancel();
-		manualDrive.start();
+//		centerAuto.start();
+		testCommand.start();
 	}
-
+	
 	/**
 	 * This function is called periodically during operator control
 	 */
@@ -116,13 +164,14 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testInit() {
+		// TODO Auto-generated method stub
 	}
-	
 	/**
 	 * This function is called periodically during test mode
 	 */
 	@Override
 	public void testPeriodic() {
-		LiveWindow.run();
+		if (!testCommand.isRunning()){
+		}
 	}
 }
