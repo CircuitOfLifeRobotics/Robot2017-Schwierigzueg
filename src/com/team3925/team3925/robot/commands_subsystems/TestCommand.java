@@ -9,26 +9,31 @@ public class TestCommand extends Command{
 	
 	DriveTrain drivetrain;
 	Shooter shooter;
+	Turret turret;
 	
 	public TestCommand() {
 		drivetrain = drivetrain.getInstance();
-		shooter.getInstance();
+		shooter = shooter.getInstance();
+		turret = turret.getInstance();
 	}
 	@Override
 	protected void initialize() {
-		//drivetrain.setControlMode(TalonControlMode.PercentVbus);
-		drivetrain.zeroEncoders();
-		System.out.println("RUNNING");
+		shooter.setSpeed(300);
 	}
 	
 	@Override
 	protected void execute() {
-		System.out.println("GEAR_VOLTAGE" + drivetrain.getGearValue());
+		System.out.println("RUUNINF");
+		SmartDashboard.putBoolean("TURRET_SWITCH", turret.getSwitch());
 	}
 
 	@Override
 	protected boolean isFinished() {
 		return false;
+	}
+	@Override
+	protected void end() {
+		turret.setSpeed(0);
 	}
 
 }

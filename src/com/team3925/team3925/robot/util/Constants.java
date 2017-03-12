@@ -52,6 +52,12 @@ public class Constants {
 	public static final int SHOOTER_FLYWHEEL_GEAR_TEETH;
 	public static final int SHOOTER_ENC_TICKS_PER_REV;
 	
+	public static final int HOOD_FLYWHEEL_GEAR_TEETH;
+	public static final int HOOD_MOTOR_GEAR_TEETH;
+	public static final int HOOD_ENC_TICKS_PER_REV;
+	
+	public static final double DRIVETRAIN_GEAR_SENSOR_THRESHOLD;
+	
 	public static final boolean[] TALON_BOOLCONSTANTS_TURRET;
 	public static final boolean[] TALON_BOOLCONSTANTS_SHOOTER;
 	public static final boolean[] TALON_BOOLCONSTANTS_DRIVETRAIN;
@@ -104,10 +110,16 @@ public class Constants {
 		DRIVETRAIN_FEET_PER_DEGREE = 26.5 * Math.PI / 12 / 360;
 		DRIVETRAIN_DEADZONE = 30;
 		
+		DRIVETRAIN_GEAR_SENSOR_THRESHOLD = 0.30;
+		
 		//SHOOTER DIMENSION CONSTANTS
 		SHOOTER_FLYWHEEL_GEAR_TEETH = 18;
 		SHOOTER_MOTOR_GEAR_TEETH = 22;
 		SHOOTER_ENC_TICKS_PER_REV = 4096;
+		
+		HOOD_FLYWHEEL_GEAR_TEETH = 0;
+		HOOD_MOTOR_GEAR_TEETH = 0;
+		HOOD_ENC_TICKS_PER_REV = 4096;
 		
 		// SWITCH AND BRAKE CONSTANTS
 		// {fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen,
@@ -115,7 +127,7 @@ public class Constants {
 		// configuration is same for every talon in each system
 		TALON_BOOLCONSTANTS_DRIVETRAIN = new boolean[] { false, false, false, false, true };
 		TALON_BOOLCONSTANTS_SHOOTER = new boolean[] { false, false, false, false, false };
-		TALON_BOOLCONSTANTS_TURRET = new boolean[] { true, false, false, false, true };
+		TALON_BOOLCONSTANTS_TURRET = new boolean[] { false, false, false, false, true};
 		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, true };
 		TALON_BOOLCONSTANTS_HOOD = new boolean[] { false, false, false, false, true };
 	}

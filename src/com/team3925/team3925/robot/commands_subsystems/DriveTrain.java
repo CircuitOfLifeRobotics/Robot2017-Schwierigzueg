@@ -6,6 +6,7 @@ import static org.usfirst.frc.team3925.robot.RobotMap.*;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
+import com.team3925.team3925.robot.util.Constants;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -180,7 +181,7 @@ class DriveTrain extends Subsystem {
 		rightA.setSetpoint(feet * getConversionFactor());
 	}
 	public double getConversionFactor(){
-		return ((1 / ((DRIVETRAIN_WHEEL_DIAMETER * Math.PI) / 12)) * DRIVETRAIN_ENC_TICKS_PER_REV);
+		return (12 * DRIVETRAIN_ENC_TICKS_PER_REV/ (DRIVETRAIN_WHEEL_DIAMETER * Math.PI));
 	}
 	public void zeroEncoders(){
 		leftA.setEncPosition(0);
@@ -214,7 +215,14 @@ class DriveTrain extends Subsystem {
 	public void shiftLow(){
 		shifter.set(Value.kReverse);
 	}
-	public double getGearValue(){
+	public boolean getGearStatus(){
+		if (gearSensor.getVoltage() > Constants.DRIVETRAIN_GEAR_SENSOR_THRESHOLD){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public double getGearVoltage(){
 		return gearSensor.getVoltage();
 	}
 	

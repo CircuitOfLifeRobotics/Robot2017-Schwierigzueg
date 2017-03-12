@@ -61,7 +61,7 @@ public class DriveDistance extends Command{
 	@Override
 	protected void end() {
 		System.out.println("Stopped Driving");
-		drivetrain.setMaxVoltage(20);
+		drivetrain.setMaxVoltage(12);
 	}
 	public boolean atSetpoint(){
 		return (drivetrain.isLeftAtSetpoint(Constants.DRIVETRAIN_DEADZONE)

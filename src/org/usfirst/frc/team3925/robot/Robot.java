@@ -43,7 +43,8 @@ public class Robot extends IterativeRobot {
 	
 	private SendableChooser<Command> chooser = new SendableChooser<>();
 	
-	private CommandGroup autoDriveSequence, backgroundTurretSequence, autoTurretSequence, leftBack, centerAuto;
+	private CommandGroup autoDriveSequence, backgroundTurretSequence, 
+						autoTurretSequence, leftBack, centerAuto, resetAuto;
 	private Command testCommand;
 	
 	/**
@@ -76,6 +77,8 @@ public class Robot extends IterativeRobot {
 		autoTurretSequence.addSequential(backgroundTurretSequence);
 		leftBack = new LeftBackAutoRoutine();
 		centerAuto = new CenterAuto();
+		
+		resetAuto = new RESET_AUTO();
 	}
 	
 	/**
@@ -133,7 +136,8 @@ public class Robot extends IterativeRobot {
 		 */
 		
 //		 schedule the autonomous command (example)
-		centerAuto.start();
+//		testCommand.start();
+		leftBack.start();
 	}
 	
 	/**
