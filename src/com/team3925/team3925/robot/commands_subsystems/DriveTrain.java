@@ -212,8 +212,12 @@ class DriveTrain extends Subsystem {
 		leftA.configMaxOutputVoltage(voltage);
 		rightA.configMaxOutputVoltage(voltage);
 	}
-	public void shiftLow(){
-		shifter.set(Value.kReverse);
+	public void shiftLow(boolean isLow){
+		if (isLow){
+			shifter.set(Value.kReverse);
+		}else{
+			shifter.set(Value.kForward);
+		}
 	}
 	public boolean getGearStatus(){
 		if (gearSensor.getVoltage() > Constants.DRIVETRAIN_GEAR_SENSOR_THRESHOLD){

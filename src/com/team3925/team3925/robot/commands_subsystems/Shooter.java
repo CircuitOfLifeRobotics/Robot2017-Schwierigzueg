@@ -4,6 +4,7 @@ import static com.team3925.team3925.robot.util.Constants.*;
 import static org.usfirst.frc.team3925.robot.RobotMap.*;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Talon;
@@ -32,18 +33,21 @@ class Shooter extends Subsystem {
 		
 		
 		flywheel = new CANTalon(TALON_ID_FLYWHEEL);
-		flywheel.changeControlMode(TalonControlMode.Speed);
+		flywheel.changeControlMode(TalonControlMode.PercentVbus);
 		flywheel.setPID(TALON_P_FLYWHEEL, TALON_I_FLYWHEEL, TALON_D_FLYWHEEL, TALON_F_FLYWHEEL, TALON_IZONE_FLYWHEEL, TALON_RAMPRATE_FLYWHEEL, TALON_PROFILE_FLYWHEEL);
 		flywheel.enableBrakeMode(TALON_BOOLCONSTANTS_SHOOTER[4]);
 		flywheel.enableLimitSwitch(TALON_BOOLCONSTANTS_SHOOTER[0],TALON_BOOLCONSTANTS_SHOOTER[1]);
 		flywheel.ConfigFwdLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_SHOOTER[2]);
 		flywheel.ConfigRevLimitSwitchNormallyOpen(TALON_BOOLCONSTANTS_SHOOTER[3]);
 		
+		flywheel.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		
 		hood.configMaxOutputVoltage(5);
 	}
 	
 	public void setSpeed(double rpm){
-		flywheel.setSetpoint(rpm * getShooterConversionFactor());
+//		flywheel.setSetpoint(rpm * getShooterConversionFactor());
+		flywheel.set(rpm);
 		SmartDashboard.putNumber("Setpoint", flywheel.getSetpoint());
 		SmartDashboard.putNumber("Encoder", flywheel.getEncPosition());
 	}
@@ -60,8 +64,8 @@ class Shooter extends Subsystem {
 	}
 	
 	private double getShooterConversionFactor(){
-		double TicksPerRev = ((SHOOTER_MOTOR_GEAR_TEETH * SHOOTER_FLYWHEEL_GEAR_TEETH) * SHOOTER_ENC_TICKS_PER_REV )/600;
-		return TicksPerRev / 600;
+		double TicksPerRev = ((SHOOTER_FLYWHEEL_GEAR_TEETH * SHOOTER_MOTOR_GEAR_TEETH) * SHOOTER_ENC_TICKS_PER_REV) * 600;
+		return TicksPerRev;
 	}
 	public double getHoodConversionFactor(){
 		return HOOD_ENC_TICKS_PER_REV / 360;

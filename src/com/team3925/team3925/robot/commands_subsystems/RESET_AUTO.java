@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  */
 public class RESET_AUTO extends CommandGroup {
-	DriveDistance initialDrive = new DriveDistance(4.75, 5);
+	DriveDistance initialDrive = new DriveDistance(4.75, 5, false);
 	DriveTurn turn = new DriveTurn(-65, 10);
-	DriveDistance terminalDrive = new DriveDistance(6,5);
+	DriveDistance terminalDrive = new DriveDistance(6,5, false);
 	
 
     public RESET_AUTO() {

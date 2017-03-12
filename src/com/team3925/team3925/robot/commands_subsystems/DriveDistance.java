@@ -14,21 +14,24 @@ public class DriveDistance extends Command{
 	double distance;
 	double voltage;
 	int interpolatorState;
+	boolean activateSensor;
 	
 	
-	public DriveDistance(double feet, double maxVoltage) {
+	public DriveDistance(double feet, double maxVoltage, boolean sense) {
 		drivetrain = drivetrain.getInstance();
 		distance = feet;
 		voltage = maxVoltage;
+		activateSensor = sense;
 	}
 	@Override
 	protected void initialize() {
-		drivetrain.shiftLow();
+		drivetrain.shiftLow(true);
 		drivetrain.setControlMode(TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower,
 				TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower);
 		drivetrain.setMaxVoltage(voltage);
 		drivetrain.zeroEncoders();
 		interpolatorState = 0;
+		System.out.println("Starting Drive");
 		
 	}
 	@Override
@@ -61,10 +64,20 @@ public class DriveDistance extends Command{
 	@Override
 	protected void end() {
 		System.out.println("Stopped Driving");
-		drivetrain.setMaxVoltage(12);
 	}
 	public boolean atSetpoint(){
-		return (drivetrain.isLeftAtSetpoint(Constants.DRIVETRAIN_DEADZONE)
-				&& drivetrain.isRightAtSetpoint(Constants.DRIVETRAIN_DEADZONE));
+		if (drivetrain.isLeftAtSetpoint(Constants.DRIVETRAIN_DEADZONE)
+				&& drivetrain.isRightAtSetpoint(Constants.DRIVETRAIN_DEADZONE)){
+			return true;
+		}
+		if (activateSensor && drivetrain.getGearStatus()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	@Override
+	protected void interrupted() {
+		this.end();
 	}
 }

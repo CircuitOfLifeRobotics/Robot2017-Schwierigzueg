@@ -10,7 +10,7 @@ public class CenterAuto extends CommandGroup {
 	DriveDistance drive;
 
     public CenterAuto() {
-    	drive = new DriveDistance(-9.525, 5);
+    	drive = new DriveDistance(-9.525, 5, true);
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

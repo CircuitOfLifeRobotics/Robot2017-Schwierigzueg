@@ -18,13 +18,11 @@ public class TestCommand extends Command{
 	}
 	@Override
 	protected void initialize() {
-		shooter.setSpeed(300);
 	}
 	
 	@Override
 	protected void execute() {
-		System.out.println("RUUNINF");
-		SmartDashboard.putBoolean("TURRET_SWITCH", turret.getSwitch());
+		shooter.setSpeed(0.25);
 	}
 
 	@Override

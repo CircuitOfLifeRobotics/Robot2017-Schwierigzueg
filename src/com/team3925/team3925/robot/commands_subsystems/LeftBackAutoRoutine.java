@@ -6,11 +6,13 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  */
 public class LeftBackAutoRoutine extends CommandGroup {
-	DriveDistance initialDrive = new DriveDistance(-4.75, 11);
+	DriveDistance initialDrive = new DriveDistance(-4.75, 11, false);
 	DriveTurn turn = new DriveTurn(63, 10);
-	GearUltrasoundWait gearWait = new GearUltrasoundWait();
-	DriveDistance terminalDrive = new DriveDistance(-8.625,5);
-	DriveDistance backUpDrive = new DriveDistance(2,12);
+	DriveDistance terminalDrive = new DriveDistance(-8.5,7, false);
+	DriveDistance backUpDrive = new DriveDistance(1,11, false);
+	DriveTurn reverseTurn = new DriveTurn(-19, 11);
+	DriveDistance halfBack = new DriveDistance(6, 11, false);
+	DriveDistance fullBack = new DriveDistance(5, 5, false);
 	
 
     public LeftBackAutoRoutine() {
@@ -20,9 +22,11 @@ public class LeftBackAutoRoutine extends CommandGroup {
         // these will run in order.
     	addSequential(initialDrive);
     	addSequential(turn);
-    	addParallel(terminalDrive);
-    	addSequential(gearWait);
+    	addSequential(terminalDrive, 5);
     	addSequential(backUpDrive);
+    	addSequential(reverseTurn, 1);
+    	addSequential(halfBack);
+    	addSequential(fullBack);
 
         // To run multiple commands at the same time,
         // use addParallel()
