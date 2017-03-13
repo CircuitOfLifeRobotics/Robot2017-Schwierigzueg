@@ -6,13 +6,16 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  */
 public class LeftBackAutoRoutine extends CommandGroup {
-	DriveDistance initialDrive = new DriveDistance(-4.75, 11, false);
-	DriveTurn turn = new DriveTurn(63, 10);
-	DriveDistance terminalDrive = new DriveDistance(-8.5,7, false);
+	DriveDistance initialDrive = new DriveDistance(-4.5, 10, false);
+	DriveTurn turn = new DriveTurn(64.5, 11);
+	DriveDistance terminalDrive = new DriveDistance(-8,6, false);
 	DriveDistance backUpDrive = new DriveDistance(1,11, false);
-	DriveTurn reverseTurn = new DriveTurn(-19, 11);
-	DriveDistance halfBack = new DriveDistance(6, 11, false);
-	DriveDistance fullBack = new DriveDistance(5, 5, false);
+	DriveTurn reverseTurn = new DriveTurn(-15, 11);
+	DriveDistance halfBack = new DriveDistance(9, 11, false);
+	Shoot spool = new Shoot(0.8);
+	IntakeIn intake = new IntakeIn(1);
+	Shoot stopSpool = new Shoot(0);
+	IntakeIn stopIntake = new IntakeIn(0);
 	
 
     public LeftBackAutoRoutine() {
@@ -20,15 +23,16 @@ public class LeftBackAutoRoutine extends CommandGroup {
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-    	addSequential(initialDrive);
-    	addSequential(turn);
-    	addSequential(terminalDrive, 5);
-    	addSequential(backUpDrive);
+    	addSequential(initialDrive,3);
+    	addSequential(turn, 2);
+    	addSequential(terminalDrive, 4);
+    	addSequential(backUpDrive,1);
     	addSequential(reverseTurn, 1);
-    	addSequential(halfBack);
-    	addSequential(fullBack);
-
-        // To run multiple commands at the same time,
+    	addSequential(spool, 10);
+    	addSequential(halfBack,5);
+    	addSequential(intake, 15);
+    	addSequential(stopSpool);
+    	addSequential(stopIntake, 0.1);
         // use addParallel()
         // e.g. addParallel(new Command1());
         //      addSequential(new Command2());

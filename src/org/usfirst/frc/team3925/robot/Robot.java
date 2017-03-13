@@ -10,6 +10,7 @@ import com.team3925.team3925.robot.commands_subsystems.LeftBackAutoRoutine;
 import com.team3925.team3925.robot.commands_subsystems.ManualDriveTrain;
 import com.team3925.team3925.robot.commands_subsystems.PanTurret;
 import com.team3925.team3925.robot.commands_subsystems.RESET_AUTO;
+import com.team3925.team3925.robot.commands_subsystems.ResetSystems;
 import com.team3925.team3925.robot.commands_subsystems.TestCommand;
 import com.team3925.team3925.robot.commands_subsystems.WaitForGear;
 import com.team3925.team3925.robot.commands_subsystems.WaitForTarget;
@@ -45,7 +46,8 @@ public class Robot extends IterativeRobot {
 	
 	private CommandGroup autoDriveSequence, backgroundTurretSequence, 
 						autoTurretSequence, leftBack, centerAuto, resetAuto;
-	private Command testCommand;
+
+	private Command testCommand, resetSystems;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -77,7 +79,7 @@ public class Robot extends IterativeRobot {
 		autoTurretSequence.addSequential(backgroundTurretSequence);
 		leftBack = new LeftBackAutoRoutine();
 		centerAuto = new CenterAuto();
-		
+		resetSystems = new ResetSystems();
 		resetAuto = new RESET_AUTO();
 	}
 	
@@ -114,6 +116,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		resetSystems.start();
 		String auto = SmartDashboard.getString("Auto Selector", "Default");
 		switch (auto) {
 		case "Default":

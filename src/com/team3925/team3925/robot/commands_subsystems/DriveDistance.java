@@ -18,6 +18,7 @@ public class DriveDistance extends Command{
 	
 	
 	public DriveDistance(double feet, double maxVoltage, boolean sense) {
+
 		drivetrain = drivetrain.getInstance();
 		distance = feet;
 		voltage = maxVoltage;
@@ -32,7 +33,6 @@ public class DriveDistance extends Command{
 		drivetrain.zeroEncoders();
 		interpolatorState = 0;
 		System.out.println("Starting Drive");
-		
 	}
 	@Override
 	protected void execute() {

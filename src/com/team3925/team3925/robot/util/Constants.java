@@ -87,10 +87,10 @@ public class Constants {
 		TALON_PROFILE_TURRET = 0;
 		
 		// FLYWHEEL PID CONSTANTS
-		TALON_P_FLYWHEEL = 1;
+		TALON_P_FLYWHEEL = 0.2;
 		TALON_I_FLYWHEEL = 0;
 		TALON_D_FLYWHEEL = 0;
-		TALON_F_FLYWHEEL = 0;
+		TALON_F_FLYWHEEL = 30000;
 		TALON_IZONE_FLYWHEEL = 1;
 		TALON_RAMPRATE_FLYWHEEL = 100;
 		TALON_PROFILE_FLYWHEEL = 0;
@@ -108,7 +108,7 @@ public class Constants {
 		DRIVETRAIN_WHEEL_DIAMETER = 4.25;
 		DRIVETRAIN_ENC_TICKS_PER_REV = 512;
 		DRIVETRAIN_FEET_PER_DEGREE = 26.5 * Math.PI / 12 / 360;
-		DRIVETRAIN_DEADZONE = 30;
+		DRIVETRAIN_DEADZONE = 20;
 		
 		DRIVETRAIN_GEAR_SENSOR_THRESHOLD = 0.32;
 		
@@ -128,7 +128,7 @@ public class Constants {
 		TALON_BOOLCONSTANTS_DRIVETRAIN = new boolean[] { false, false, false, false, true };
 		TALON_BOOLCONSTANTS_SHOOTER = new boolean[] { false, false, false, false, false };
 		TALON_BOOLCONSTANTS_TURRET = new boolean[] { false, false, false, false, true};
-		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, true };
+		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, false };
 		TALON_BOOLCONSTANTS_HOOD = new boolean[] { false, false, false, false, true };
 	}
 	

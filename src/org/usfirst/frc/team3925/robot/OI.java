@@ -30,7 +30,7 @@ public class OI implements ManualDriveTrainInput, ManualIntakeInput, ManualShoot
 	private static OI instance;
 	
 	private ControlMode mode;
-	private Joystick wheel, stick, xbox;
+	public Joystick wheel, stick, xbox;
 	private Command findJoysticks;
 	private double deadZone;
 	private boolean hasJoysticks;
