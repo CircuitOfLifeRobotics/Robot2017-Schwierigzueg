@@ -30,8 +30,8 @@ public class ManualDrive extends Command{
 	}
 	@Override
 	protected void execute() {
-		l = (-1 * wheel.getRawAxis(1)) + stick.getRawAxis(1);
-		r = stick.getRawAxis(1) - (-1 *wheel.getRawAxis(0));
+		l = (-1.5 * wheel.getRawAxis(1)) + stick.getRawAxis(1);
+		r = stick.getRawAxis(1) - (-1.5 *wheel.getRawAxis(0));
 		drivetrain.setTeleopSpeed(l,r);
 	}
 

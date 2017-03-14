@@ -103,7 +103,8 @@ class DriveTrain extends Subsystem {
 				rightB.reverseOutput(true);
 				rightC.reverseOutput(true);
 				
-				
+				leftA.configMaxOutputVoltage(10);
+				rightA.configMaxOutputVoltage(10);
 				//put stuff on smart dashboard
 				SmartDashboard.putData("Left A", leftA);
 				SmartDashboard.putData("Left B", leftB);
