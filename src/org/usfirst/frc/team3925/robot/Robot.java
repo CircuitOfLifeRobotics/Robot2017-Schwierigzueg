@@ -2,27 +2,23 @@
 package org.usfirst.frc.team3925.robot;
 
 import com.team3925.team3925.robot.commands_subsystems.CenterAuto;
-import com.team3925.team3925.robot.commands_subsystems.DriveGear;
 import com.team3925.team3925.robot.commands_subsystems.DrivePath;
 import com.team3925.team3925.robot.commands_subsystems.KeepTurretAimed;
 import com.team3925.team3925.robot.commands_subsystems.KeepTurretHeading;
 import com.team3925.team3925.robot.commands_subsystems.LeftBackAutoRoutine;
-import com.team3925.team3925.robot.commands_subsystems.ManualDriveTrain;
+import com.team3925.team3925.robot.commands_subsystems.ManualDrive;
 import com.team3925.team3925.robot.commands_subsystems.PanTurret;
 import com.team3925.team3925.robot.commands_subsystems.RESET_AUTO;
 import com.team3925.team3925.robot.commands_subsystems.ResetSystems;
 import com.team3925.team3925.robot.commands_subsystems.TestCommand;
-import com.team3925.team3925.robot.commands_subsystems.WaitForGear;
 import com.team3925.team3925.robot.commands_subsystems.WaitForTarget;
 import com.team3925.team3925.robot.commands_subsystems.ZeroTurret;
 import com.team3925.team3925.robot.triggers.OnCommandEnd;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,7 +43,7 @@ public class Robot extends IterativeRobot {
 	private CommandGroup autoDriveSequence, backgroundTurretSequence, 
 						autoTurretSequence, leftBack, centerAuto, resetAuto;
 
-	private Command testCommand, resetSystems;
+	private Command testCommand, resetSystems, manualDrive;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -81,6 +77,7 @@ public class Robot extends IterativeRobot {
 		centerAuto = new CenterAuto();
 		resetSystems = new ResetSystems();
 		resetAuto = new RESET_AUTO();
+		manualDrive = new ManualDrive();
 	}
 	
 	/**
@@ -140,6 +137,7 @@ public class Robot extends IterativeRobot {
 		
 //		 schedule the autonomous command (example)
 //		testCommand.start();
+		resetSystems.start();
 		leftBack.start();
 	}
 	
@@ -158,7 +156,8 @@ public class Robot extends IterativeRobot {
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
 //		centerAuto.start();
-		testCommand.start();
+		resetSystems.start();
+		manualDrive.start();
 	}
 	
 	/**

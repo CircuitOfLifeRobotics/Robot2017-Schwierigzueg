@@ -3,6 +3,8 @@ package com.team3925.team3925.robot.commands_subsystems;
 import static com.team3925.team3925.robot.util.Constants.*;
 import static org.usfirst.frc.team3925.robot.RobotMap.*;
 
+import javax.swing.text.Position;
+
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
@@ -89,21 +91,18 @@ class DriveTrain extends Subsystem {
 				
 				leftA.setEncPosition(0);
 				leftA.setInverted(true);
+				
 				leftB.reverseOutput(true);
 				leftC.reverseOutput(false);
-//				leftB.setInverted(true);
-//				leftC.setInverted(false);
+
 				leftA.reverseSensor(false);
 				
 				rightA.setEncPosition(0);
 				rightA.setInverted(true);
-//				rightB.setInverted(true);
-//				rightC.setInverted(true);
+
 				rightB.reverseOutput(true);
 				rightC.reverseOutput(true);
 				
-				leftA.configMaxOutputVoltage(10);
-				rightA.configMaxOutputVoltage(10);
 				
 				//put stuff on smart dashboard
 				SmartDashboard.putData("Left A", leftA);
@@ -229,5 +228,88 @@ class DriveTrain extends Subsystem {
 	public double getGearVoltage(){
 		return gearSensor.getVoltage();
 	}
-	
+	public void clearTalonReverseSettings(){
+		rightB.reverseOutput(false);
+		rightC.reverseOutput(false);
+		leftB.reverseOutput(false);
+		leftC.reverseOutput(false);
+	}
+	public void clearTalonInversionSettings(){
+		rightB.setInverted(false);
+		rightC.setInverted(false);
+		leftB.setInverted(false);
+		leftC.setInverted(false);
+	}
+	public void setTeleopSpeed(double leftSpeed, double rightSpeed){
+		leftA.setSetpoint(leftSpeed);
+		rightA.setSetpoint(rightSpeed);
+	}
+	public void setTeleopControlModes(){
+//		rightA.reset();
+//		rightB.reset();
+//		rightC.reset();
+//		leftA.reset();
+//		leftB.reset();
+//		leftC.reset();
+		leftA.changeControlMode(TalonControlMode.PercentVbus);
+		rightA.changeControlMode(TalonControlMode.PercentVbus);
+		
+		rightB.changeControlMode(TalonControlMode.Follower);
+		rightC.changeControlMode(TalonControlMode.Follower);
+		leftB.changeControlMode(TalonControlMode.Follower);
+		leftC.changeControlMode(TalonControlMode.Follower);
+		
+		leftB.set(leftA.getDeviceID());
+		leftC.set(leftA.getDeviceID());
+		
+		rightB.set(rightA.getDeviceID());
+		rightC.set(rightA.getDeviceID());
+		
+		System.out.println();
+		
+//		leftA.setInverted(true);
+//		leftB.setInverted(false);
+//		leftC.setInverted(true);
+//		
+//		rightA.setInverted(true);
+//		rightB.setInverted(false);
+//		rightC.setInverted(false);
+		
+		leftA.setInverted(true);
+		leftB.reverseOutput(true);
+		leftC.reverseOutput(false);
+
+		rightA.setInverted(true);
+		rightB.reverseOutput(true);
+		rightC.reverseOutput(true);
+		
+	}
+	public void setAutoControlModes(){
+//		rightA.reset();
+//		rightB.reset();
+//		rightC.reset();
+//		leftA.reset();
+//		leftB.reset();
+//		leftC.reset();
+		leftA.changeControlMode(TalonControlMode.Position);
+		rightA.changeControlMode(TalonControlMode.Position);
+		rightB.changeControlMode(TalonControlMode.Follower);
+		rightC.changeControlMode(TalonControlMode.Follower);
+		leftB.changeControlMode(TalonControlMode.Follower);
+		leftC.changeControlMode(TalonControlMode.Follower);
+		
+		leftB.set(leftA.getDeviceID());
+		leftC.set(leftA.getDeviceID());
+		
+		rightB.set(rightA.getDeviceID());
+		rightC.set(rightA.getDeviceID());
+		
+		leftA.setInverted(true);
+		leftB.reverseOutput(true);
+		leftC.reverseOutput(false);
+
+		rightA.setInverted(true);
+		rightB.reverseOutput(true);
+		rightC.reverseOutput(true);
+	}
 }

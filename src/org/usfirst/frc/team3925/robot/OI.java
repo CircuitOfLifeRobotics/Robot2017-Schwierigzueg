@@ -1,16 +1,14 @@
 package org.usfirst.frc.team3925.robot;
 
-import com.team3925.team3925.robot.util.ControlMode;
-import static com.team3925.team3925.robot.util.Constants.*;
+import static com.team3925.team3925.robot.util.Constants.MIN_CONFIG_WAIT_TIME;
 
-import com.team3925.team3925.robot.commands_subsystems.ManualDriveTrain.ManualDriveTrainInput;
 import com.team3925.team3925.robot.commands_subsystems.ManualIntake.ManualIntakeInput;
 import com.team3925.team3925.robot.commands_subsystems.ManualShooter.ManualShooterInput;
 import com.team3925.team3925.robot.commands_subsystems.ManualTurret.ManualTurretInput;
+import com.team3925.team3925.robot.util.ControlMode;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI implements ManualDriveTrainInput, ManualIntakeInput, ManualShooterInput, ManualTurretInput {
+public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretInput {
 	
 	private static OI instance;
 	
