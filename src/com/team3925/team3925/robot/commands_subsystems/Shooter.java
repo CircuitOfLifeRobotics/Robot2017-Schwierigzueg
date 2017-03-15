@@ -78,7 +78,10 @@ class Shooter extends Subsystem {
 		System.out.println("ENC STATUS"+ flywheel.isSensorPresent(FeedbackDevice.CtreMagEncoder_Relative));
 	}
 	public double getEncVelocity(){
-		return flywheel.getEncVelocity();
+		return -flywheel.getEncVelocity();
+	}
+	public double getPercent(){
+		return flywheel.getSetpoint();
 	}
 	
 }

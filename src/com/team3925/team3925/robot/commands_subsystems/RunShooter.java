@@ -1,6 +1,7 @@
 package com.team3925.team3925.robot.commands_subsystems;
 
 import org.usfirst.frc.team3925.robot.Robot;
+import org.usfirst.frc.team3925.robot.TimeoutAction;
 
 import com.team3925.team3925.robot.util.Constants;
 
@@ -33,14 +34,17 @@ public class RunShooter extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if (xbox.getRawButton(2)){
-    		intake.runIntake(1);
-    		if (shooter.getEncVelocity() > 24000){
+    		if (shooter.getEncVelocity() > Constants.SHOOTER_TARGET_SPEED - 500 ){
+    			intake.runIntake(0.7);
+    		}
+    		if (shooter.getEncVelocity() < Constants.SHOOTER_TARGET_SPEED ){
     			shooter.setSpeed(Constants.SHOOTER_SPEED + 0.10);
-    		}else if (shooter.getEncVelocity() < 27000){
+    		}else if (shooter.getEncVelocity() > Constants.SHOOTER_TARGET_SPEED ){
     			shooter.setSpeed(Constants.SHOOTER_SPEED - 0.10);
     		}else {
-    			shooter.setSpeed(Constants.SHOOTER_SPEED);
+    			
     		}
+    		SmartDashboard.putNumber("Speed", shooter.getPercent());
         	SmartDashboard.putNumber("ENCODERSPEEDZ", shooter.getEncVelocity());
     	}else if(xbox.getRawButton(1)){
     		intake.intakeBalls(1);

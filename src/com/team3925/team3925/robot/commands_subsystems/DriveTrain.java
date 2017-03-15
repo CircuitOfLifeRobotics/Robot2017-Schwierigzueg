@@ -113,6 +113,9 @@ class DriveTrain extends Subsystem {
 				SmartDashboard.putData("Right B", rightB);
 				SmartDashboard.putData("Right C", rightC);
 				
+				leftA.setVoltageRampRate(50);
+				rightA.setVoltageRampRate(50);
+				
 				leftA.setPID(TALON_P_DRIVETRAIN, TALON_I_DRIVETRAIN, TALON_D_DRIVETRAIN, 
 						TALON_F_DRIVETRAIN, TALON_IZONE_DRIVETRAIN, TALON_RAMPRATE_DRIVETRAIN, TALON_PROFILE_DRIVETRAIN);
 				
@@ -284,6 +287,9 @@ class DriveTrain extends Subsystem {
 		rightB.reverseOutput(true);
 		rightC.reverseOutput(true);
 		
+		leftA.setVoltageRampRate(50);
+		rightA.setVoltageRampRate(50);
+		
 	}
 	public void setAutoControlModes(){
 //		rightA.reset();
@@ -312,6 +318,9 @@ class DriveTrain extends Subsystem {
 		rightA.setInverted(true);
 		rightB.reverseOutput(true);
 		rightC.reverseOutput(true);
+		
+		leftA.setVoltageRampRate(50);
+		rightA.setVoltageRampRate(50);
 	}
 	
 	public void setClimber(boolean isSet){

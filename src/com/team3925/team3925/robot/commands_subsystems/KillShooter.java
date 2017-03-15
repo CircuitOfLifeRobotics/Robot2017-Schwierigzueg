@@ -1,46 +1,33 @@
 package com.team3925.team3925.robot.commands_subsystems;
 
-
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc.team3925.robot.Robot;
 
 /**
  *
  */
-public class ShiftLow extends Command {
-	DriveTrain drivetrain;
-	Joystick wheel;
-	boolean shift;
+public class KillShooter extends Command {
 	
-    public ShiftLow(boolean auto) {
-        drivetrain = DriveTrain.getInstance();
-        wheel = Robot.wheel;
-        shift = auto;
+	Shooter shooter;
+    public KillShooter() {
+        shooter = shooter.getInstance();
     }
 
     // Called just before this Command runs the first time
-    protected void initialize(boolean auto) {
-    	
+    protected void initialize() {
+    	shooter.setSpeed(0);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (wheel.getRawButton(5)){
-    		drivetrain.shiftLow(true);
-    	}else{
-    		drivetrain.shiftLow(false);
-    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	drivetrain.shiftLow(false);
     }
 
     // Called when another command which requires one or more of the same

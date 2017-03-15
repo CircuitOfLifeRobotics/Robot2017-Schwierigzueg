@@ -187,7 +187,7 @@ public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretIn
 					start();
 					break;
 				}
-				setLowGear.whileHeld(new ShiftLow());
+				setLowGear.whileHeld(new ShiftLow(false));
 				triggerClimb.whenPressed(new ToggleClimber());
 				shoot.whileHeld(new RunShooter());
 			}

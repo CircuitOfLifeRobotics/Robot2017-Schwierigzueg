@@ -1,7 +1,8 @@
 
 package org.usfirst.frc.team3925.robot;
 
-import com.team3925.team3925.robot.commands_subsystems.CenterAuto;
+import com.team3925.team3925.robot.commands_subsystems.CenterAutoLeft;
+import com.team3925.team3925.robot.commands_subsystems.CenterAutoRight;
 import com.team3925.team3925.robot.commands_subsystems.DrivePath;
 import com.team3925.team3925.robot.commands_subsystems.KeepTurretAimed;
 import com.team3925.team3925.robot.commands_subsystems.KeepTurretHeading;
@@ -10,6 +11,7 @@ import com.team3925.team3925.robot.commands_subsystems.ManualDrive;
 import com.team3925.team3925.robot.commands_subsystems.PanTurret;
 import com.team3925.team3925.robot.commands_subsystems.RESET_AUTO;
 import com.team3925.team3925.robot.commands_subsystems.ResetSystems;
+import com.team3925.team3925.robot.commands_subsystems.RightBackAutoRoutine;
 import com.team3925.team3925.robot.commands_subsystems.RunShooter;
 import com.team3925.team3925.robot.commands_subsystems.ShiftLow;
 import com.team3925.team3925.robot.commands_subsystems.TestCommand;
@@ -45,7 +47,8 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<CommandGroup> chooser = new SendableChooser<>();
 	
 	private CommandGroup autoDriveSequence, backgroundTurretSequence, 
-						autoTurretSequence, leftBack, centerAuto, resetAuto, chosenAuto;
+						autoTurretSequence, leftBack, centerAutoLeft, resetAuto, chosenAuto, centerAutoRight,
+						rightBack;
 
 	private Command testCommand, resetSystems, manualDrive, shiftLow, runShooter, toggleClimber;
 	
@@ -83,16 +86,19 @@ public class Robot extends IterativeRobot {
 //		autoTurretSequence.addParallel(WaitForTarget.getInstance());
 		autoTurretSequence.addSequential(backgroundTurretSequence);
 		leftBack = new LeftBackAutoRoutine();
-		centerAuto = new CenterAuto();
+		centerAutoLeft = new CenterAutoLeft();
 		resetSystems = new ResetSystems();
 		resetAuto = new RESET_AUTO();
 		manualDrive = new ManualDrive();
-		shiftLow = new ShiftLow();
+		shiftLow = new ShiftLow(true);
 		runShooter = new RunShooter();
 		toggleClimber = new ToggleClimber();
+		centerAutoRight = new CenterAutoRight();
+		rightBack = new RightBackAutoRoutine();
 		
-		chooser.addDefault("CenterAuto", centerAuto);
-		chooser.addObject("Left Back", leftBack);
+		chooser.addDefault("Blue Center", centerAutoLeft);
+		chooser.addObject("Blue Back", leftBack);
+		chooser.addObject("Red Center", centerAutoRight);
 	}
 	
 	/**
@@ -102,6 +108,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		shiftLow.start();
 		if (autoDriveSequence!=null)
 			autoDriveSequence.cancel();
 		if (autoTurretSequence!=null)
@@ -154,9 +161,11 @@ public class Robot extends IterativeRobot {
 //		 schedule the autonomous command (example)
 //		testCommand.start();
 		resetSystems.start();
+		rightBack.start();
 //		leftBack.start();
-//		centerAuto.start();
-		chosenAuto.start();
+//		centerAutoLeft.start();
+//		chosenAuto.start();
+//		centerAutoRight.start();
 	}
 	
 	/**

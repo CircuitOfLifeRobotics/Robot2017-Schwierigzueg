@@ -1,12 +1,9 @@
 package com.team3925.team3925.robot.commands_subsystems;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import com.ctre.CANTalon.TalonControlMode;
 import com.team3925.team3925.robot.util.Constants;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveDistance extends Command{
 	
@@ -15,7 +12,6 @@ public class DriveDistance extends Command{
 	double voltage;
 	int interpolatorState;
 	boolean activateSensor;
-	
 	
 	public DriveDistance(double feet, double maxVoltage, boolean sense) {
 		drivetrain = drivetrain.getInstance();
@@ -27,7 +23,7 @@ public class DriveDistance extends Command{
 	protected void initialize() {
 		drivetrain.shiftLow(true);
 		drivetrain.setControlMode(TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower,
-				TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower);
+		TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower);
 		drivetrain.setMaxVoltage(voltage);
 		drivetrain.zeroEncoders();
 		interpolatorState = 0;

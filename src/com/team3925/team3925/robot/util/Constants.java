@@ -65,17 +65,18 @@ public class Constants {
 	public static final boolean[] TALON_BOOLCONSTANTS_HOOD;
 	
 	public static final double SHOOTER_SPEED;
+	public static final double SHOOTER_TARGET_SPEED;
 	
 	static {
 		MIN_CONFIG_WAIT_TIME = 0.5;
 		
 		// DRIVETRAIN PID CONSTANTS
-		TALON_P_DRIVETRAIN = 3;
+		TALON_P_DRIVETRAIN = 2;
 		TALON_I_DRIVETRAIN = 130;
-		TALON_D_DRIVETRAIN = 25;
+		TALON_D_DRIVETRAIN = 100;
 		TALON_F_DRIVETRAIN = 0;
 		TALON_IZONE_DRIVETRAIN = 1;
-		TALON_RAMPRATE_DRIVETRAIN = 100;
+		TALON_RAMPRATE_DRIVETRAIN = 50;
 		TALON_PROFILE_DRIVETRAIN = 0;
 		
 		
@@ -124,6 +125,7 @@ public class Constants {
 		HOOD_ENC_TICKS_PER_REV = 4096;
 		
 		SHOOTER_SPEED = 0.80;
+		SHOOTER_TARGET_SPEED = 24500;
 		
 		// SWITCH AND BRAKE CONSTANTS
 		// {fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen,

@@ -5,8 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class CenterAuto extends CommandGroup {
+public class CenterAutoRight extends CommandGroup {
 	
+	DriveDistance shiftTime;
 	DriveDistance drive;
 	DriveDistance backUp;
 	DriveTurn turn;
@@ -14,39 +15,40 @@ public class CenterAuto extends CommandGroup {
 	DriveDistance terminalDrive;
 	DriveDistance backBoiler;
 	Shoot spool;
-	Shoot stopSpool;
+	KillShooter stopSpool;
 	DriveTurn boilerAlign;
 	IntakeIn runIntake;
 	IntakeIn stopIntake;
 	DriveDistance finalDrive;
 
-    public CenterAuto() {
-    	drive = new DriveDistance(-5.775, 10, false);
+    public CenterAutoRight() {
+    	shiftTime = new DriveDistance(-0.1, 0, false);
+    	drive = new DriveDistance(-7, 6, false);
     	finalDrive = new DriveDistance(-1, 6, false);
-    	backUp = new DriveDistance(3.3333,12,  false);
-    	turn = new DriveTurn(100, 11);
-    	toBoiler = new DriveDistance(10, 12, false);
-    	boilerAlign = new DriveTurn(-45, 11);
+    	backUp = new DriveDistance(3.3333, 11,  false);
+    	turn = new DriveTurn(-93, 11);
+    	toBoiler = new DriveDistance(9.5, 10, false);
+    	boilerAlign = new DriveTurn(55, 11);
     	spool = new Shoot(0.97);
-    	terminalDrive = new DriveDistance(2, 9, false);
+    	terminalDrive = new DriveDistance(3.5, 9, false);
     	backBoiler = new DriveDistance(-0.4, 5, false);
     	runIntake = new IntakeIn(1);
     	stopIntake = new IntakeIn(0);
-    	stopSpool = new Shoot(0);
+    	stopSpool = new KillShooter();
     	
     	
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
-        // these will run in order.
-    	addSequential(drive, 1.5);
-    	addSequential(finalDrive, 1);
+        // these will run in order
+    	addSequential(shiftTime, 0.25);
+    	addSequential(drive, 4);
     	addSequential(backUp, 2);
-    	addSequential(turn, 3);
+    	addSequential(turn, 1.5);
     	addSequential(toBoiler, 4.5);
     	addSequential(spool);
     	addSequential(boilerAlign, 1);
-    	addSequential(terminalDrive, 5);
+    	addSequential(terminalDrive, 1);
     	addSequential(runIntake, 10);
     	addSequential(stopSpool);
     	addSequential(stopIntake, 0.1);
