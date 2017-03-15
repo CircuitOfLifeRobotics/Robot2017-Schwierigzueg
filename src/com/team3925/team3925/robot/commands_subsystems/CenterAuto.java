@@ -8,14 +8,49 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class CenterAuto extends CommandGroup {
 	
 	DriveDistance drive;
+	DriveDistance backUp;
+	DriveTurn turn;
+	DriveDistance toBoiler;
+	DriveDistance terminalDrive;
+	DriveDistance backBoiler;
+	Shoot spool;
+	Shoot stopSpool;
+	DriveTurn boilerAlign;
+	IntakeIn runIntake;
+	IntakeIn stopIntake;
+	DriveDistance finalDrive;
 
     public CenterAuto() {
-    	drive = new DriveDistance(-9.416, 5, true);
+    	drive = new DriveDistance(-5.775, 10, false);
+    	finalDrive = new DriveDistance(-1, 6, false);
+    	backUp = new DriveDistance(3.3333,12,  false);
+    	turn = new DriveTurn(100, 11);
+    	toBoiler = new DriveDistance(10, 12, false);
+    	boilerAlign = new DriveTurn(-45, 11);
+    	spool = new Shoot(0.97);
+    	terminalDrive = new DriveDistance(2, 9, false);
+    	backBoiler = new DriveDistance(-0.4, 5, false);
+    	runIntake = new IntakeIn(1);
+    	stopIntake = new IntakeIn(0);
+    	stopSpool = new Shoot(0);
+    	
+    	
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-    	addSequential(drive);
+    	addSequential(drive, 1.5);
+    	addSequential(finalDrive, 1);
+    	addSequential(backUp, 2);
+    	addSequential(turn, 3);
+    	addSequential(toBoiler, 4.5);
+    	addSequential(spool);
+    	addSequential(boilerAlign, 1);
+    	addSequential(terminalDrive, 5);
+    	addSequential(runIntake, 10);
+    	addSequential(stopSpool);
+    	addSequential(stopIntake, 0.1);
+    	
 
         // To run multiple commands at the same time,
         // use addParallel()

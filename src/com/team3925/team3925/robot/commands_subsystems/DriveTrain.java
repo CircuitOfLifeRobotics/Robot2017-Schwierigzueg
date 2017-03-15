@@ -313,4 +313,12 @@ class DriveTrain extends Subsystem {
 		rightB.reverseOutput(true);
 		rightC.reverseOutput(true);
 	}
+	
+	public void setClimber(boolean isSet){
+		if (isSet){
+			climber.set(Value.kForward);
+		}else{
+			climber.set(Value.kReverse);
+		}
+	}
 }

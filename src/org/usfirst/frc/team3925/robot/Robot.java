@@ -10,12 +10,16 @@ import com.team3925.team3925.robot.commands_subsystems.ManualDrive;
 import com.team3925.team3925.robot.commands_subsystems.PanTurret;
 import com.team3925.team3925.robot.commands_subsystems.RESET_AUTO;
 import com.team3925.team3925.robot.commands_subsystems.ResetSystems;
+import com.team3925.team3925.robot.commands_subsystems.RunShooter;
+import com.team3925.team3925.robot.commands_subsystems.ShiftLow;
 import com.team3925.team3925.robot.commands_subsystems.TestCommand;
+import com.team3925.team3925.robot.commands_subsystems.ToggleClimber;
 import com.team3925.team3925.robot.commands_subsystems.WaitForTarget;
 import com.team3925.team3925.robot.commands_subsystems.ZeroTurret;
 import com.team3925.team3925.robot.triggers.OnCommandEnd;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -38,12 +42,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	
-	private SendableChooser<Command> chooser = new SendableChooser<>();
+	private SendableChooser<CommandGroup> chooser = new SendableChooser<>();
 	
 	private CommandGroup autoDriveSequence, backgroundTurretSequence, 
-						autoTurretSequence, leftBack, centerAuto, resetAuto;
+						autoTurretSequence, leftBack, centerAuto, resetAuto, chosenAuto;
 
-	private Command testCommand, resetSystems, manualDrive;
+	private Command testCommand, resetSystems, manualDrive, shiftLow, runShooter, toggleClimber;
+	
+	public static Joystick wheel, stick, xbox;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -51,6 +57,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		wheel= new Joystick(0);
+		stick= new Joystick(1);
+		xbox= new Joystick(2);
 		testCommand = new TestCommand();
 //		chooser.addObject("Gear Left | Cross Line", );
 		SmartDashboard.putData("Auto mode", chooser);
@@ -78,6 +87,12 @@ public class Robot extends IterativeRobot {
 		resetSystems = new ResetSystems();
 		resetAuto = new RESET_AUTO();
 		manualDrive = new ManualDrive();
+		shiftLow = new ShiftLow();
+		runShooter = new RunShooter();
+		toggleClimber = new ToggleClimber();
+		
+		chooser.addDefault("CenterAuto", centerAuto);
+		chooser.addObject("Left Back", leftBack);
 	}
 	
 	/**
@@ -113,6 +128,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		chosenAuto = chooser.getSelected();
 		resetSystems.start();
 		String auto = SmartDashboard.getString("Auto Selector", "Default");
 		switch (auto) {
@@ -138,7 +154,9 @@ public class Robot extends IterativeRobot {
 //		 schedule the autonomous command (example)
 //		testCommand.start();
 		resetSystems.start();
-		leftBack.start();
+//		leftBack.start();
+//		centerAuto.start();
+		chosenAuto.start();
 	}
 	
 	/**
@@ -157,6 +175,9 @@ public class Robot extends IterativeRobot {
 		// this line or comment it out.
 //		centerAuto.start();
 		resetSystems.start();
+		shiftLow.start();
+		runShooter.start();
+		toggleClimber.start();
 		manualDrive.start();
 	}
 	

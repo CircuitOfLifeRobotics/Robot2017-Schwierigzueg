@@ -51,12 +51,14 @@ class Intake extends Subsystem {
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 	}
-	public void setIntakeSpeed(double speed){
-		
-	}
 	public void runIntake(double speed){
 		intake.set(speed);
 		lowerElevator.set(speed);
 		upperElevator.set(speed);
+	}
+	public void intakeBalls(double speed){
+		intake.set(speed);
+		lowerElevator.set(-speed);
+		upperElevator.set(0);
 	}
 }

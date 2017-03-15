@@ -18,7 +18,6 @@ public class DriveDistance extends Command{
 	
 	
 	public DriveDistance(double feet, double maxVoltage, boolean sense) {
-
 		drivetrain = drivetrain.getInstance();
 		distance = feet;
 		voltage = maxVoltage;

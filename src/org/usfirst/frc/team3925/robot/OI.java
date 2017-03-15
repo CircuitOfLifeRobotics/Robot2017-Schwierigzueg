@@ -1,14 +1,20 @@
 package org.usfirst.frc.team3925.robot;
 
-import static com.team3925.team3925.robot.util.Constants.MIN_CONFIG_WAIT_TIME;
+import com.team3925.team3925.robot.util.ControlMode;
+import static com.team3925.team3925.robot.util.Constants.*;
 
 import com.team3925.team3925.robot.commands_subsystems.ManualIntake.ManualIntakeInput;
 import com.team3925.team3925.robot.commands_subsystems.ManualShooter.ManualShooterInput;
 import com.team3925.team3925.robot.commands_subsystems.ManualTurret.ManualTurretInput;
-import com.team3925.team3925.robot.util.ControlMode;
+import com.team3925.team3925.robot.commands_subsystems.RunShooter;
+import com.team3925.team3925.robot.commands_subsystems.ShiftLow;
+import com.team3925.team3925.robot.commands_subsystems.ToggleClimber;
 
+import edu.wpi.cscore.VideoCamera.WhiteBalance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -48,6 +54,7 @@ public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretIn
 			private int idx_wheel, idx_stick, idx_xbox;
 			private double timeConfiguredCorrectly;
 			Joystick[] sticks;
+			private Button setLowGear, setHighGear, triggerClimb, shoot;
 			
 			@Override
 			protected void initialize() {
@@ -121,62 +128,68 @@ public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretIn
 			
 			@Override
 			protected void end() {
-//				switch (mode) {
-//				case WHEEL_STICK_CUSTOM:
-//					setLowGear = new JoystickButton(wheel, 5);
-//					setHighGear = new JoystickButton(wheel, 6);
-//					triggerClimb = new JoystickButton(wheel, 11);
+				switch (mode) {
+				case WHEEL_STICK_CUSTOM:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(wheel, 5);
+					setHighGear = new JoystickButton(wheel, 6);
+					triggerClimb = new JoystickButton(wheel, 11);
 //					setGearCam = new JoystickButton(wheel, 0);
 //					setShooterCam = new JoystickButton(wheel, 1);
-//					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Launchpad");
-//					break;
-//				case WHEEL_STICK_XBOX:
-//					setLowGear = new JoystickButton(wheel, 5);
-//					setHighGear = new JoystickButton(wheel, 6);
-//					triggerClimb = new JoystickButton(wheel, 11);
+					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Launchpad");
+					break;
+				case WHEEL_STICK_XBOX:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(wheel, 5);
+					setHighGear = new JoystickButton(wheel, 6);
+					triggerClimb = new JoystickButton(wheel, 11);
 //					setGearCam = new JoystickButton(wheel, 0);
 //					setShooterCam = new JoystickButton(wheel, 1);
-//					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Xbox");
-//					break;
-//				case XBOX_CUSTOM:
-//					setLowGear = new JoystickButton(xbox, 5);
-//					setHighGear = new JoystickButton(xbox, 6);
-//					triggerClimb = new JoystickButton(xbox, 9);
+					SmartDashboard.putString("Controls Configuration", "Wheel & Stick | Xbox");
+					break;
+				case XBOX_CUSTOM:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(xbox, 5);
+					setHighGear = new JoystickButton(xbox, 6);
+					triggerClimb = new JoystickButton(xbox, 9);
 //					setGearCam = new JoystickButton(xbox, 0);
 //					setShooterCam = new JoystickButton(xbox, 1);
-//					SmartDashboard.putString("Controls Configuration", "Xbox | Launchpad");
-//					break;
-//				case XBOX_STICK:
-//					setLowGear = new JoystickButton(xbox, 5);
-//					setHighGear = new JoystickButton(xbox, 6);
-//					triggerClimb = new JoystickButton(xbox, 9);
+					SmartDashboard.putString("Controls Configuration", "Xbox | Launchpad");
+					break;
+				case XBOX_STICK:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(xbox, 5);
+					setHighGear = new JoystickButton(xbox, 6);
+					triggerClimb = new JoystickButton(xbox, 9);
 //					setGearCam = new JoystickButton(xbox, 0);
 //					setShooterCam = new JoystickButton(xbox, 1);
-//					SmartDashboard.putString("Controls Configuration", "Xbox | Stick");
-//					break;
-//				case XBOX:
-//					setLowGear = new JoystickButton(xbox, 5);
-//					setHighGear = new JoystickButton(xbox, 6);
-//					triggerClimb = new JoystickButton(xbox, 9);
+					SmartDashboard.putString("Controls Configuration", "Xbox | Stick");
+					break;
+				case XBOX:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(xbox, 5);
+					setHighGear = new JoystickButton(xbox, 6);
+					triggerClimb = new JoystickButton(xbox, 9);
 //					setGearCam = new JoystickButton(xbox, 0);
 //					setShooterCam = new JoystickButton(xbox, 1);
-//					SmartDashboard.putString("Controls Configuration", "Xbox | PROGRAMMER PRO MODE");
-//					break;
-//				case WHEEL:
-//					setLowGear = new JoystickButton(wheel, 5);
-//					setHighGear = new JoystickButton(wheel, 6);
-//					triggerClimb = new JoystickButton(wheel, 11);
+					SmartDashboard.putString("Controls Configuration", "Xbox | PROGRAMMER PRO MODE");
+					break;
+				case WHEEL:
+					shoot = new JoystickButton(xbox, 1);
+					setLowGear = new JoystickButton(wheel, 5);
+					setHighGear = new JoystickButton(wheel, 6);
+					triggerClimb = new JoystickButton(wheel, 11);
 //					setGearCam = new JoystickButton(wheel, 0);
 //					setShooterCam = new JoystickButton(wheel, 1);
-//					SmartDashboard.putString("Controls Configuration", "Wheel | NASCAR PRO MODE");
-//					break;
-//				default:
-//					start();
-//					break;
-//				}
-//				setLowGear.whenPressed(SetShifterLow.getInstance());
-//				setHighGear.whenPressed(SetShifterHigh.getInstance());
-//				triggerClimb.whenPressed(ToggleClimber.getInstance());
+					SmartDashboard.putString("Controls Configuration", "Wheel | NASCAR PRO MODE");
+					break;
+				default:
+					start();
+					break;
+				}
+				setLowGear.whileHeld(new ShiftLow());
+				triggerClimb.whenPressed(new ToggleClimber());
+				shoot.whileHeld(new RunShooter());
 			}
 			
 			@Override

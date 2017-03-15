@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class LeftBackAutoRoutine extends CommandGroup {
 	DriveDistance initialDrive = new DriveDistance(-4.5, 10, false);
-	DriveTurn turn = new DriveTurn(64.5, 10);
+	DriveTurn turn = new DriveTurn(64.5, 11);
 	DriveDistance terminalDrive = new DriveDistance(-8,6, false);
-	DriveDistance backUpDrive = new DriveDistance(1,10, false);
-	DriveTurn reverseTurn = new DriveTurn(-15, 10);
-	DriveDistance halfBack = new DriveDistance(9, 10, false);
+	DriveDistance backUpDrive = new DriveDistance(1,11, false);
+	DriveTurn reverseTurn = new DriveTurn(-20, 11);
+	DriveDistance halfBack = new DriveDistance(9, 11, false);
 	Shoot spool = new Shoot(0.8);
 	IntakeIn intake = new IntakeIn(1);
 	Shoot stopSpool = new Shoot(0);

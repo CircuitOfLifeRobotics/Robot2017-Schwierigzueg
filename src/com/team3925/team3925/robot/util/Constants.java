@@ -64,7 +64,7 @@ public class Constants {
 	public static final boolean[] TALON_BOOLCONSTANTS_INTAKE;
 	public static final boolean[] TALON_BOOLCONSTANTS_HOOD;
 	
-	public static final int DRIVETRAIN_TOP_SPEED;
+	public static final double SHOOTER_SPEED;
 	
 	static {
 		MIN_CONFIG_WAIT_TIME = 0.5;
@@ -123,13 +123,13 @@ public class Constants {
 		HOOD_MOTOR_GEAR_TEETH = 50;
 		HOOD_ENC_TICKS_PER_REV = 4096;
 		
-		DRIVETRAIN_TOP_SPEED = 30000;
+		SHOOTER_SPEED = 0.80;
 		
 		// SWITCH AND BRAKE CONSTANTS
 		// {fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen,
 		// revSwitchNormalyOpen, brakeModeEnabled}
 		// configuration is same for every talon in each system
-		TALON_BOOLCONSTANTS_DRIVETRAIN = new boolean[] { false, false, false, false, false };
+		TALON_BOOLCONSTANTS_DRIVETRAIN = new boolean[] { false, false, false, false, true };
 		TALON_BOOLCONSTANTS_SHOOTER = new boolean[] { false, false, false, false, false };
 		TALON_BOOLCONSTANTS_TURRET = new boolean[] { false, false, false, false, true};
 		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, false };
