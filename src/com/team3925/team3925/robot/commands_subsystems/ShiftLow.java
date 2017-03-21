@@ -29,7 +29,7 @@ public class ShiftLow extends Command {
     	if (wheel.getRawButton(5)){
     		drivetrain.shiftLow(true);
     	}else{
-    		drivetrain.shiftLow(false);
+    		drivetrain.shiftLow(false); //Invert Shifting
     	}
     }
 

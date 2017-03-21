@@ -66,4 +66,10 @@ public class CenterAutoRight extends CommandGroup {
         // a CommandGroup containing them would require both the chassis and the
         // arm.
     }
+    
+    @Override
+    protected void end() {
+    	super.end();
+    	System.out.println("dsflisdjflsidfj");
+    }
 }

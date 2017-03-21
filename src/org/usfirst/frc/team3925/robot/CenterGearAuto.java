@@ -1,24 +1,17 @@
-package com.team3925.team3925.robot.commands_subsystems;
+package org.usfirst.frc.team3925.robot;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  *
  */
-public class RESET_AUTO extends CommandGroup {
-	DriveDistance initialDrive = new DriveDistance(4.75, 5, false);
-	DriveTurn turn = new DriveTurn(-65, 10);
-	DriveDistance terminalDrive = new DriveDistance(6,5, false);
-	
+public class CenterGearAuto extends CommandGroup {
 
-    public RESET_AUTO() {
+    public CenterGearAuto() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-    	addSequential(terminalDrive);
-    	addSequential(turn);
-    	addSequential(initialDrive);
 
         // To run multiple commands at the same time,
         // use addParallel()

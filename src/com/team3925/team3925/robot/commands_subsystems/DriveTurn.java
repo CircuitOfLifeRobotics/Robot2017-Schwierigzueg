@@ -22,8 +22,7 @@ public class DriveTurn extends Command{
 	}
 	@Override
 	protected void initialize() {
-		drivetrain.setControlMode(TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower,
-				TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower);
+		drivetrain.setAutoControlModes();
 		drivetrain.zeroEncoders();
 		drivetrain.turnRobot(degrees);
 		drivetrain.setMaxVoltage(voltage);

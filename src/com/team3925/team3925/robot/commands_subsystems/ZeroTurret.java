@@ -13,7 +13,7 @@ public class ZeroTurret extends Command {
 	private static ZeroTurret instance;
 	
 	private Turret turret;
-	
+	private static DriveTrain drivetrain;
 	public static ZeroTurret getInstance() {
 		return (instance == null) ? instance = new ZeroTurret() : instance;
 	}
@@ -25,7 +25,6 @@ public class ZeroTurret extends Command {
 	
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
 	}
 	
 	@Override

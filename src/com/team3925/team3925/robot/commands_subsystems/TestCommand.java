@@ -1,12 +1,11 @@
+
 package com.team3925.team3925.robot.commands_subsystems;
-
-import org.usfirst.frc.team3925.robot.OI;
-
-import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team3925.robot.Robot;
+
+import com.ctre.CANTalon.TalonControlMode;
 
 public class TestCommand extends Command{
 	
@@ -24,20 +23,54 @@ public class TestCommand extends Command{
 	}
 	@Override
 	protected void initialize() {
+		drivetrain.setAutoControlModes();
+		drivetrain.zeroEncoders();
 	}
 	
 	@Override
 	protected void execute() {
-		shooter.setSpeed(0.80);
-		System.out.println("Setpoint" + xbox.getRawAxis(2));
-		System.out.println("Encoder Velocity" + shooter.getEncVelocity());
+//		if (Robot.stick.getRawButton(4)){
+//			System.out.println("LeftA");
+//			drivetrain.setRawAll(1, 0, 0, 0, 0, 0);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(6)){
+//			System.out.println("LeftB");
+//			drivetrain.setRawAll(0, 1, 0, 0, 0, 0);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(7)){
+//			drivetrain.setRawAll(0, 0, 1, 0, 0, 0);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(5)){
+//			drivetrain.setRawAll(0, 0, 0, 1, 0, 0);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(11)){
+//			drivetrain.setRawAll(0, 0, 0, 0, 1, 0);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(10)){
+//			drivetrain.setRawAll(0, 0, 0, 0, 0, 1);
+//		}
+//		
+//		else if(Robot.stick.getRawButton(1)){
+//			shooter.setSpeed(1);
+//		}
+//		
+//		else if (Robot.stick.getRawButton(2)){
+//			intake.runIntake(1);
+//		}
+//		
+//		else{
+//			drivetrain.setRawAll(0, 0, 0, 0, 0, 0);
+//			shooter.setSpeed(0);
+//			intake.runIntake(0);
+//		}
 		
-		
-		if (xbox.getRawButton(1)){
-			intake.runIntake(1);
-		}else{
-			intake.runIntake(0);
-		}
+		drivetrain.setSetpointFeet(5);
+		drivetrain.logEncoderVals();
 	}
 
 	@Override

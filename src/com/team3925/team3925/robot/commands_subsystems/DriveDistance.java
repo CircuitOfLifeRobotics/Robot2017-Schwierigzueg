@@ -22,8 +22,8 @@ public class DriveDistance extends Command{
 	@Override
 	protected void initialize() {
 		drivetrain.shiftLow(true);
-		drivetrain.setControlMode(TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower,
-		TalonControlMode.Position, TalonControlMode.Follower, TalonControlMode.Follower);
+		drivetrain.setClimber(false);
+		drivetrain.setAutoControlModes();
 		drivetrain.setMaxVoltage(voltage);
 		drivetrain.zeroEncoders();
 		interpolatorState = 0;
@@ -50,6 +50,7 @@ public class DriveDistance extends Command{
 		if (atSetpoint()){
 			interpolatorState++;
 		}
+		drivetrain.logEncoderVals();
 	}
 
 	@Override

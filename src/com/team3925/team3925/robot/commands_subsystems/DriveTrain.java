@@ -98,10 +98,10 @@ class DriveTrain extends Subsystem {
 				leftA.reverseSensor(false);
 				
 				rightA.setEncPosition(0);
-				rightA.setInverted(true);
+				rightA.setInverted(false);
 
-				rightB.reverseOutput(true);
-				rightC.reverseOutput(true);
+				rightB.reverseOutput(false);
+				rightC.reverseOutput(false);
 				
 				leftA.configMaxOutputVoltage(10);
 				rightA.configMaxOutputVoltage(10);
@@ -165,12 +165,19 @@ class DriveTrain extends Subsystem {
 		rightB.set(rightBSetpoint);
 		rightC.set(rightCSetpoint);
 	}
+	public void setRaw(double leftSetpoint, double rightSetpoint) {
+		leftA.set(leftSetpoint);
+		rightA.set(rightSetpoint);
+	}
 	public void logEncoderVals(){
 		SmartDashboard.putNumber("RightA", rightA.getEncPosition());
 		SmartDashboard.putNumber("LeftA", leftA.getEncPosition());
+		
+		SmartDashboard.putNumber("RightA Error", rightA.getError());
+		SmartDashboard.putNumber("LeftA Error", leftA.getError());
 	}
 	public void setSetpointFeet(double feet){
-		setLeftFeet(feet);
+		setLeftFeet(-feet);
 		setRightFeet(feet);
 		SmartDashboard.putNumber("Error", leftA.getError());
 		SmartDashboard.putNumber("Conversion Factor: ", getConversionFactor());
@@ -200,13 +207,22 @@ class DriveTrain extends Subsystem {
 		return (getTalonError(rightA) < deadzone);
 	}
 	public void turnRobot(double degrees){
-		setLeftFeet(degrees * DRIVETRAIN_FEET_PER_DEGREE);
+		setLeftFeet(-degrees * DRIVETRAIN_FEET_PER_DEGREE);
 		setRightFeet(-1 * (degrees * DRIVETRAIN_FEET_PER_DEGREE));
 	}
 	public void configFollowers(CANTalon[] slaves, CANTalon master){
 		for (int i = 0; slaves.length > i; i++){
 			slaves[i].set(master.getDeviceID());
 		}
+	}
+	public void getEncVelocity(){
+		System.out.println(" LeftA: " + leftA.getEncPosition());
+		System.out.print("RightA: " + rightA.getEncPosition());
+		System.out.println("Left Error" + leftA.getEncPosition());
+		System.out.println("Right Error" + rightA.getEncPosition());
+		
+		SmartDashboard.putNumber("Left Error", leftA.getError());
+		SmartDashboard.putNumber("Right Error" , rightA.getError());
 	}
 	private double getTalonError(CANTalon talon){
 		return Math.abs(talon.getSetpoint() - talon.getEncPosition());
@@ -269,8 +285,6 @@ class DriveTrain extends Subsystem {
 		rightB.set(rightA.getDeviceID());
 		rightC.set(rightA.getDeviceID());
 		
-		System.out.println();
-		
 //		leftA.setInverted(true);
 //		leftB.setInverted(false);
 //		leftC.setInverted(true);
@@ -279,9 +293,9 @@ class DriveTrain extends Subsystem {
 //		rightB.setInverted(false);
 //		rightC.setInverted(false);
 		
-		leftA.setInverted(true);
+		leftA.setInverted(false);
 		leftB.reverseOutput(true);
-		leftC.reverseOutput(false);
+		leftC.reverseOutput(true);
 
 		rightA.setInverted(true);
 		rightB.reverseOutput(true);
@@ -300,6 +314,7 @@ class DriveTrain extends Subsystem {
 //		leftC.reset();
 		leftA.changeControlMode(TalonControlMode.Position);
 		rightA.changeControlMode(TalonControlMode.Position);
+		
 		rightB.changeControlMode(TalonControlMode.Follower);
 		rightC.changeControlMode(TalonControlMode.Follower);
 		leftB.changeControlMode(TalonControlMode.Follower);
@@ -311,13 +326,17 @@ class DriveTrain extends Subsystem {
 		rightB.set(rightA.getDeviceID());
 		rightC.set(rightA.getDeviceID());
 		
-		leftA.setInverted(true);
+		//POSSIBLE CAUSE OF ISSUES
+		leftA.setInverted(false);
 		leftB.reverseOutput(true);
-		leftC.reverseOutput(false);
+		leftC.reverseOutput(true);
 
 		rightA.setInverted(true);
 		rightB.reverseOutput(true);
 		rightC.reverseOutput(true);
+		
+		leftA.reverseSensor(true);
+		rightA.reverseSensor(true);
 		
 		leftA.setVoltageRampRate(50);
 		rightA.setVoltageRampRate(50);

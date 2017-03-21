@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  */
 public class LeftBackAutoRoutine extends CommandGroup {
-	DriveDistance initialDrive = new DriveDistance(-4.5, 7, false);
-	DriveTurn turn = new DriveTurn(64.5, 11);
-	DriveDistance terminalDrive = new DriveDistance(-8,6, false);
-	DriveDistance backUpDrive = new DriveDistance(1,11, false);
-	DriveTurn reverseTurn = new DriveTurn(-20, 11);
-	DriveDistance halfBack = new DriveDistance(9, 11, false);
+	DriveDistance initialDrive = new DriveDistance(4.6, 7, false);
+	DriveTurn turn = new DriveTurn(64.5, 5);
+	DriveDistance terminalDrive = new DriveDistance(8,3, false);
+	DriveDistance backUpDrive = new DriveDistance(-1,11, false);
+	DriveTurn reverseTurn = new DriveTurn(-35, 11);
+	DriveDistance halfBack = new DriveDistance(-9, 3, false);
 	Shoot spool = new Shoot(0.8);
 	IntakeIn intake = new IntakeIn(1);
 	Shoot stopSpool = new Shoot(0);
@@ -26,13 +26,13 @@ public class LeftBackAutoRoutine extends CommandGroup {
     	addSequential(initialDrive,3);
     	addSequential(turn, 1.5);
     	addSequential(terminalDrive, 4);
-    	addSequential(backUpDrive,1);
-    	addSequential(reverseTurn, 1);
-    	addSequential(spool, 10);
-    	addSequential(halfBack,5);
-    	addSequential(intake, 15);
-    	addSequential(stopSpool);
-    	addSequential(stopIntake, 0.1);
+//    	addSequential(backUpDrive,1);
+//    	addSequential(reverseTurn, 2);,;
+//    	addSequential(spool, 10);
+//    	addSequential(halfBack,5);
+//    	addSequential(intake, 15);
+//    	addSequential(stopSpool);
+//    	addSequential(stopIntake, 0.1);
         // use addParallel()
         // e.g. addParallel(new Command1());
         //      addSequential(new Command2());

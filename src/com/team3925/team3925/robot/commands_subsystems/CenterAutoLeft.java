@@ -23,14 +23,13 @@ public class CenterAutoLeft extends CommandGroup {
 
     public CenterAutoLeft() {
     	shiftTime = new DriveDistance(-0.1, 0, false);
-    	drive = new DriveDistance(-7, 7, false);
-    	finalDrive = new DriveDistance(-1, 6, false);
-    	backUp = new DriveDistance(3.3333, 11,  false);
+    	drive = new DriveDistance(-1, 7, false);
+    	backUp = new DriveDistance(3.3333, 5,  false);
     	turn = new DriveTurn(110, 11);
-    	toBoiler = new DriveDistance(9.5, 10, false);
+    	toBoiler = new DriveDistance(9, 10, false);
     	boilerAlign = new DriveTurn(-55, 11);
     	spool = new Shoot(0.97);
-    	terminalDrive = new DriveDistance(3.5, 9, false);
+    	terminalDrive = new DriveDistance(3.5, 5, false);
     	backBoiler = new DriveDistance(-0.4, 5, false);
     	runIntake = new IntakeIn(1);
     	stopIntake = new IntakeIn(0);
@@ -42,16 +41,16 @@ public class CenterAutoLeft extends CommandGroup {
         //      addSequential(new Command2());
         // these will run in order
     	addSequential(shiftTime, 0.25);
-    	addSequential(drive, 4);
+    	addSequential(drive, 3);
     	addSequential(backUp, 2);
     	addSequential(turn, 1.5);
     	addSequential(toBoiler, 4.5);
-    	addSequential(spool);
-    	addSequential(boilerAlign, 1);
-    	addSequential(terminalDrive, 1);
-    	addSequential(runIntake, 10);
-    	addSequential(stopSpool);
-    	addSequential(stopIntake, 0.1);
+//    	addSequential(spool);
+//    	addSequential(boilerAlign, 1);
+//    	addSequential(terminalDrive, 1);
+//    	addSequential(runIntake, 10);
+//    	addSequential(stopSpool);
+//    	addSequential(stopIntake, 0.1);
     	
 
         // To run multiple commands at the same time,

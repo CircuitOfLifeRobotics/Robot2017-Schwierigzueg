@@ -1,16 +1,12 @@
 package org.usfirst.frc.team3925.robot;
 
-import com.team3925.team3925.robot.util.ControlMode;
-import static com.team3925.team3925.robot.util.Constants.*;
+import static com.team3925.team3925.robot.util.Constants.MIN_CONFIG_WAIT_TIME;
 
-import com.team3925.team3925.robot.commands_subsystems.ManualIntake.ManualIntakeInput;
-import com.team3925.team3925.robot.commands_subsystems.ManualShooter.ManualShooterInput;
-import com.team3925.team3925.robot.commands_subsystems.ManualTurret.ManualTurretInput;
 import com.team3925.team3925.robot.commands_subsystems.RunShooter;
 import com.team3925.team3925.robot.commands_subsystems.ShiftLow;
 import com.team3925.team3925.robot.commands_subsystems.ToggleClimber;
+import com.team3925.team3925.robot.util.ControlMode;
 
-import edu.wpi.cscore.VideoCamera.WhiteBalance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -29,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretInput {
+public class OI {
 	
 	private static OI instance;
 	
@@ -196,48 +192,6 @@ public class OI implements ManualIntakeInput, ManualShooterInput, ManualTurretIn
 			protected void interrupted() {
 			}
 		};
-	}
-	
-	@Override
-	public double getSpeed() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getOuter() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getInner() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getLower() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getUpper() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getForward() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public double getTurn() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 }
