@@ -24,6 +24,7 @@ public class ClimberEngage extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
+		climberShifting.setClimber(true);
 	}
 	
 	@Override
@@ -34,12 +35,13 @@ public class ClimberEngage extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
+		
 	}
 	
 	@Override

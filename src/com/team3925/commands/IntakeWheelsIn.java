@@ -23,7 +23,7 @@ public class IntakeWheelsIn extends Command {
 	
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
+		intake.setWheels(1);
 	}
 	
 	@Override
@@ -34,7 +34,7 @@ public class IntakeWheelsIn extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	@Override
