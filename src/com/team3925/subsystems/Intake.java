@@ -22,4 +22,23 @@ public class Intake extends Subsystem {
 		
 	}
 	
+	public void setWheels(double percent) {
+		
+	}
+	
+	public void setDown() {
+		
+	}
+	
+	public void setUp() {
+		
+	}
+	
+	public void setPiston(boolean isUp) {
+		if (isUp)
+			setUp();
+		else
+			setDown();
+	}
+	
 }

@@ -1,12 +1,12 @@
 package com.team3925.commands;
 
-import com.team3925.subsystems.IntakePiston;
+import com.team3925.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class IntakeGoDown extends Command {
 	
-	private IntakePiston intakePiston;
+	private Intake intake;
 	
 	private static IntakeGoDown instance;
 	
@@ -17,8 +17,8 @@ public class IntakeGoDown extends Command {
 	}
 	
 	private IntakeGoDown() {
-		intakePiston = IntakePiston.getInstance();
-		requires(intakePiston);
+		intake = Intake.getInstance();
+		requires(intake);
 	}
 	
 	@Override

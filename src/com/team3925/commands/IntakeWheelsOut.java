@@ -1,12 +1,12 @@
 package com.team3925.commands;
 
-import com.team3925.subsystems.IntakeWheels;
+import com.team3925.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class IntakeWheelsOut extends Command {
 	
-	private IntakeWheels intakeWheels;
+	private Intake intake;
 	
 	private static IntakeWheelsOut instance;
 	
@@ -17,8 +17,8 @@ public class IntakeWheelsOut extends Command {
 	}
 	
 	private IntakeWheelsOut() {
-		intakeWheels = IntakeWheels.getInstance();
-		requires(intakeWheels);
+		intake = Intake.getInstance();
+		requires(intake);
 	}
 	
 	@Override
