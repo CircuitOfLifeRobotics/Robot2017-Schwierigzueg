@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ClimberDisengage extends Command {
 	
 	private ClimberShifting climberShifting;
-	
 	private static ClimberDisengage instance;
 	
 	public static ClimberDisengage getInstance() {
@@ -24,6 +23,7 @@ public class ClimberDisengage extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
+		climberShifting.setClimber(false);
 	}
 	
 	@Override
@@ -34,7 +34,7 @@ public class ClimberDisengage extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	@Override

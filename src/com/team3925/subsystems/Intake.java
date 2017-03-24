@@ -1,7 +1,6 @@
 package com.team3925.subsystems;
 
 import com.ctre.CANTalon;
-import com.ctre.CanTalonJNI;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
