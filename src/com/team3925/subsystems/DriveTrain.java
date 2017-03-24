@@ -111,5 +111,9 @@ public class DriveTrain extends Subsystem {
 		talon.enableLimitSwitch(fwdLimitSwitchEnabled, revLimitSwitchEnabled);
 		talon.enableBrakeMode(brakeModeEnabled);
 	}
+	public void setControlModes(TalonControlMode controlMode){
+		leftA.changeControlMode(controlMode);
+		rightA.changeControlMode(controlMode);
+	}
 
 }
