@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI {
+public class OI implements DriveManualInput {
 
 	private static OI instance;
 
@@ -70,6 +70,16 @@ public class OI {
 		if (!xboxButtonTriggers.containsKey(button))
 			xboxButtonTriggers.put(button, new JoystickButton(xbox, button));
 		xboxButtonTriggers.get(button).whenInactive(command);
+	}
+
+	@Override
+	public double getForward() {
+		return stick.getRawAxis(1);
+	}
+
+	@Override
+	public double getRight() {
+		return wheel.getRawAxis(0);
 	}
 
 }

@@ -4,6 +4,7 @@ package com.team3925.robot;
 import com.team3925.commands.ClimberDisengage;
 import com.team3925.commands.ClimberEngage;
 import com.team3925.commands.ClimberToggle;
+import com.team3925.commands.DriveManual;
 import com.team3925.commands.DriveTrainShiftHigh;
 import com.team3925.commands.DriveTrainShiftLow;
 import com.team3925.commands.IntakeGoDown;
@@ -32,6 +33,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
+		DriveManual.getInstance().cancel();
 	}
 
 	@Override
@@ -68,6 +70,9 @@ public class Robot extends IterativeRobot {
 
 		// climbing controls
 		oi.whenWheelButtonPressed(3, ClimberToggle.getInstance());
+		
+		DriveManual.getInstance().setInput(OI.getInstance());
+		DriveManual.getInstance().start();
 	}
 
 	@Override

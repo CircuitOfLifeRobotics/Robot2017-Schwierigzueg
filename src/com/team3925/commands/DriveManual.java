@@ -1,5 +1,6 @@
 package com.team3925.commands;
 
+import com.team3925.robot.DriveManualInput;
 import com.team3925.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -7,8 +8,14 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveManual extends Command {
 	
 	private DriveTrain driveTrain;
+	private DriveManualInput input;
 	
 	private static DriveManual instance;
+	
+	private double fwd, turn;
+	private double prelimLeft, prelimRight;
+	private double scale;
+	private double left, right;
 	
 	public static DriveManual getInstance() {
 		if (instance==null)
@@ -23,28 +30,48 @@ public class DriveManual extends Command {
 	
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
+		if (input == null)
+			input = new DriveManualInput() {
+				@Override
+				public double getRight() {
+					return 0;
+				}
+				@Override
+				public double getForward() {
+					return 0;
+				}
+			};
 	}
 	
 	@Override
 	protected void execute() {
-		// TODO Auto-generated method stub
+		fwd = input.getForward();
+		turn = input.getRight();
+		prelimLeft = fwd + turn;
+		prelimRight = fwd - turn;
+		scale = Math.max(Math.abs(fwd), Math.abs(turn))/Math.max(Math.abs(prelimLeft), Math.abs(prelimRight));
+		left = scale*prelimLeft;
+		right = scale*prelimRight;
+		driveTrain.setSideRaw(left, right);
 	}
 	
 	@Override
 	protected boolean isFinished() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	protected void end() {
-		// TODO Auto-generated method stub
+		driveTrain.setSideRaw(0, 0);
 	}
 	
 	@Override
 	protected void interrupted() {
-		// TODO Auto-generated method stub
+		end();
 	}
-
+	
+	public void setInput(DriveManualInput input) {
+		this.input = input;
+	}
+	
 }
