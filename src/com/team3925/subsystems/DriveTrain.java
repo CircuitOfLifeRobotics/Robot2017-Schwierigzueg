@@ -1,5 +1,12 @@
 package com.team3925.subsystems;
 
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_A;
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_B;
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_LEFT_C;
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_A;
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_B;
+import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_C;
+
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
@@ -20,12 +27,12 @@ public class DriveTrain extends Subsystem {
 	}
 
 	private DriveTrain() {
-		leftA = new CANTalon(40);
-		leftB = new CANTalon(32);
-		leftC = new CANTalon(2);
-		rightA = new CANTalon(55);
-		rightB = new CANTalon(10);
-		rightC = new CANTalon(11);
+		leftA = new CANTalon(TALON_ID_DRIVE_LEFT_A);
+		leftB = new CANTalon(TALON_ID_DRIVE_LEFT_B);
+		leftC = new CANTalon(TALON_ID_DRIVE_LEFT_C);
+		rightA = new CANTalon(TALON_ID_DRIVE_RIGHT_A);
+		rightB = new CANTalon(TALON_ID_DRIVE_RIGHT_B);
+		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_C);
 
 		// configure encoders
 		leftA.setFeedbackDevice(FeedbackDevice.QuadEncoder);
