@@ -7,16 +7,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class IntakeGoDown extends Command {
 	
 	private Intake intake;
-	
-	private static IntakeGoDown instance;
-	
-	public static IntakeGoDown getInstance() {
-		if (instance==null)
-			instance = new IntakeGoDown();
-		return instance;
-	}
-	
-	private IntakeGoDown() {
+
+	public IntakeGoDown() {
 		intake = Intake.getInstance();
 		requires(intake);
 	}

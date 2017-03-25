@@ -7,15 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ClimberDisengage extends Command {
 
 	private ClimberShifting climberShifting;
-	private static ClimberDisengage instance;
 
-	public static ClimberDisengage getInstance() {
-		if (instance == null)
-			instance = new ClimberDisengage();
-		return instance;
-	}
 
-	private ClimberDisengage() {
+	public ClimberDisengage() {
 		climberShifting = ClimberShifting.getInstance();
 		requires(climberShifting);
 	}

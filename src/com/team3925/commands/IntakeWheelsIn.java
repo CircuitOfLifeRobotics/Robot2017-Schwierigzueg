@@ -8,21 +8,13 @@ public class IntakeWheelsIn extends Command {
 	
 	private Intake intake;
 	
-	private static IntakeWheelsIn instance;
-	
-	public static IntakeWheelsIn getInstance() {
-		if (instance==null)
-			instance = new IntakeWheelsIn();
-		return instance;
-	}
-	
-	private IntakeWheelsIn() {
+	public IntakeWheelsIn() {
 		intake = Intake.getInstance();
 		requires(intake);
 	}
 	
 	@Override
-	protected void initialize() {
+	protected void end() {
 		intake.setWheels(1);
 	}
 	

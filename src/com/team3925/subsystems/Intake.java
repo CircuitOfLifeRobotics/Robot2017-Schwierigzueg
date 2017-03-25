@@ -5,6 +5,7 @@ import static com.team3925.robot.RobotMap.SOLENOID_PORT_B_INTAKE;
 import static com.team3925.robot.RobotMap.TALON_ID_INTAKE;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -27,6 +28,9 @@ public class Intake extends Subsystem {
 	private Intake() {
 		upDown = new DoubleSolenoid(SOLENOID_PORT_A_INTAKE, SOLENOID_PORT_B_INTAKE);
 		wheels = new CANTalon(TALON_ID_INTAKE);
+		
+		wheels.changeControlMode(TalonControlMode.PercentVbus);
+		DriveTrain.configureTalon(wheels, false, false, false, false, true);
 	}
 
 	@Override
@@ -36,6 +40,7 @@ public class Intake extends Subsystem {
 	}
 
 	public void setWheels(double percent) {
+		System.out.println(percent);
 		wheels.set(percent);
 	}
 

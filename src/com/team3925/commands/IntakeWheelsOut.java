@@ -9,15 +9,7 @@ public class IntakeWheelsOut extends Command {
 
 	private Intake intake;
 
-	private static IntakeWheelsOut instance;
-
-	public static IntakeWheelsOut getInstance() {
-		if (instance == null)
-			instance = new IntakeWheelsOut();
-		return instance;
-	}
-
-	private IntakeWheelsOut() {
+	public IntakeWheelsOut() {
 		intake = Intake.getInstance();
 		requires(intake);
 	}

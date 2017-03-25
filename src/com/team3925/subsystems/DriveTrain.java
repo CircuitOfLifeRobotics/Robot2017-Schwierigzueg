@@ -113,7 +113,7 @@ public class DriveTrain extends Subsystem {
 		return rightA.getEncPosition();
 	}
 
-	private void configureTalon(CANTalon talon, boolean fwdLimitSwitchOpen, boolean revLimitSwitchOpen,
+	public static void configureTalon(CANTalon talon, boolean fwdLimitSwitchOpen, boolean revLimitSwitchOpen,
 			boolean fwdLimitSwitchEnabled, boolean revLimitSwitchEnabled, boolean brakeModeEnabled) {
 		talon.ConfigFwdLimitSwitchNormallyOpen(fwdLimitSwitchOpen);
 		talon.ConfigRevLimitSwitchNormallyOpen(revLimitSwitchOpen);

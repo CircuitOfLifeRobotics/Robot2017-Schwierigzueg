@@ -8,15 +8,8 @@ public class ClimberToggle extends Command {
 
 	private ClimberShifting climberShifting;
 
-	private static ClimberToggle instance;
 
-	public static ClimberToggle getInstance() {
-		if (instance == null)
-			instance = new ClimberToggle();
-		return instance;
-	}
-
-	private ClimberToggle() {
+	public ClimberToggle() {
 		climberShifting = ClimberShifting.getInstance();
 		requires(climberShifting);
 	}

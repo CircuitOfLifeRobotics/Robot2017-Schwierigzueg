@@ -4,29 +4,23 @@ import com.team3925.robot.DriveManualInput;
 import com.team3925.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveManual extends Command {
 	
 	private DriveTrain driveTrain;
 	private DriveManualInput input;
 	
-	private static DriveManual instance;
 	
 	private double fwd, turn;
 	private double prelimLeft, prelimRight;
 	private double scale;
 	private double left, right;
 	
-	public static DriveManual getInstance() {
-		if (instance==null)
-			instance = new DriveManual();
-		return instance;
-	}
 	
-	private DriveManual() {
+	public DriveManual(DriveManualInput driveInput) {
 		driveTrain = DriveTrain.getInstance();
 		requires(driveTrain);
+		input = driveInput;
 	}
 	
 	@Override
@@ -70,9 +64,4 @@ public class DriveManual extends Command {
 	protected void interrupted() {
 		end();
 	}
-	
-	public void setInput(DriveManualInput input) {
-		this.input = input;
-	}
-	
 }

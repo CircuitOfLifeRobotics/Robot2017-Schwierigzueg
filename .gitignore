@@ -1,1 +1,5 @@
 /bin/
+/build/
+/dist/
+/build.xml
+/sysProps.xml

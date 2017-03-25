@@ -8,15 +8,7 @@ public class DriveTrainShiftLow extends Command {
 	
 	private DriveTrainShifting driveTrainShifting;
 	
-	private static DriveTrainShiftLow instance;
-	
-	public static DriveTrainShiftLow getInstance() {
-		if (instance==null)
-			instance = new DriveTrainShiftLow();
-		return instance;
-	}
-	
-	private DriveTrainShiftLow() {
+	public DriveTrainShiftLow() {
 		driveTrainShifting = DriveTrainShifting.getInstance();
 		requires(driveTrainShifting);
 	}

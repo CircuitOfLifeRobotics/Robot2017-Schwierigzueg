@@ -8,15 +8,8 @@ public class ClimberEngage extends Command {
 
 	private ClimberShifting climberShifting;
 
-	private static ClimberEngage instance;
 
-	public static ClimberEngage getInstance() {
-		if (instance == null)
-			instance = new ClimberEngage();
-		return instance;
-	}
-
-	private ClimberEngage() {
+	public ClimberEngage() {
 		climberShifting = ClimberShifting.getInstance();
 		requires(climberShifting);
 	}

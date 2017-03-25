@@ -12,8 +12,10 @@ import com.team3925.commands.IntakeGoDown;
 import com.team3925.commands.IntakeGoUp;
 import com.team3925.commands.IntakeWheelsIn;
 import com.team3925.commands.IntakeWheelsOff;
+import com.team3925.commands.Timeout;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
@@ -24,18 +26,19 @@ import edu.wpi.first.wpilibj.command.Scheduler;
  * directory.
  */
 public class Robot extends IterativeRobot {
-
 	private OI oi;
+	private DriveManual driveManual;
 
 	@Override
 	public void robotInit() {
 		oi = OI.getInstance();
-		IntakeGoUp.getInstance().start();
+		new IntakeGoUp().start();
+		driveManual = new DriveManual(OI.getInstance());
 	}
 
 	@Override
 	public void disabledInit() {
-		DriveManual.getInstance().cancel();
+		
 	}
 
 	@Override
@@ -54,27 +57,34 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		
+		CommandGroup runIntake = new CommandGroup();
+		runIntake.addParallel(new IntakeWheelsIn());
+		runIntake.addParallel(new IntakeGoDown());
+		
+		CommandGroup stopIntake = new CommandGroup();
+		stopIntake.addParallel(new IntakeGoUp());
+		stopIntake.addParallel(new Timeout(1));
+		stopIntake.addSequential(new IntakeGoDown());
+		
 		// intake controls
-		oi.whenXboxButtonPressed(3, IntakeGoDown.getInstance());
-		oi.whenXboxButtonPressed(3, IntakeWheelsIn.getInstance());
-		oi.whenXboxButtonReleased(3, IntakeGoUp.getInstance());
-		oi.whenXboxButtonReleased(3, IntakeWheelsOff.getInstance());
+		oi.whenXboxButtonPressed(3, runIntake);
+		oi.whenXboxButtonReleased(3, stopIntake);
 
-		oi.whenXboxButtonPressed(1, IntakeGoDown.getInstance());
-		oi.whenXboxButtonReleased(1, IntakeGoUp.getInstance());
+		oi.whenXboxButtonPressed(1, new IntakeGoDown());
+		oi.whenXboxButtonReleased(1, new IntakeGoUp());
 
-		oi.whenXboxButtonPressed(2, IntakeWheelsIn.getInstance());
-		oi.whenXboxButtonReleased(2, IntakeWheelsOff.getInstance());
+		oi.whenXboxButtonPressed(2, new IntakeWheelsIn());
+		oi.whenXboxButtonReleased(2, new IntakeWheelsOff());
 
 		// shifting controls
-		oi.whenWheelButtonPressed(5, DriveTrainShiftHigh.getInstance());
-		oi.whenWheelButtonReleased(5, DriveTrainShiftLow.getInstance());
+		oi.whenWheelButtonPressed(5, new DriveTrainShiftHigh());
+		oi.whenWheelButtonReleased(5, new DriveTrainShiftLow());
 
 		// climbing controls
-		oi.whenWheelButtonPressed(3, ClimberToggle.getInstance());
+		oi.whenWheelButtonPressed(3, new ClimberToggle());
 		
-		DriveManual.getInstance().setInput(OI.getInstance());
-		DriveManual.getInstance().start();
+		driveManual.start();
 	}
 
 	@Override

@@ -10,20 +10,15 @@ public class ArcadeDrive extends Command {
 	private DriveTrain driveTrain;
 	private DriveManualInput input;
 	
-	private static ArcadeDrive instance;
 	
 	private double fwd, turn;
 	private double prelimLeft, prelimRight;
 	private double scale;
 	private double left, right;
 	
-	public static ArcadeDrive getInstance() {
-		if (instance==null)
-			instance = new ArcadeDrive();
-		return instance;
-	}
+
 	
-	private ArcadeDrive() {
+	public ArcadeDrive() {
 		driveTrain = DriveTrain.getInstance();
 		requires(driveTrain);
 	}

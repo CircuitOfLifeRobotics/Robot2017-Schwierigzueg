@@ -8,15 +8,8 @@ public class IntakeGoUp extends Command {
 
 	private Intake intake;
 
-	private static IntakeGoUp instance;
 
-	public static IntakeGoUp getInstance() {
-		if (instance == null)
-			instance = new IntakeGoUp();
-		return instance;
-	}
-
-	private IntakeGoUp() {
+	public IntakeGoUp() {
 		intake = Intake.getInstance();
 		requires(intake);
 	}
@@ -28,7 +21,7 @@ public class IntakeGoUp extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return true;
 	}
 
 }
