@@ -1,6 +1,7 @@
 
 package com.team3925.robot;
 
+import com.team3925.commands.ArcadeDrive;
 import com.team3925.commands.ClimberDisengage;
 import com.team3925.commands.ClimberEngage;
 import com.team3925.commands.ClimberToggle;
@@ -29,6 +30,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		oi = OI.getInstance();
+		IntakeGoUp.getInstance().start();
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class Robot extends IterativeRobot {
 		oi.whenWheelButtonReleased(5, DriveTrainShiftLow.getInstance());
 
 		// climbing controls
-//		oi.whenWheelButtonPressed(3, ClimberToggle.getInstance());
+		oi.whenWheelButtonPressed(3, ClimberToggle.getInstance());
 		
 		DriveManual.getInstance().setInput(OI.getInstance());
 		DriveManual.getInstance().start();

@@ -33,7 +33,7 @@ public class ArcadeDrive extends Command {
 		if (input == null)
 			input = new DriveManualInput() {
 				@Override
-				public double getRight() {
+				public double getLeft() {
 					return 0;
 				}
 				@Override
@@ -45,7 +45,7 @@ public class ArcadeDrive extends Command {
 	
 	@Override
 	protected void execute() {		
-		driveTrain.setSideRaw(input.getForward() + input.getRight(), input.getForward() - input.getRight());
+		driveTrain.setSideRaw(.5*(input.getForward() - input.getLeft()), .5*(input.getForward() + input.getLeft()));
 	}
 	
 	@Override

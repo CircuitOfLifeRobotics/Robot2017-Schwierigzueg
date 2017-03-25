@@ -4,6 +4,7 @@ import com.team3925.robot.DriveManualInput;
 import com.team3925.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveManual extends Command {
 	
@@ -33,7 +34,7 @@ public class DriveManual extends Command {
 		if (input == null)
 			input = new DriveManualInput() {
 				@Override
-				public double getRight() {
+				public double getLeft() {
 					return 0;
 				}
 				@Override
@@ -46,9 +47,9 @@ public class DriveManual extends Command {
 	@Override
 	protected void execute() {
 		fwd = input.getForward();
-		turn = input.getRight();
-		prelimLeft = fwd + turn;
-		prelimRight = fwd - turn;
+		turn = input.getLeft();
+		prelimLeft = fwd - turn;
+		prelimRight = fwd + turn;
 		scale = Math.max(Math.abs(fwd), Math.abs(turn))/Math.max(Math.abs(prelimLeft), Math.abs(prelimRight));
 		left = scale*prelimLeft;
 		right = scale*prelimRight;

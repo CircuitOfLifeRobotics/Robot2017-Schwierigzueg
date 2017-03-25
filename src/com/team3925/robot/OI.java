@@ -78,7 +78,7 @@ public class OI implements DriveManualInput {
 	}
 
 	@Override
-	public double getRight() {
+	public double getLeft() {
 		return wheel.getRawAxis(0);
 	}
 

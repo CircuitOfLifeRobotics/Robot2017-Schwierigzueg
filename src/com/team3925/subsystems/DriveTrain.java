@@ -12,6 +12,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem {
 
@@ -47,11 +48,11 @@ public class DriveTrain extends Subsystem {
 		configureTalon(rightC, false, false, false, false, true);
 
 		// change modes
-		leftA.changeControlMode(TalonControlMode.Position);
+		leftA.changeControlMode(TalonControlMode.PercentVbus);
 		leftB.changeControlMode(TalonControlMode.Follower);
 		leftC.changeControlMode(TalonControlMode.Follower);
 
-		rightA.changeControlMode(TalonControlMode.Position);
+		rightA.changeControlMode(TalonControlMode.PercentVbus);
 		rightB.changeControlMode(TalonControlMode.Follower);
 		rightC.changeControlMode(TalonControlMode.Follower);
 
@@ -63,10 +64,10 @@ public class DriveTrain extends Subsystem {
 
 		// change polarity configs
 		leftA.setEncPosition(0);
-		leftA.setInverted(false);
+		leftA.setInverted(true);
 		leftA.reverseSensor(true);
 		leftB.reverseOutput(true);
-		leftC.reverseOutput(true);
+		leftC.reverseOutput(false);
 
 		rightA.setEncPosition(0);
 		rightA.setInverted(true);
@@ -100,7 +101,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void setSideRaw(double left, double right) {
-		setEachMotorRaw(left, left, left, right, right, right);
+		leftA.set(left);
+		rightA.set(right);
 	}
 
 	public double getLeftEncRaw() {
@@ -118,10 +120,4 @@ public class DriveTrain extends Subsystem {
 		talon.enableLimitSwitch(fwdLimitSwitchEnabled, revLimitSwitchEnabled);
 		talon.enableBrakeMode(brakeModeEnabled);
 	}
-
-	public void setControlModes(TalonControlMode controlMode) {
-		leftA.changeControlMode(controlMode);
-		rightA.changeControlMode(controlMode);
-	}
-
 }

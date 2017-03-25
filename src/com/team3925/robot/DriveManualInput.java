@@ -10,6 +10,6 @@ public interface DriveManualInput {
 	/**
 	 * @return percent of maximum turn speed robot should be traveling. Negative means left
 	 */
-	public abstract double getRight();
+	public abstract double getLeft();
 	
 }
