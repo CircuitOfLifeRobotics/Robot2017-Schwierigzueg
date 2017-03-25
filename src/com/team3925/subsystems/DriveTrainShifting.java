@@ -24,7 +24,6 @@ public class DriveTrainShifting extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
 	}
 
 	public void setLowGear() {

@@ -25,8 +25,6 @@ public class ClimberShifting extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setClimberEngaged() {
@@ -43,7 +41,7 @@ public class ClimberShifting extends Subsystem {
 		else
 			setClimberDisengaged();
 	}
-	
+
 	public boolean getClimberEngaged() {
 		return climberShifter.get().equals(Value.kForward);
 	}

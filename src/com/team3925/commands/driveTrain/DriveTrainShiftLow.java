@@ -1,23 +1,21 @@
-package com.team3925.commands;
+package com.team3925.commands.driveTrain;
 
 import com.team3925.subsystems.DriveTrainShifting;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveTrainShiftHigh extends Command {
+public class DriveTrainShiftLow extends Command {
 
 	private DriveTrainShifting driveTrainShifting;
 
-
-
-	public DriveTrainShiftHigh() {
+	public DriveTrainShiftLow() {
 		driveTrainShifting = DriveTrainShifting.getInstance();
 		requires(driveTrainShifting);
 	}
 
 	@Override
 	protected void initialize() {
-		driveTrainShifting.setHighGear();
+		driveTrainShifting.setLowGear();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.team3925.commands;
+package com.team3925.commands.climber;
 
 import com.team3925.subsystems.ClimberShifting;
 

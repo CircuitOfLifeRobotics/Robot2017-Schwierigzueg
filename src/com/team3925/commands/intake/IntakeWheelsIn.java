@@ -1,26 +1,26 @@
-package com.team3925.commands;
+package com.team3925.commands.intake;
 
 import com.team3925.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class IntakeGoDown extends Command {
-	
+public class IntakeWheelsIn extends Command {
+
 	private Intake intake;
 
-	public IntakeGoDown() {
+	public IntakeWheelsIn() {
 		intake = Intake.getInstance();
 		requires(intake);
 	}
-	
+
 	@Override
-	protected void initialize() {
-		intake.setDown();
+	protected void end() {
+		intake.setWheels(1);
 	}
-	
+
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return true;
 	}
-	
+
 }

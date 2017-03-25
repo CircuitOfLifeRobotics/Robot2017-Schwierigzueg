@@ -1,5 +1,5 @@
 
-package com.team3925.commands;
+package com.team3925.commands.intake;
 
 import com.team3925.subsystems.Intake;
 

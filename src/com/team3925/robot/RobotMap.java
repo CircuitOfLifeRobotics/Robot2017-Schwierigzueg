@@ -1,12 +1,5 @@
 package com.team3925.robot;
 
-/*
- * POPULATED: TRUE
- * WHEN: 3/7/17
- * TESTED: FALSE
- * WHEN: 
- */
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -32,6 +25,10 @@ public class RobotMap {
 	public final static int SOLENOID_PORT_A_INTAKE;
 	public final static int SOLENOID_PORT_B_INTAKE;
 
+	public final static int TALON_ID_SHOOTER_A;
+	public final static int TALON_ID_SHOOTER_B;
+	public final static int TALON_ID_FEEDER;
+
 	static {
 		// TALON ID CONSTANTS
 		TALON_ID_DRIVE_LEFT_A = 40;
@@ -41,10 +38,13 @@ public class RobotMap {
 		TALON_ID_DRIVE_RIGHT_B = 10;
 		TALON_ID_DRIVE_RIGHT_C = 11;
 		TALON_ID_INTAKE = 6;
+		TALON_ID_SHOOTER_A = 6;
+		TALON_ID_SHOOTER_B = 7;
+		TALON_ID_FEEDER = 5;
 
 		// SOLENOID PORTS
-		SOLENOID_PORT_A_SHIFT = 0;
-		SOLENOID_PORT_B_SHIFT = 1;
+		SOLENOID_PORT_A_SHIFT = 1;
+		SOLENOID_PORT_B_SHIFT = 0;
 		SOLENOID_PORT_A_CLIMB = 2;
 		SOLENOID_PORT_B_CLIMB = 3;
 		SOLENOID_PORT_A_INTAKE = 5;

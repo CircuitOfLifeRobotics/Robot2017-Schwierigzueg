@@ -2,6 +2,8 @@ package com.team3925.robot;
 
 import java.util.HashMap;
 
+import com.team3925.util.DriveManualInput;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,11 +16,11 @@ public class OI implements DriveManualInput {
 
 	private static OI instance;
 
-	private Joystick wheel, stick, xbox;
+	public Joystick wheel, stick, xbox;
 
-	private HashMap<Integer, JoystickButton> wheelButtonTriggers;
-	private HashMap<Integer, JoystickButton> stickButtonTriggers;
-	private HashMap<Integer, JoystickButton> xboxButtonTriggers;
+	public HashMap<Integer, JoystickButton> wheelButtonTriggers;
+	public HashMap<Integer, JoystickButton> stickButtonTriggers;
+	public HashMap<Integer, JoystickButton> xboxButtonTriggers;
 
 	public static OI getInstance() {
 		if (instance == null)
@@ -74,12 +76,12 @@ public class OI implements DriveManualInput {
 
 	@Override
 	public double getForward() {
-		return stick.getRawAxis(1);
+		return -stick.getRawAxis(1);
 	}
 
 	@Override
-	public double getLeft() {
-		return wheel.getRawAxis(0);
+	public double getRight() {
+		return -wheel.getRawAxis(0);
 	}
 
 }
