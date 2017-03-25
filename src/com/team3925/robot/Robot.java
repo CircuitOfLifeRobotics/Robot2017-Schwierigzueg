@@ -59,13 +59,13 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		
 		CommandGroup runIntake = new CommandGroup();
-		runIntake.addParallel(new IntakeWheelsIn());
+		runIntake.addSequential(new IntakeWheelsIn());
 		runIntake.addParallel(new IntakeGoDown());
 		
 		CommandGroup stopIntake = new CommandGroup();
-		stopIntake.addParallel(new IntakeGoUp());
+		stopIntake.addSequential(new IntakeGoUp());
 		stopIntake.addParallel(new Timeout(1));
-		stopIntake.addSequential(new IntakeGoDown());
+		stopIntake.addSequential(new IntakeWheelsOff());
 		
 		// intake controls
 		oi.whenXboxButtonPressed(3, runIntake);
