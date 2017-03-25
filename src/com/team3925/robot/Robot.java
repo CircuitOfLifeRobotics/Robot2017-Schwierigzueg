@@ -3,6 +3,7 @@ package com.team3925.robot;
 
 import com.team3925.commands.ClimberDisengage;
 import com.team3925.commands.ClimberEngage;
+import com.team3925.commands.ClimberToggle;
 import com.team3925.commands.DriveTrainShiftHigh;
 import com.team3925.commands.DriveTrainShiftLow;
 import com.team3925.commands.IntakeGoDown;
@@ -50,24 +51,23 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		// intake controls
-		oi.whenXboxButtonPressed(0, IntakeGoDown.getInstance());
-		oi.whenXboxButtonPressed(0, IntakeWheelsIn.getInstance());
-		oi.whenXboxButtonReleased(0, IntakeGoUp.getInstance());
-		oi.whenXboxButtonReleased(0, IntakeWheelsOff.getInstance());
+		oi.whenXboxButtonPressed(3, IntakeGoDown.getInstance());
+		oi.whenXboxButtonPressed(3, IntakeWheelsIn.getInstance());
+		oi.whenXboxButtonReleased(3, IntakeGoUp.getInstance());
+		oi.whenXboxButtonReleased(3, IntakeWheelsOff.getInstance());
 
-		oi.whenXboxButtonPressed(0, IntakeGoDown.getInstance());
-		oi.whenXboxButtonReleased(0, IntakeGoUp.getInstance());
+		oi.whenXboxButtonPressed(1, IntakeGoDown.getInstance());
+		oi.whenXboxButtonReleased(1, IntakeGoUp.getInstance());
 
-		oi.whenXboxButtonPressed(0, IntakeWheelsIn.getInstance());
-		oi.whenXboxButtonReleased(0, IntakeWheelsOff.getInstance());
+		oi.whenXboxButtonPressed(2, IntakeWheelsIn.getInstance());
+		oi.whenXboxButtonReleased(2, IntakeWheelsOff.getInstance());
 
 		// shifting controls
-		oi.whenWheelButtonPressed(0, DriveTrainShiftHigh.getInstance());
-		oi.whenWheelButtonPressed(0, DriveTrainShiftLow.getInstance());
+		oi.whenWheelButtonPressed(5, DriveTrainShiftHigh.getInstance());
+		oi.whenWheelButtonReleased(5, DriveTrainShiftLow.getInstance());
 
 		// climbing controls
-		oi.whenWheelButtonPressed(0, ClimberEngage.getInstance());
-		oi.whenWheelButtonPressed(0, ClimberDisengage.getInstance());
+		oi.whenWheelButtonPressed(3, ClimberToggle.getInstance());
 	}
 
 	@Override

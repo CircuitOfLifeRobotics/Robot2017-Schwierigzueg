@@ -43,5 +43,9 @@ public class ClimberShifting extends Subsystem {
 		else
 			setClimberDisengaged();
 	}
+	
+	public boolean getClimberEngaged() {
+		return climberShifter.get().equals(Value.kForward);
+	}
 
 }
