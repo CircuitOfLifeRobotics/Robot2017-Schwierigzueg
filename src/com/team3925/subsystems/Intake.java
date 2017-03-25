@@ -1,7 +1,7 @@
 package com.team3925.subsystems;
 
-import static com.team3925.robot.RobotMap.SOLENOID_PORT_A_CLIMB;
-import static com.team3925.robot.RobotMap.SOLENOID_PORT_B_CLIMB;
+import static com.team3925.robot.RobotMap.SOLENOID_PORT_A_INTAKE;
+import static com.team3925.robot.RobotMap.SOLENOID_PORT_B_INTAKE;
 import static com.team3925.robot.RobotMap.TALON_ID_INTAKE;
 
 import com.ctre.CANTalon;
@@ -25,7 +25,7 @@ public class Intake extends Subsystem {
 	}
 
 	private Intake() {
-		upDown = new DoubleSolenoid(SOLENOID_PORT_A_CLIMB, SOLENOID_PORT_B_CLIMB);
+		upDown = new DoubleSolenoid(SOLENOID_PORT_A_INTAKE, SOLENOID_PORT_B_INTAKE);
 		wheels = new CANTalon(TALON_ID_INTAKE);
 	}
 
