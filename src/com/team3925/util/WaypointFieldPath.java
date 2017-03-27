@@ -1,34 +1,34 @@
 
 package com.team3925.util;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
-public class WaypointFieldPath extends Path<TimedFieldPosition> {
+public class WaypointFieldPath implements Path<FieldPosition> {
 	
-	private LinkedList<TimedFieldPosition> wayPoints;
-	
-	public WaypointFieldPath(LinkedList<TimedFieldPosition> timedWayPoints) {
-		wayPoints = new LinkedList<>();
-		wayPoints.addAll(timedWayPoints);
-	}
+	private LinkedHashMap<Double, FieldPosition> times_wayPoints;
+	private double totalTime;
 	
 	public WaypointFieldPath(LinkedList<FieldPosition> wayPoints, double totalTime) {
-		this.wayPoints = new LinkedList<>();
+		times_wayPoints = new LinkedHashMap<>();
+		this.totalTime = totalTime;
 		double increment = totalTime / (wayPoints.size() - 1);
 		for (int i = 0; i < wayPoints.size(); ++i) {
-			this.wayPoints.add(new TimedFieldPosition(wayPoints.get(i), i * increment));
+			times_wayPoints.put(i * increment, wayPoints.get(i).clone());
 		}
 	}
 	
 	@Override
-	public TimedFieldPosition get(int index) {
-		index = Math.max(0, Math.min(wayPoints.size() - 1, index));
-		return wayPoints.get(index);
+	public FieldPosition get(double time) {
+		if (time<=totalTime)
+			return times_wayPoints.get(times_wayPoints.keySet().stream().filter(t -> t.doubleValue()>=time).findFirst());
+		else
+			return FieldPosition.ZEROZEROZERO;
 	}
 	
 	@Override
-	public boolean isFinished() {
-		return currentIndex >= wayPoints.size() - 1;
+	public double getTotalTime() {
+		return totalTime;
 	}
 	
 }
