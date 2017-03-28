@@ -5,16 +5,20 @@ import com.team3925.commands.ArcadeDrive;
 import com.team3925.commands.ClimberDisengage;
 import com.team3925.commands.ClimberEngage;
 import com.team3925.commands.ClimberToggle;
+import com.team3925.commands.DriveForward;
 import com.team3925.commands.DriveManual;
 import com.team3925.commands.DriveTrainShiftHigh;
 import com.team3925.commands.DriveTrainShiftLow;
+import com.team3925.commands.GyroDrive;
 import com.team3925.commands.IntakeGoDown;
 import com.team3925.commands.IntakeGoUp;
 import com.team3925.commands.IntakeWheelsIn;
 import com.team3925.commands.IntakeWheelsOff;
 import com.team3925.commands.Timeout;
+import com.team3925.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
@@ -28,12 +32,14 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 public class Robot extends IterativeRobot {
 	private OI oi;
 	private DriveManual driveManual;
+	private GyroDrive driveForward;
 
 	@Override
 	public void robotInit() {
 		oi = OI.getInstance();
 		new IntakeGoUp().start();
 		driveManual = new DriveManual(OI.getInstance());
+		driveForward = new GyroDrive();
 	}
 
 	@Override
@@ -48,6 +54,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		driveForward.start();
 	}
 
 	@Override
@@ -64,7 +71,7 @@ public class Robot extends IterativeRobot {
 		
 		CommandGroup stopIntake = new CommandGroup();
 		stopIntake.addSequential(new IntakeGoUp());
-		stopIntake.addParallel(new Timeout(1));
+		stopIntake.addSequential(new Timeout(1));
 		stopIntake.addSequential(new IntakeWheelsOff());
 		
 		// intake controls
@@ -85,6 +92,17 @@ public class Robot extends IterativeRobot {
 		oi.whenWheelButtonPressed(3, new ClimberToggle());
 		
 		driveManual.start();
+		
+		Trigger trigger = new Trigger() {
+			
+			@Override
+			public boolean get() {
+				return DriveTrain.getInstance().isOverThreshold();
+			}
+		};
+		
+//		trigger.whenActive(new DriveTrainShiftHigh());
+//		trigger.whenInactive(new DriveTrainShiftLow());
 	}
 
 	@Override

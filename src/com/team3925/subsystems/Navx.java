@@ -1,5 +1,10 @@
 package com.team3925.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //TODO: import AHRS
 
 public class Navx {
@@ -16,11 +21,19 @@ public class Navx {
 
 	private Navx() {
 		//TODO: correct constructor
-		ahrs = new AHRS();
+		ahrs = new AHRS(Port.kMXP);
+		ahrs.reset();
 	}
 	
 	public double getHeading() {
-		return navx.getFusedHeading();
+		SmartDashboard.putNumber("Roll", ahrs.getRoll());
+		SmartDashboard.putNumber("Yaw", ahrs.getYaw());
+		SmartDashboard.putNumber("Pitch", ahrs.getPitch());
+		return ahrs.getAngle();
+	}
+	
+	public void resetNavx(){
+		ahrs.reset();
 	}
 	
 }

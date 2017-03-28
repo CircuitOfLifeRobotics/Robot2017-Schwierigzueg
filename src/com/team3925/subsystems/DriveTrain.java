@@ -10,6 +10,7 @@ import static com.team3925.robot.RobotMap.TALON_ID_DRIVE_RIGHT_C;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
+import com.team3925.robot.Constants;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -106,11 +107,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public double getLeftEncRaw() {
-		return leftA.getEncPosition();
+		return leftA.getEncVelocity();
 	}
 
 	public double getRightEncRaw() {
-		return rightA.getEncPosition();
+		return rightA.getEncVelocity();
 	}
 
 	public static void configureTalon(CANTalon talon, boolean fwdLimitSwitchOpen, boolean revLimitSwitchOpen,
@@ -119,5 +120,13 @@ public class DriveTrain extends Subsystem {
 		talon.ConfigRevLimitSwitchNormallyOpen(revLimitSwitchOpen);
 		talon.enableLimitSwitch(fwdLimitSwitchEnabled, revLimitSwitchEnabled);
 		talon.enableBrakeMode(brakeModeEnabled);
+	}
+	
+	public boolean isOverThreshold(){
+		if (Math.abs((leftA.getEncVelocity() + rightA.getEncVelocity())/2) > Constants.DRIVETRAIN_SHIFT_THRESHOLD){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

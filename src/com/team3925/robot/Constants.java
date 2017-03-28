@@ -47,6 +47,7 @@ public class Constants {
 	public static final int DRIVETRAIN_ENC_TICKS_PER_REV;
 	public static final double DRIVETRAIN_FEET_PER_DEGREE; 
 	public static final int DRIVETRAIN_DEADZONE;
+	public static final int DRIVETRAIN_SHIFT_THRESHOLD;
 	
 	public static final int SHOOTER_MOTOR_GEAR_TEETH;
 	public static final int SHOOTER_FLYWHEEL_GEAR_TEETH;
@@ -112,6 +113,8 @@ public class Constants {
 		DRIVETRAIN_ENC_TICKS_PER_REV = 1024;
 		DRIVETRAIN_FEET_PER_DEGREE = 26.5 * Math.PI / 12 / 360;
 		DRIVETRAIN_DEADZONE = 20;
+		
+		DRIVETRAIN_SHIFT_THRESHOLD = 225;
 		
 		DRIVETRAIN_GEAR_SENSOR_THRESHOLD = 0.32;
 		
