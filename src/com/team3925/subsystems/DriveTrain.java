@@ -107,11 +107,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public double getLeftEncRaw() {
-		return leftA.getEncVelocity();
+		return leftA.getEncPosition();
 	}
 
 	public double getRightEncRaw() {
-		return rightA.getEncVelocity();
+		return rightA.getEncPosition();
 	}
 
 	public static void configureTalon(CANTalon talon, boolean fwdLimitSwitchOpen, boolean revLimitSwitchOpen,
@@ -128,5 +128,9 @@ public class DriveTrain extends Subsystem {
 		}else{
 			return false;
 		}
+	}
+	public void zeroEncoders(){
+		leftA.setEncPosition(0);
+		rightA.setEncPosition(0);
 	}
 }
