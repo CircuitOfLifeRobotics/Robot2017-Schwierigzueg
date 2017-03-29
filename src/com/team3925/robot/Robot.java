@@ -112,7 +112,7 @@ public class Robot extends IterativeRobot {
 		oi.whenWheelButtonReleased(5, new DriveTrainShiftLow());
 
 		// climbing controls
-		oi.whenWheelButtonPressed(3, new ClimberToggle());
+		oi.whenXboxButtonPressed(4, new ClimberToggle());
 		
 		driveManual.start();
 		
