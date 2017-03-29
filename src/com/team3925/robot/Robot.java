@@ -20,6 +20,8 @@ import com.team3925.subsystems.DriveTrain;
 
 import autoRoutines.BoilerAuto;
 import autoRoutines.CenterAuto;
+import autoRoutines.FeederAuto;
+import autoRoutines.TwoGearCenter;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -50,8 +52,14 @@ public class Robot extends IterativeRobot {
 		driveForward = new GyroDrive(10);
 		centerAuto = new CenterAuto("BLUE");
 		autoChooser = new SendableChooser<>();
-		autoChooser.addDefault("Center Auto", new CenterAuto("BLUE"));
+		
+		autoChooser.addDefault("Blue Center Auto", new CenterAuto("BLUE"));
+		autoChooser.addDefault("Red Center Auto", new CenterAuto("RED"));
 		autoChooser.addObject("Blue Boiler Auto", new BoilerAuto("BLUE"));
+		autoChooser.addObject("Red Boiler Auto", new BoilerAuto("RED"));
+		autoChooser.addObject("Red Feeder Auto", new FeederAuto("RED"));
+		autoChooser.addObject("Blue Feeder Auto", new FeederAuto("BLUE"));
+		autoChooser.addObject("Blue Two Gear Auto", new TwoGearCenter("BLUE"));
 		
 		SmartDashboard.putData("AUTO CHOOSER", autoChooser);
 	}

@@ -61,7 +61,8 @@ public class DriveFieldPath extends Command {
 	
 	@Override
 	protected boolean isFinished() {
-		return path.isFinished();
+//		return path.isFinished();
+		return false;
 	}
 	
 	@Override
