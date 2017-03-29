@@ -68,6 +68,10 @@ public class Constants {
 	public static final double SHOOTER_SPEED;
 	public static final double SHOOTER_TARGET_SPEED;
 	
+	public static final double AUTO_BLUE_OFFSET;
+	public static final double AUTO_RED_OFFSET;
+	
+	
 	static {
 		MIN_CONFIG_WAIT_TIME = 0.5;
 		
@@ -129,6 +133,9 @@ public class Constants {
 		
 		SHOOTER_SPEED = 0.80;
 		SHOOTER_TARGET_SPEED = 24500;
+		
+		AUTO_BLUE_OFFSET = 110.02 - 110.02;
+		AUTO_RED_OFFSET = 110.02 - 110.02;
 		
 		// SWITCH AND BRAKE CONSTANTS
 		// {fwdSwitchIsPresent, revSwitchIsPresent, fwdSwitchNormalyOpen,

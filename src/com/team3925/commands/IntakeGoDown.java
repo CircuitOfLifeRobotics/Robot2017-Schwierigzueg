@@ -20,7 +20,7 @@ public class IntakeGoDown extends Command {
 	
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return true;
 	}
 	
 }

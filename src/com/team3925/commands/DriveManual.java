@@ -47,7 +47,7 @@ public class DriveManual extends Command {
 		scale = Math.max(Math.abs(fwd), Math.abs(turn))/Math.max(Math.abs(prelimLeft), Math.abs(prelimRight));
 		left = scale*prelimLeft;
 		right = scale*prelimRight;
-		driveTrain.setSideRaw(left, right);
+		driveTrain.setSideRaw(-left, -right);
 	}
 	
 	@Override

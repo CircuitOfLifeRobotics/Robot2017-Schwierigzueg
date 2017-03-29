@@ -102,8 +102,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void setSideRaw(double left, double right) {
-		leftA.set(left);
-		rightA.set(right);
+		leftA.set(-left);
+		rightA.set(-right);
 	}
 
 	public double getLeftEncRaw() {

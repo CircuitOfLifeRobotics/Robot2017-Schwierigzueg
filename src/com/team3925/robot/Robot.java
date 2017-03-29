@@ -10,6 +10,7 @@ import com.team3925.commands.DriveManual;
 import com.team3925.commands.DriveTrainShiftHigh;
 import com.team3925.commands.DriveTrainShiftLow;
 import com.team3925.commands.GyroDrive;
+import com.team3925.commands.GyroTurn;
 import com.team3925.commands.IntakeGoDown;
 import com.team3925.commands.IntakeGoUp;
 import com.team3925.commands.IntakeWheelsIn;
@@ -17,10 +18,14 @@ import com.team3925.commands.IntakeWheelsOff;
 import com.team3925.commands.Timeout;
 import com.team3925.subsystems.DriveTrain;
 
+import autoRoutines.BoilerAuto;
+import autoRoutines.CenterAuto;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,13 +38,22 @@ public class Robot extends IterativeRobot {
 	private OI oi;
 	private DriveManual driveManual;
 	private GyroDrive driveForward;
+	private CenterAuto centerAuto;
+	private SendableChooser<CommandGroup> autoChooser;
+	private CommandGroup chosenAuto;
 
 	@Override
 	public void robotInit() {
 		oi = OI.getInstance();
 		new IntakeGoUp().start();
 		driveManual = new DriveManual(OI.getInstance());
-		driveForward = new GyroDrive();
+		driveForward = new GyroDrive(10);
+		centerAuto = new CenterAuto("BLUE");
+		autoChooser = new SendableChooser<>();
+		autoChooser.addDefault("Center Auto", new CenterAuto("BLUE"));
+		autoChooser.addObject("Blue Boiler Auto", new BoilerAuto("BLUE"));
+		
+		SmartDashboard.putData("AUTO CHOOSER", autoChooser);
 	}
 
 	@Override
@@ -54,7 +68,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		driveForward.start();
+		chosenAuto = autoChooser.getSelected();
+		chosenAuto.start();
 	}
 
 	@Override
