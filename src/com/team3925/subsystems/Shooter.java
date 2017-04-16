@@ -43,7 +43,7 @@ public class Shooter extends Subsystem implements Recordable<ShooterState> {
 		shooterB.enableBrakeMode(false);
 
 		shooterA.setVoltageRampRate(0);
-		shooterA.setPID(.03, 0.000, .3, 0.0318, 0, 10, 0);
+		shooterA.setPID(.05, 0.000, .3, 0.0318, 0, 10, 0);
 
 		SmartDashboard.putNumber("Speed", 3800);
 		SHOOTER_TRIM = 0;

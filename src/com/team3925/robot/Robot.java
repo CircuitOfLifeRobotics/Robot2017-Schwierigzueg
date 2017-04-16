@@ -36,6 +36,7 @@ import com.team3925.commands.shooter.TrimShooterUp;
 import com.team3925.subsystems.DriveTrain;
 import com.team3925.subsystems.Feeder;
 import com.team3925.subsystems.Intake;
+import com.team3925.subsystems.Navx;
 import com.team3925.subsystems.Shooter;
 import com.team3925.util.SingleCommandGroup;
 import com.team3925.util.recording.DriveTrainState;
@@ -187,15 +188,19 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 
 		// Auto Shooting
 		CommandGroup turnShoot = new CommandGroup();
-		turnShoot.addSequential(new SetShooterDynamic());
-		turnShoot.addSequential(new GyroTurn(0));
-		turnShoot.addSequential(new GyroTurnDynamic());
-		turnShoot.addSequential(new Timeout(1));
-		turnShoot.addSequential(new SetFeeder(-.75));
+		{
+			turnShoot.addSequential(new SetShooterDynamic());
+			turnShoot.addSequential(new GyroTurn(0));
+			turnShoot.addSequential(new GyroTurnDynamic());
+			turnShoot.addSequential(new Timeout(1));
+			turnShoot.addSequential(new SetFeeder(-1));
+		}
 		// turnShoot.addSequential(new UpdateShooterSpeed(0.1));
 		CommandGroup stopTurnShoot = new CommandGroup();
-		stopTurnShoot.addSequential(new SetShooter(0));
-		stopTurnShoot.addSequential(new SetFeeder(0));
+		{
+			stopTurnShoot.addSequential(new SetShooter(0));
+			stopTurnShoot.addSequential(new SetFeeder(0));
+		}
 		stopTurnShoot.addSequential(new Command() {
 			@Override
 			protected void initialize() {
@@ -281,6 +286,7 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		SmartDashboard.putNumber("Distance", Vision.getInstance().getDistance());
 		SmartDashboard.putNumber("Offset Angle", Vision.getInstance().getTurnAngle());
 		SmartDashboard.putNumber("Shooter Set", Vision.getInstance().getSpeed() - Shooter.getInstance().SHOOTER_TRIM);
+		SmartDashboard.putNumber("Navx heading", Navx.getInstance().getHeading());
 	}
 
 	@Override

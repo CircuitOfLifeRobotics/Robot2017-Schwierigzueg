@@ -1,6 +1,8 @@
 
 package com.team3925.robot;
 
+import javax.swing.GrayFilter;
+
 public class Constants {
 
 	public final static double MIN_CONFIG_WAIT_TIME;
@@ -65,6 +67,15 @@ public class Constants {
 
 	public static final double AUTO_BLUE_OFFSET;
 	public static final double AUTO_RED_OFFSET;
+	
+	public static final double GYRO_TURN_KP;
+	public static final double GYRO_TURN_KI;
+	public static final double GYRO_TURN_KD;
+	public static final double GYRO_TURN_TOLERANCE_DEGREES;
+	public static final double GYRO_TURN_TOLERANCE_DELTA;
+	public static final double GYRO_TURN_MAX_TIME;
+	public static final double GYRO_TURN_OUTPUT_RANGE_LOWER;
+	public static final double GYRO_TURN_OUTPUT_RANGE_UPPER;
 
 	static {
 		MIN_CONFIG_WAIT_TIME = 0.5;
@@ -141,6 +152,15 @@ public class Constants {
 		TALON_BOOLCONSTANTS_TURRET = new boolean[] { false, false, false, false, true };
 		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, false };
 		TALON_BOOLCONSTANTS_HOOD = new boolean[] { false, false, false, false, true };
+		
+		GYRO_TURN_KP = 0.05;
+		GYRO_TURN_KI = 0.00005;
+		GYRO_TURN_KD = 0;
+		GYRO_TURN_MAX_TIME = 1;
+		GYRO_TURN_TOLERANCE_DEGREES = .5;
+		GYRO_TURN_TOLERANCE_DELTA = 0;
+		GYRO_TURN_OUTPUT_RANGE_LOWER = -.5;
+		GYRO_TURN_OUTPUT_RANGE_UPPER = .5;
 	}
 
 	private Constants() {

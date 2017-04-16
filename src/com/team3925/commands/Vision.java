@@ -220,7 +220,8 @@ public class Vision extends Command {
 
 	public double getTurnAngle() {
 		if (visionLower != null && visionUpper != null) {
-			double val = ((visionUpper.x - FOV_WIDTH_PIXELS / 2) / FOV_WIDTH_PIXELS * FOV_HEIGHT_DEGREES) + TURN_OFFSET;
+			double val = ((visionUpper.x + visionUpper.width / 2 - FOV_WIDTH_PIXELS / 2) / FOV_WIDTH_PIXELS
+					* FOV_WIDTH_DEGREES) + TURN_OFFSET;
 			return val;
 		} else {
 			return 0;
