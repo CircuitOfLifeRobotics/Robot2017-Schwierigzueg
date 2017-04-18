@@ -4,12 +4,13 @@ import com.team3925.subsystems.DriveTrain;
 import static com.team3925.robot.Constants.*;
 import com.team3925.subsystems.Navx;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GyroTurn extends PIDCommand {
 
-	double angle, deltaAngle, setPoint;
+	double angle, deltaAngle, setPoint,initAngle,time,initTime;
 
 	public GyroTurn(double setPoint) {
 		super(GYRO_TURN_KP, GYRO_TURN_KI, GYRO_TURN_KD);
@@ -26,18 +27,22 @@ public class GyroTurn extends PIDCommand {
 		Navx.getInstance().resetNavx();
 		DriveTrain.getInstance().enablePercentVbus();
 		setSetpoint(setPoint);
+		initTime = Timer.getFPGATimestamp();
 	}
 
 	@Override
 	protected void execute() {
+		if (Timer.getFPGATimestamp() - initTime > .1){
 		SmartDashboard.putNumber("GyroTurn Error", getPIDController().getError());
+		SmartDashboard.putNumber("GyroTurn DeltaError", deltaAngle);
 		deltaAngle = angle - (((Navx.getInstance().getHeading() + 180) % 360) - 180);
 		angle = ((Navx.getInstance().getHeading() + 180) % 360) - 180;
+		}
 	}
 
 	@Override
 	protected boolean isFinished() {
-		boolean val = (Math.abs(getPIDController().getError()) < GYRO_TURN_TOLERANCE_DEGREES) && (deltaAngle == GYRO_TURN_TOLERANCE_DELTA);
+		boolean val = (Math.abs(getPIDController().getError()) < GYRO_TURN_TOLERANCE_DEGREES) &&Math.abs(DriveTrain.getInstance().getleftA().getEncVelocity()) < GYRO_TURN_TOLERANCE_DELTA;
 		System.out.println("GyroTurn.isFinished(), returned "+val);
 		return val;
 	}

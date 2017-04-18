@@ -26,8 +26,8 @@ public class Navx {
 	}
 
 	public void resetNavx() {
-		ahrs.reset();
 		ahrs.zeroYaw();
+		ahrs.reset();
 	}
 
 }

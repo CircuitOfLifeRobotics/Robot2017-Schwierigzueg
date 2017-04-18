@@ -40,7 +40,7 @@ public class GyroTurnDynamic extends PIDCommand {
 
 	@Override
 	protected boolean isFinished() {
-		boolean val = (Math.abs(getPIDController().getError()) < GYRO_TURN_TOLERANCE_DEGREES) && (deltaAngle == GYRO_TURN_TOLERANCE_DELTA);
+		boolean val = (Math.abs(getPIDController().getError()) < GYRO_TURN_TOLERANCE_DEGREES) && Math.abs(DriveTrain.getInstance().getleftA().getEncVelocity()) < GYRO_TURN_TOLERANCE_DELTA;
 		System.out.println("GyroTurn.isFinished(), returned "+val);
 		return val;
 	}

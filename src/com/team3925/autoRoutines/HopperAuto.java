@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.team3925.commands.MPDrive;
 import com.team3925.commands.Timeout;
+import com.team3925.commands.compound.TurnShoot;
 import com.team3925.commands.driveTrain.GyroDrive;
 import com.team3925.commands.driveTrain.GyroTurn;
 import com.team3925.commands.intake.IntakeGoDown;
@@ -31,10 +32,14 @@ public class HopperAuto extends CommandGroup {
     	addSequential(new Timeout(.2));
 
     	LinkedList<ChangePoint> cps = new LinkedList<ChangePoint>();
-    	cps.add(new ChangePoint(100		,0,(4.4)));
-    	cps.add(new ChangePoint(100		,-0.01*turn,(5.90)));
+    	cps.add(new ChangePoint(200		,0,(2.7)));
+    	cps.add(new ChangePoint(200		,-0.01*turn,(5.850)));
+    	cps.add(new ChangePoint(100		,0,(7)));
     	
     	addSequential(new MPDrive(cps));
+    	addSequential(new Timeout(1.2));
+    	addSequential(new MPDrive(new ChangePoint(-100, 0, .5)));
+    	addSequential(new TurnShoot(-90));
     	
 
     }

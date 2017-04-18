@@ -27,13 +27,13 @@ public class Shooter extends Subsystem implements Recordable<ShooterState> {
 	private Shooter() {
 		shooterA = new CANTalon(RobotMap.TALON_ID_SHOOTER_A);
 		shooterB = new CANTalon(RobotMap.TALON_ID_SHOOTER_B);
-
+		
 		shooterA.changeControlMode(TalonControlMode.Speed);
 		shooterB.changeControlMode(TalonControlMode.Follower);
 		shooterB.set(shooterA.getDeviceID());
 
 		shooterA.configNominalOutputVoltage(+0.0f, -0.0f);
-		shooterA.configPeakOutputVoltage(+10.0f, -10.0f);
+		shooterA.configPeakOutputVoltage(+12.0f, -12.0f);
 
 		shooterA.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		shooterA.configEncoderCodesPerRev(4096);
@@ -43,7 +43,7 @@ public class Shooter extends Subsystem implements Recordable<ShooterState> {
 		shooterB.enableBrakeMode(false);
 
 		shooterA.setVoltageRampRate(0);
-		shooterA.setPID(.05, 0.000, .3, 0.0318, 0, 10, 0);
+		shooterA.setPID(.1, 0.000, 2, 0.031, 0, 0, 0);
 
 		SmartDashboard.putNumber("Speed", 3800);
 		SHOOTER_TRIM = 0;

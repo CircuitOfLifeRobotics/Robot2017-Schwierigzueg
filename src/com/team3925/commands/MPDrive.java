@@ -24,7 +24,6 @@ public class MPDrive extends Command {
 
 	public MPDrive(ChangePoint cp) {
 
-		this.cps = null;
 		curCp = cp;
 	}
 

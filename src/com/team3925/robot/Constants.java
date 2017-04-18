@@ -153,14 +153,14 @@ public class Constants {
 		TALON_BOOLCONSTANTS_INTAKE = new boolean[] { false, false, false, false, false };
 		TALON_BOOLCONSTANTS_HOOD = new boolean[] { false, false, false, false, true };
 		
-		GYRO_TURN_KP = 0.05;
-		GYRO_TURN_KI = 0.00005;
+		GYRO_TURN_KP = 0.12;
+		GYRO_TURN_KI = 0.000;
 		GYRO_TURN_KD = 0;
 		GYRO_TURN_MAX_TIME = 1;
 		GYRO_TURN_TOLERANCE_DEGREES = .5;
-		GYRO_TURN_TOLERANCE_DELTA = 0;
-		GYRO_TURN_OUTPUT_RANGE_LOWER = -.5;
-		GYRO_TURN_OUTPUT_RANGE_UPPER = .5;
+		GYRO_TURN_TOLERANCE_DELTA = 10;
+		GYRO_TURN_OUTPUT_RANGE_LOWER = -.3;
+		GYRO_TURN_OUTPUT_RANGE_UPPER = .3;
 	}
 
 	private Constants() {

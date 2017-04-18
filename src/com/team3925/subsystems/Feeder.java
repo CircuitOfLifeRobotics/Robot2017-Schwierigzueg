@@ -8,6 +8,7 @@ import com.team3925.util.recording.FeederState;
 import com.team3925.util.recording.Recordable;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Feeder extends Subsystem implements Recordable<FeederState> {
 
@@ -23,15 +24,27 @@ public class Feeder extends Subsystem implements Recordable<FeederState> {
 		feeder = new CANTalon(RobotMap.TALON_ID_FEEDER);
 		feeder.configNominalOutputVoltage(+0.0f, -0.0f);
 		feeder.configPeakOutputVoltage(+12.0f, -12.0f);
+		
+		
 		feeder.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		feeder.changeControlMode(TalonControlMode.PercentVbus);
+		feeder.changeControlMode(TalonControlMode.Speed);
+		feeder.configEncoderCodesPerRev(4096);
+		feeder.setEncPosition(0);
 		feeder.enableBrakeMode(false);
-		feeder.setPID(0.001, 0, .01, 0.1665, 0, 0, 0);
+		feeder.setPID(0.2, 0, .6, .53, 0, 0, 0);
 		feeder.enableBrakeMode(true);
+		
 	}
 
-	public void set(double percent) {
-		feeder.set(percent);
+	public void set(double vel) {
+		if (vel == 0){
+			feeder.changeControlMode(TalonControlMode.PercentVbus);
+			feeder.set(0);
+		}else{
+
+			feeder.changeControlMode(TalonControlMode.Speed);
+			feeder.set(vel);
+		}
 	}
 
 	@Override
@@ -47,6 +60,9 @@ public class Feeder extends Subsystem implements Recordable<FeederState> {
 	@Override
 	public void repeat(FeederState action) {
 		set(action.speed);
+	}
+	public double getFeederVel(){
+		return feeder.getEncVelocity();
 	}
 
 }

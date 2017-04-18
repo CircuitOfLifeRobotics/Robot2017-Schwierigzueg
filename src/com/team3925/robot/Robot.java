@@ -15,10 +15,11 @@ import com.team3925.autoRoutines.GearHopperAuto;
 import com.team3925.autoRoutines.HopperAuto;
 import com.team3925.autoRoutines.TestAuto;
 import com.team3925.autoRoutines.TwoGearCenter;
-import com.team3925.commands.SetShooter;
 import com.team3925.commands.Timeout;
 import com.team3925.commands.Vision;
 import com.team3925.commands.climber.ClimberToggle;
+import com.team3925.commands.compound.TurnShoot;
+import com.team3925.commands.compound.TurnShootEnd;
 import com.team3925.commands.driveTrain.DriveManual;
 import com.team3925.commands.driveTrain.DriveTrainShiftHigh;
 import com.team3925.commands.driveTrain.DriveTrainShiftLow;
@@ -29,6 +30,7 @@ import com.team3925.commands.intake.IntakeGoDown;
 import com.team3925.commands.intake.IntakeGoUp;
 import com.team3925.commands.intake.IntakeWheelsIn;
 import com.team3925.commands.intake.IntakeWheelsOff;
+import com.team3925.commands.shooter.SetShooter;
 import com.team3925.commands.shooter.SetShooterDynamic;
 import com.team3925.commands.shooter.SetShooterSmartDashboard;
 import com.team3925.commands.shooter.TrimShooterDown;
@@ -69,6 +71,9 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 
 	@Override
 	public void robotInit() {
+		Navx.getInstance().resetNavx();
+		DriveTrain.getInstance().zeroEncoders();
+		Vision.getInstance().start();
 		SmartDashboard.putString("Record Auto File Name", recordName);
 
 		driveTrainRecorder = new Recorder<>(DriveTrain.getInstance());
@@ -80,24 +85,19 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		sideChooser = new SendableChooser<>();
 		sideChooser.addDefault("Red", "RED");
 		sideChooser.addObject("Blue", "BLUE");
-		SmartDashboard.putData("SIDE CHOOSER", sideChooser);
+		SmartDashboard.putData("SIDE PICK", sideChooser);
 
 		autoChooser = new SendableChooser<>();
-		autoChooser.addDefault("Borring Center", "CENTER");
-		autoChooser.addDefault("lit Center shoz", "CENTER SHOOT");
-		autoChooser.addObject("BOI.getInstance()ler Gear", "BOI.getInstance()LER");
-		autoChooser.addObject("BOI.getInstance()ler Gear den da shotz", "BOI.getInstance()LER SHOOT");
+		autoChooser.addObject("lit Center shoz", "CENTER SHOOT");
+		autoChooser.addObject("Boiler Gear", "BOILER");
+		autoChooser.addObject("Boiler Gear den da shotz", "BOILER SHOOT");
 		autoChooser.addObject("Feeder Gear", "FEEDER");
-		autoChooser.addObject("Tap da hopper bOI.getInstance() shoz", "HOPPER");
-		autoChooser.addObject("supa fast gear hopper no time", "GEAR HOPPER");
-		autoChooser.addObject("Lit bOI.getInstance() dank Two Gear Auto", "TWO GEAR");
+		autoChooser.addObject("Tap da hopper boi shoz", "HOPPER");
 		autoChooser.addObject("Test Auto", "TEST");
-		autoChooser.addObject("Record Auto", "Record Auto");
-		SmartDashboard.putData("AUTO CHOOSER", autoChooser);
+		SmartDashboard.putData("AUTO PICK", autoChooser);
 
 		driveManual = new DriveManual(OI.getInstance());
 
-		Vision.getInstance().start();
 	}
 
 	@Override
@@ -112,6 +112,8 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 
 	@Override
 	public void autonomousInit() {
+		if (!Vision.getInstance().isRunning())
+			Vision.getInstance().start();
 		DriveTrain.getInstance().zeroEncoders();
 		chosenSide = sideChooser.getSelected();
 		CommandGroup chosenAuto = null;
@@ -123,10 +125,10 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		case "CENTER SHOOT":
 			chosenAuto = new CenterShootAuto(chosenSide);
 			break;
-		case "BOI.getInstance()LER":
+		case "BOILER":
 			chosenAuto = new BoilerAuto(chosenSide);
 			break;
-		case "BOI.getInstance()LER SHOOT":
+		case "BOILER SHOOT":
 			chosenAuto = new BoilerShootAuto(chosenSide);
 			break;
 		case "FEEDER":
@@ -151,18 +153,23 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 			chosenAuto = new SingleCommandGroup();
 			break;
 		}
+		System.out.println(chosenAuto.getName());
 		chosenAuto.start();
-		Vision.getInstance().start();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
+		SmartDashboard.putNumber("LEFT VEL", DriveTrain.getInstance().getleftA().getEncVelocity());
+		SmartDashboard.putNumber("RIGHT VEL", DriveTrain.getInstance().getrightA().getEncVelocity());
 		Scheduler.getInstance().run();
 	}
 
 	@Override
 	public void teleopInit() {
 		// Intake
+
+		if (!Vision.getInstance().isRunning())
+			Vision.getInstance().start();
 		CommandGroup runIntake = new CommandGroup();
 		CommandGroup stopIntake = new CommandGroup();
 		{
@@ -187,21 +194,10 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		OI.getInstance().whenXboxButtonPressed(4, new ClimberToggle());
 
 		// Auto Shooting
-		CommandGroup turnShoot = new CommandGroup();
-		{
-			turnShoot.addSequential(new SetShooterDynamic());
-			turnShoot.addSequential(new GyroTurn(0));
-			turnShoot.addSequential(new GyroTurnDynamic());
-			turnShoot.addSequential(new Timeout(1));
-			turnShoot.addSequential(new SetFeeder(-1));
-		}
-		// turnShoot.addSequential(new UpdateShooterSpeed(0.1));
-		CommandGroup stopTurnShoot = new CommandGroup();
-		{
-			stopTurnShoot.addSequential(new SetShooter(0));
-			stopTurnShoot.addSequential(new SetFeeder(0));
-		}
-		stopTurnShoot.addSequential(new Command() {
+		CommandGroup turnShootEnd = new CommandGroup();
+		turnShootEnd.addSequential(new SetFeeder(0));
+		turnShootEnd.addSequential(new SetShooter(0));
+		turnShootEnd.addSequential(new Command() {
 			@Override
 			protected void initialize() {
 				driveManual.start();
@@ -212,8 +208,8 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 				return true;
 			}
 		});
-		OI.getInstance().whenXboxButtonPressed(8, turnShoot);
-		OI.getInstance().whenXboxButtonReleased(8, stopTurnShoot);
+		OI.getInstance().whenXboxButtonPressed(8, new TurnShoot(0));
+		OI.getInstance().whenXboxButtonReleased(8, turnShootEnd);
 
 		// Shooting
 		OI.getInstance().whenStickButtonPressed(2, new SetFeeder(-.65));
@@ -275,13 +271,13 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		driveTrainRecorder.setModeRecord();
 		driveTrainRecorder.start();
 
-		Vision.getInstance().start();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Shooter Vel", Shooter.getInstance().getShooterVel() / 4089 * 10 * 60);
+		SmartDashboard.putNumber("Feeder Vel", Feeder.getInstance().getFeederVel() / 4089 * 10 * 60);
 		SmartDashboard.putNumber("Shooter Error", Shooter.getInstance().getError() / 4089 * 10 * 60);
 		SmartDashboard.putNumber("Distance", Vision.getInstance().getDistance());
 		SmartDashboard.putNumber("Offset Angle", Vision.getInstance().getTurnAngle());

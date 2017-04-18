@@ -12,6 +12,7 @@ public class SetShooterDynamic extends Command {
 
 	protected void initialize() {
 		Shooter.getInstance().setShooterVel(Vision.getInstance().getSpeed());
+		System.out.println(Vision.getInstance().getSpeed());
 	}
 
 	protected boolean isFinished() {

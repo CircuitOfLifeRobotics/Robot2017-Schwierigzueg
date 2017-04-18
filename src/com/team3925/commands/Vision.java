@@ -26,12 +26,12 @@ public class Vision extends Command {
 
 	private static Vision instance;
 
-	private UsbCamera cam;
-	private CvSink camSink;
+	private UsbCamera cams[];
+	private CvSink camSinks[];
 	private CvSource source;
 	private MjpegServer server;
-	private Mat frame;
-	private Mat processed;
+	private Mat frames[];
+	private Mat processeds[];
 	public Rect visionUpper;
 	public Rect visionLower;
 
@@ -39,12 +39,12 @@ public class Vision extends Command {
 	private Mat hierarchy;
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
-	private TimerTask grabFrame;
+	private TimerTask[] grabFrameTasks;
 	java.util.Timer timer;
 
-	private final double[] hsvThresholdHue = { 74.5, 89.5 };
-	private final double[] hsvThresholdSaturation = { 160, 255 };
-	private final double[] hsvThresholdValue = { 160, 255 };
+	private final double[] hsvThresholdHue = { 63, 93 };
+	private final double[] hsvThresholdSaturation = { 79, 255 };
+	private final double[] hsvThresholdValue = { 89, 255 };
 	private final double filterContoursMinArea = 10;
 	private final double filterContoursMinPerimeter = 0.0;
 	private final double filterContoursMinWidth = 20;
@@ -62,7 +62,7 @@ public class Vision extends Command {
 	private final Scalar unfilteredColor = new Scalar(0, 0, 255);
 	private final Scalar color = new Scalar(0, 127, 255);
 
-	private final double TURN_OFFSET = 0;
+	private final double TURN_OFFSET = 1;
 	private final double TARGET_WIDTH_FEET = 15d / 12d;
 	private final double TARGET_HEIGHT_OFFSET = 10d / 12d;
 	private final double FOV_WIDTH_PIXELS = 320;
@@ -74,7 +74,8 @@ public class Vision extends Command {
 
 	public final TreeMap<Double, Double> visionData;
 
-	private boolean frameGotten;
+	private boolean[] frameGottens;
+	private final boolean hasGearCam = UsbCamera.enumerateUsbCameras().length > 1;
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -85,25 +86,6 @@ public class Vision extends Command {
 	}
 
 	private Vision() {
-		cam = new UsbCamera("Turret Cam", 0);
-		camSink = new CvSink("Turret Cam Sink");
-		source = new CvSource("Turret Cam Processed Source", new VideoMode(VideoMode.PixelFormat.kBGR, 320, 240, 5));
-		server = new MjpegServer("Turret Cam Processed Server", 1185);
-		camSink.setSource(cam);
-		server.setSource(source);
-		frame = new Mat();
-		processed = new Mat();
-
-		grabFrame = new TimerTask() {
-			@Override
-			public void run() {
-				camSink.grabFrame(frame);
-				frameGotten = true;
-			}
-		};
-
-		frameGotten = false;
-
 		visionData = new TreeMap<Double, Double>(new Comparator<Double>() {
 			@Override
 			public int compare(Double o1, Double o2) {
@@ -111,33 +93,87 @@ public class Vision extends Command {
 			}
 		});
 		// Distance (FT) - Speed (RPM)
-		visionData.put(6.9, -2900.0);
-		visionData.put(7.6, -3100.0);
-		visionData.put(8.7, -3250.0);
+		visionData.put(6.0, -2775.0);
+		visionData.put(7.0, -2950.0);
+		visionData.put(8.0, -3070.0);
+		visionData.put(9.0, -3200.0);
+		visionData.put(10.0, -3325.0);
+		visionData.put(11.0, -3450.0);
+		visionData.put(12.0,  -3575.0);
+
+		cams = new UsbCamera[2];
+		camSinks = new CvSink[2];
+		frames = new Mat[2];
+		processeds = new Mat[2];
+
+		cams[0] = new UsbCamera("Turret Cam", 0);
+		camSinks[0] = new CvSink("Turret Cam Sink");
+		source = new CvSource("Turret Cam Processed Source", new VideoMode(VideoMode.PixelFormat.kBGR, 320, 240, 5));
+		server = new MjpegServer("Turret Cam Processed Server", 1185);
+		camSinks[0].setSource(cams[0]);
+		server.setSource(source);
+		frames[0] = new Mat();
+		processeds[0] = new Mat();
+
+		if (hasGearCam) {
+			cams[1] = new UsbCamera("Gear Cam", 1);
+			camSinks[1] = new CvSink("Gear Cam Sink");
+			camSinks[1].setSource(cams[1]);
+			frames[1] = new Mat();
+			processeds[1] = new Mat();
+		}
+
+		grabFrameTasks = new TimerTask[] { new TimerTask() {
+			@Override
+			public void run() {
+				camSinks[0].grabFrame(frames[0]);
+				frameGottens[0] = true;
+			}
+		}, new TimerTask() {
+			@Override
+			public void run() {
+				camSinks[1].grabFrame(frames[1]);
+				frameGottens[1] = true;
+			}
+		} };
+
+		frameGottens = new boolean[] { false, false };
 
 		timer = new java.util.Timer();
-		timer.scheduleAtFixedRate(grabFrame, 0, 100);
+		timer.scheduleAtFixedRate(grabFrameTasks[0], 0, 100);
+		if (hasGearCam) {
+			timer.scheduleAtFixedRate(grabFrameTasks[1], 0, 100);
+		}
 	}
 
 	@Override
 	protected void initialize() {
-		cam.setFPS(5);
-		cam.setExposureManual(10);
-		cam.setWhiteBalanceManual(0);
-		cam.setBrightness(10);
-		cam.setResolution(320, 240);
+		cams[0].setFPS(5);
+		cams[0].setExposureManual(1);
+		cams[0].setWhiteBalanceManual(0);
+		cams[0].setBrightness(10);
+		cams[0].setResolution(320, 240);
+
+		if (hasGearCam) {
+			cams[1].setFPS(5);
+			cams[1].setExposureManual(40);
+			cams[1].setWhiteBalanceManual(3000);
+			cams[1].setBrightness(40);
+			cams[1].setResolution(320, 240);
+		}
+
 		findContoursOutput = new ArrayList<>();
 		filterContoursOutput = new ArrayList<>();
-		grabFrame.run();
+		grabFrameTasks[0].run();
 	}
 
 	@Override
 	protected void execute() {
-		if (frameGotten) {
-			frameGotten = false;
-			Imgproc.cvtColor(frame, processed, Imgproc.COLOR_BGR2HSV);
+		if (frameGottens[0]) {
+			frameGottens[0] = false;
+			Imgproc.cvtColor(frames[0], processeds[0], Imgproc.COLOR_BGR2HSV);
 
-			Core.inRange(processed, new Scalar(hsvThresholdHue[0], hsvThresholdSaturation[0], hsvThresholdValue[0]),
+			Core.inRange(processeds[0], new Scalar(hsvThresholdHue[0], hsvThresholdSaturation[0], hsvThresholdValue[0]),
 					new Scalar(hsvThresholdHue[1], hsvThresholdSaturation[1], hsvThresholdValue[1]),
 					hsvThresholdOutput);
 
@@ -195,17 +231,23 @@ public class Vision extends Command {
 					visionLower = rect0;
 					visionUpper = rect1;
 				}
-				Imgproc.rectangle(frame, rect0.tl(), rect0.br(), color);
-				Imgproc.rectangle(frame, rect1.tl(), rect1.br(), color);
+				Imgproc.rectangle(frames[0], rect0.tl(), rect0.br(), color);
+				Imgproc.rectangle(frames[0], rect1.tl(), rect1.br(), color);
 			} else if (findContoursOutput.size() >= 2) {
-				Imgproc.drawContours(frame, findContoursOutput, 0, unfilteredColor, thickness);
-				Imgproc.drawContours(frame, findContoursOutput, 1, unfilteredColor, thickness);
+				Imgproc.drawContours(frames[0], findContoursOutput, 0, unfilteredColor, thickness);
+				Imgproc.drawContours(frames[0], findContoursOutput, 1, unfilteredColor, thickness);
 			}
-
 		} else {
-
 		}
-		source.putFrame(frame);
+		if (frameGottens[1]) {
+			frameGottens[1] = false;
+		} else {
+		}
+		if (hasGearCam) {
+			source.putFrame(frames[1]);
+		} else {
+			source.putFrame(frames[0]);
+		}
 	}
 
 	public double getDistance() {

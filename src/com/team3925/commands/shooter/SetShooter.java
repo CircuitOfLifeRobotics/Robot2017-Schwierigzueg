@@ -1,4 +1,4 @@
-package com.team3925.commands;
+package com.team3925.commands.shooter;
 
 import com.team3925.subsystems.Shooter;
 
