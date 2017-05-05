@@ -38,12 +38,13 @@ public class MPDrive extends Command {
 
 	@Override
 	protected void execute() {
-		curEncPos = Math.abs((DriveTrain.getInstance().getLeftEncRaw() + DriveTrain.getInstance().getRightEncRaw()) / 2
+		curEncPos = Math.abs((DriveTrain.getInstance().getLeftEncRaw() + DriveTrain.getInstance().getRightEncRaw())/2
 				- startEncPos);
 
-		SmartDashboard.putNumber("encoderPos", curEncPos);
-		SmartDashboard.putNumber("changePoint", finalDist);
+		SmartDashboard.putNumber("curEncPos", curEncPos);
+		SmartDashboard.putNumber("MPDrive Goal", curCp.getEncoderChangePoint());
 		if (Math.abs(curEncPos) >= Math.abs(curCp.getEncoderChangePoint()) && !cps.isEmpty()) {
+			System.out.println("MPDrive changed point.");
 			curCp = cps.removeFirst();
 		}
 
@@ -71,7 +72,7 @@ public class MPDrive extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return curEncPos >= curCp.getEncoderChangePoint() && cps.isEmpty();
+		return curEncPos >= curCp.getEncoderChangePoint()&& cps.isEmpty();
 	}
 
 	@Override

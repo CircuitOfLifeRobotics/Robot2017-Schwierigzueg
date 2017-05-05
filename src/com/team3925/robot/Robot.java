@@ -1,11 +1,6 @@
 
 package com.team3925.robot;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.team3925.autoRoutines.BoilerAuto;
 import com.team3925.autoRoutines.BoilerShootAuto;
 import com.team3925.autoRoutines.CenterAuto;
@@ -15,37 +10,37 @@ import com.team3925.autoRoutines.GearHopperAuto;
 import com.team3925.autoRoutines.HopperAuto;
 import com.team3925.autoRoutines.TestAuto;
 import com.team3925.autoRoutines.TwoGearCenter;
+import com.team3925.autoRoutines.recorded.BoilerGearShootRecorded;
+import com.team3925.autoRoutines.recorded.CenterGearShootRecorded;
+import com.team3925.autoRoutines.recorded.ExampleRecorded;
+import com.team3925.autoRoutines.recorded.FeederGearShootRecorded;
+import com.team3925.commands.SaveRecordSmartDashboard;
 import com.team3925.commands.Timeout;
 import com.team3925.commands.Vision;
 import com.team3925.commands.climber.ClimberToggle;
 import com.team3925.commands.compound.TurnShoot;
-import com.team3925.commands.compound.TurnShootEnd;
 import com.team3925.commands.driveTrain.DriveManual;
 import com.team3925.commands.driveTrain.DriveTrainShiftHigh;
 import com.team3925.commands.driveTrain.DriveTrainShiftLow;
-import com.team3925.commands.driveTrain.GyroTurn;
-import com.team3925.commands.driveTrain.GyroTurnDynamic;
+import com.team3925.commands.driveTrain.ToggleManualDriveOnlyForward;
 import com.team3925.commands.feeder.SetFeeder;
 import com.team3925.commands.intake.IntakeGoDown;
 import com.team3925.commands.intake.IntakeGoUp;
 import com.team3925.commands.intake.IntakeWheelsIn;
 import com.team3925.commands.intake.IntakeWheelsOff;
 import com.team3925.commands.shooter.SetShooter;
-import com.team3925.commands.shooter.SetShooterDynamic;
 import com.team3925.commands.shooter.SetShooterSmartDashboard;
 import com.team3925.commands.shooter.TrimShooterDown;
 import com.team3925.commands.shooter.TrimShooterUp;
 import com.team3925.subsystems.DriveTrain;
-import com.team3925.subsystems.Feeder;
-import com.team3925.subsystems.Intake;
 import com.team3925.subsystems.Navx;
 import com.team3925.subsystems.Shooter;
 import com.team3925.util.SingleCommandGroup;
-import com.team3925.util.recording.DriveTrainState;
-import com.team3925.util.recording.Recordable;
 import com.team3925.util.recording.Recorder;
+import com.team3925.util.recording.RobotRecorder;
 import com.team3925.util.recording.RobotState;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -54,29 +49,28 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Robot extends IterativeRobot implements Recordable<RobotState> {
+public class Robot extends IterativeRobot {
+	//As of 7:12 AM 4/21/20
 	private SendableChooser<String> sideChooser;
 	private SendableChooser<String> autoChooser;
 	private String chosenSide;
 
 	private DriveManual driveManual;
 
-	private String recordName = "none";
-	private final String recordFilePath = "/home/lvuser/robotRecords/";
-	private final String recordExtension = ".record";
+	public static final String recordFilePath = "/home/lvuser/robotRecords/";
+	public static final String recordExtension = ".record";
 
 	public static NetworkTable visionData;
 
-	private Recorder<DriveTrainState> driveTrainRecorder;
+	private Recorder<RobotState> botRecorder;
 
 	@Override
 	public void robotInit() {
 		Navx.getInstance().resetNavx();
 		DriveTrain.getInstance().zeroEncoders();
-		Vision.getInstance().start();
-		SmartDashboard.putString("Record Auto File Name", recordName);
+		SmartDashboard.putString("Record Auto File Name", recordFilePath + "none" + recordExtension);
 
-		driveTrainRecorder = new Recorder<>(DriveTrain.getInstance());
+		botRecorder = new Recorder<>(new RobotRecorder());
 
 		visionData = NetworkTable.getTable("GRIP/Vision");
 		DriveTrain.getInstance().zeroEncoders();
@@ -88,21 +82,27 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		SmartDashboard.putData("SIDE PICK", sideChooser);
 
 		autoChooser = new SendableChooser<>();
-		autoChooser.addObject("lit Center shoz", "CENTER SHOOT");
+		autoChooser.addObject(" Center ", "CENTER");
+		autoChooser.addObject("center Shoot", "CENTER SHOOT");
 		autoChooser.addObject("Boiler Gear", "BOILER");
-		autoChooser.addObject("Boiler Gear den da shotz", "BOILER SHOOT");
+		autoChooser.addObject("Boiler Gear shootz", "BOILER SHOOT");
 		autoChooser.addObject("Feeder Gear", "FEEDER");
-		autoChooser.addObject("Tap da hopper boi shoz", "HOPPER");
+		autoChooser.addObject("hopper", "HOPPER");
 		autoChooser.addObject("Test Auto", "TEST");
 		SmartDashboard.putData("AUTO PICK", autoChooser);
 
 		driveManual = new DriveManual(OI.getInstance());
+		Vision.getInstance();
+	}
 
+	@Override
+	public void robotPeriodic() {
 	}
 
 	@Override
 	public void disabledInit() {
-		driveTrainRecorder.cancel();
+		driveManual.cancel();
+		botRecorder.cancel();
 	}
 
 	@Override
@@ -112,8 +112,6 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 
 	@Override
 	public void autonomousInit() {
-		if (!Vision.getInstance().isRunning())
-			Vision.getInstance().start();
 		DriveTrain.getInstance().zeroEncoders();
 		chosenSide = sideChooser.getSelected();
 		CommandGroup chosenAuto = null;
@@ -146,30 +144,39 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		case "TEST":
 			chosenAuto = new TestAuto();
 			break;
-		case "Record Auto":
-			driveTrainRecorder.cancel();
-			driveTrainRecorder.setModePlayback();
-			driveTrainRecorder.start();
+		case "RECORD":
+			DriveTrain.getInstance().enableSpeed();
+			botRecorder.cancel();
+			botRecorder.setModePlayback();
+			botRecorder.start();
 			chosenAuto = new SingleCommandGroup();
 			break;
+		case "EXAMPLE_RECORD":
+			chosenAuto = new ExampleRecorded();
+		case "REC_BGS":
+			chosenAuto = new BoilerGearShootRecorded();
+		case "REC_CGS":
+			chosenAuto = new CenterGearShootRecorded();
+		case "REC_FGS":
+			chosenAuto = new FeederGearShootRecorded();
+			break;
 		}
-		System.out.println(chosenAuto.getName());
 		chosenAuto.start();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		SmartDashboard.putNumber("LEFT VEL", DriveTrain.getInstance().getleftA().getEncVelocity());
-		SmartDashboard.putNumber("RIGHT VEL", DriveTrain.getInstance().getrightA().getEncVelocity());
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("Drivetrain left enc pos", DriveTrain.getInstance().getLeftEncRaw());
+		SmartDashboard.putNumber("Drivetrain right enc pos", DriveTrain.getInstance().getRightEncRaw());
+		SmartDashboard.putNumber("Drivetrain left enc vel", DriveTrain.getInstance().getLeftEncVel()/4096*600);
+		SmartDashboard.putNumber("Drivetrain right enc vel", DriveTrain.getInstance().getRightEncVel()/4096*600);
+		
 	}
 
 	@Override
 	public void teleopInit() {
 		// Intake
-
-		if (!Vision.getInstance().isRunning())
-			Vision.getInstance().start();
 		CommandGroup runIntake = new CommandGroup();
 		CommandGroup stopIntake = new CommandGroup();
 		{
@@ -192,6 +199,9 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 
 		// Climbing
 		OI.getInstance().whenXboxButtonPressed(4, new ClimberToggle());
+//		OI.getInstance().whenXboxButtonPressed(4, new ToggleManualDriveOnlyForward(driveManual));
+		OI.getInstance().whenStickButtonPressed(1, new ClimberToggle());
+//		OI.getInstance().whenStickButtonPressed(1, new ToggleManualDriveOnlyForward(driveManual));
 
 		// Auto Shooting
 		CommandGroup turnShootEnd = new CommandGroup();
@@ -212,77 +222,29 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 		OI.getInstance().whenXboxButtonReleased(8, turnShootEnd);
 
 		// Shooting
-		OI.getInstance().whenStickButtonPressed(2, new SetFeeder(-.65));
-		OI.getInstance().whenStickButtonReleased(2, new SetFeeder(0));
-		OI.getInstance().whenStickButtonPressed(1, new SetShooterSmartDashboard());
-		OI.getInstance().whenStickButtonReleased(1, new SetShooter(0));
 
 		OI.getInstance().whenXboxButtonPressed(5, new TrimShooterUp());
 		OI.getInstance().whenXboxButtonPressed(6, new TrimShooterDown());
 
 		driveManual.start();
 
-		OI.getInstance().whenXboxButtonPressed(9, new Command() {
-			@Override
-			protected void initialize() {
-				try {
-					Recorder.save(driveTrainRecorder,
-							new FileOutputStream(recordFilePath + recordName + recordExtension));
-				} catch (FileNotFoundException e) {
-					System.out.println("the file was not found");
-					e.printStackTrace();
-					System.exit(0);
-				} catch (IOException e) {
-					System.out.println("the io was excepted");
-					System.exit(0);
-				}
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		});
-		OI.getInstance().whenXboxButtonPressed(10, new Command() {
-			@Override
-			protected void initialize() {
-				try {
-					driveTrainRecorder = (Recorder<DriveTrainState>) Recorder
-							.recall(new FileInputStream(recordFilePath + recordName + recordExtension));
-					System.out.println("recalled!");
-				} catch (ClassNotFoundException e) {
-					System.out.println("the clazz was not found");
-					System.exit(0);
-				} catch (FileNotFoundException e) {
-					System.out.println("the file was not fouhnd");
-					System.exit(0);
-				} catch (IOException e) {
-					System.out.println("the io was excepted");
-					System.exit(0);
-				}
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		});
-		driveTrainRecorder.cancel();
-		driveTrainRecorder.setModeRecord();
-		driveTrainRecorder.start();
+		OI.getInstance().whenXboxButtonPressed(9, new SaveRecordSmartDashboard(botRecorder, "Record Auto File Name"));
+		botRecorder.cancel();
+		botRecorder.setModeRecord();
+		botRecorder.start();
 
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Shooter Vel", Shooter.getInstance().getShooterVel() / 4089 * 10 * 60);
-		SmartDashboard.putNumber("Feeder Vel", Feeder.getInstance().getFeederVel() / 4089 * 10 * 60);
-		SmartDashboard.putNumber("Shooter Error", Shooter.getInstance().getError() / 4089 * 10 * 60);
+		SmartDashboard.putNumber("Drivetrain left enc pos", DriveTrain.getInstance().getLeftEncRaw());
+		SmartDashboard.putNumber("Drivetrain right enc pos", DriveTrain.getInstance().getRightEncRaw());
+		SmartDashboard.putNumber("Drivetrain left enc vel", DriveTrain.getInstance().getLeftEncVel());
+		SmartDashboard.putNumber("Drivetrain right enc vel", DriveTrain.getInstance().getRightEncVel());
+		
 		SmartDashboard.putNumber("Distance", Vision.getInstance().getDistance());
-		SmartDashboard.putNumber("Offset Angle", Vision.getInstance().getTurnAngle());
-		SmartDashboard.putNumber("Shooter Set", Vision.getInstance().getSpeed() - Shooter.getInstance().SHOOTER_TRIM);
-		SmartDashboard.putNumber("Navx heading", Navx.getInstance().getHeading());
+		SmartDashboard.putNumber("Shooter enc vel", Shooter.getInstance().getShooterVel()*60*10/4098);
 	}
 
 	@Override
@@ -293,17 +255,4 @@ public class Robot extends IterativeRobot implements Recordable<RobotState> {
 	public void testPeriodic() {
 	}
 
-	@Override
-	public RobotState record() {
-		return new RobotState(DriveTrain.getInstance().record(), Feeder.getInstance().record(),
-				Intake.getInstance().record(), Shooter.getInstance().record());
-	}
-
-	@Override
-	public void repeat(RobotState action) {
-		DriveTrain.getInstance().repeat(action.driveTrainState);
-		Feeder.getInstance().repeat(action.feederState);
-		Intake.getInstance().repeat(action.intakeState);
-		Shooter.getInstance().repeat(action.shooterState);
-	}
 }

@@ -1,7 +1,10 @@
 package com.team3925.util.recording;
 
-public class IntakeState {
+import java.io.Serializable;
 
+public class IntakeState implements Serializable {
+
+	private static final long serialVersionUID = -8170787415559249973L;
 	public boolean upDown;
 	public double speed;
 

@@ -4,6 +4,7 @@ import com.team3925.subsystems.DriveTrain;
 import com.team3925.util.DriveManualInput;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveManual extends Command {
 
@@ -15,6 +16,8 @@ public class DriveManual extends Command {
 	private double scale;
 	private double left, right;
 
+	public boolean onlyForward;
+
 	public DriveManual(DriveManualInput driveInput) {
 		driveTrain = DriveTrain.getInstance();
 		requires(driveTrain);
@@ -24,6 +27,7 @@ public class DriveManual extends Command {
 	@Override
 	protected void initialize() {
 		DriveTrain.getInstance().enablePercentVbus();
+		onlyForward = false;
 		if (input == null)
 			input = new DriveManualInput() {
 				@Override
@@ -41,7 +45,11 @@ public class DriveManual extends Command {
 	@Override
 	protected void execute() {
 		fwd = input.getForward();
+//		if (onlyForward)
+//			fwd = Math.min(fwd, 0);
 		turn = input.getRight();
+		// fwd = Math.signum(fwd)*Math.abs(Math.pow(Math.abs(fwd), 2));
+		// turn = 1.333333333*Math.signum(turn)*(Math.abs(turn)-0.3);
 		prelimLeft = fwd + turn;
 		prelimRight = fwd - turn;
 		if (prelimLeft == 0 && prelimRight == 0) {

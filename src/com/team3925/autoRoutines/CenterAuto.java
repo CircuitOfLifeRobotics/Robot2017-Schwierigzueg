@@ -1,9 +1,14 @@
 package com.team3925.autoRoutines;
 
+import java.util.LinkedList;
+
+import com.team3925.commands.MPDrive;
+import com.team3925.commands.Timeout;
 import com.team3925.commands.driveTrain.GyroDrive;
 import com.team3925.commands.driveTrain.GyroTurn;
 import com.team3925.commands.intake.IntakeGoDown;
 import com.team3925.robot.Constants;
+import com.team3925.util.ChangePoint;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -12,20 +17,22 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class CenterAuto extends CommandGroup {
 	
-	double offset;
+	double offset,turn;
 
     public CenterAuto(String side) {
-        // Add Commands here:
-        // e.g. addSequential(new Command1());
-        //      addSequential(new Command2());
-        // these will run in order.
     	if (side.equalsIgnoreCase("BLUE")){
-    		offset = Constants.AUTO_BLUE_OFFSET;
+    		turn = 1;
     	} else {
-    		offset = Constants.AUTO_RED_OFFSET;
+    		turn = -1;
     	}
+
+    	addSequential(new Timeout(.2));
+
+    	LinkedList<ChangePoint> cps = new LinkedList<ChangePoint>();
+    	cps.add(new ChangePoint(50		,0,(4)));
+    	cps.add(new ChangePoint(25		,0,(6)));
     	
-    	addSequential(new GyroDrive(6.08 + offset));
+    	addSequential(new MPDrive(cps));
     	addSequential(new PlaceGear(2));
     	
     }

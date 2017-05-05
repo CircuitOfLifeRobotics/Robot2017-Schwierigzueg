@@ -1,7 +1,10 @@
 package com.team3925.util.recording;
 
-public class RobotState {
+import java.io.Serializable;
 
+public class RobotState implements Serializable {
+
+	private static final long serialVersionUID = 302184217159295552L;
 	public DriveTrainState driveTrainState;
 	public FeederState feederState;
 	public IntakeState intakeState;
@@ -23,5 +26,5 @@ public class RobotState {
 		} else
 			return false;
 	}
-
+	
 }

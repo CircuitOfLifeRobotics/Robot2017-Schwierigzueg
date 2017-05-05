@@ -20,19 +20,18 @@ public class BoilerShootAuto extends CommandGroup {
 			} else {
 				turn = -1;
 			}
-
+			
 			addSequential(new Timeout(.1));
 
 			LinkedList<ChangePoint> cps = new LinkedList<ChangePoint>();
 
-			cps.add(new ChangePoint(250, -0.65 * turn, (120.87 - 37) / 12));
-			cps.add(new ChangePoint(150, 0, (144.87) / 12));
+			cps.add(new ChangePoint(50, -.65*turn,37.1));
 
 			addSequential(new MPDrive(cps));
 
 			addSequential(new PlaceGear(2));
-			addSequential(new MPDrive(new ChangePoint(-200, .1, 3)));
-			addSequential(new MPDrive(new ChangePoint(100, 0, 1)));
+			addSequential(new MPDrive(new ChangePoint(-50, -.1*turn, 3)));
+			addSequential(new MPDrive(new ChangePoint(25, 0, 1)));
 		//addSequential(new GyroTurn(150));
 			addSequential(new Timeout(1));
 		addSequential(new TurnShoot(0));

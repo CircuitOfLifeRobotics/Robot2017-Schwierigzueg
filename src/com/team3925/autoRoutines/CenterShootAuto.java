@@ -23,7 +23,7 @@ public class CenterShootAuto extends CommandGroup {
 
 
     public CenterShootAuto(String side) {
-    	if (side.equalsIgnoreCase("BLUE")){
+      	if (side.equalsIgnoreCase("BLUE")){
     		turn = 1;
     	} else {
     		turn = -1;
@@ -32,14 +32,15 @@ public class CenterShootAuto extends CommandGroup {
     	addSequential(new Timeout(.2));
 
     	LinkedList<ChangePoint> cps = new LinkedList<ChangePoint>();
-    	cps.add(new ChangePoint(200		,0,(4)));
-    	cps.add(new ChangePoint(100		,0,(6)));
+    	cps.add(new ChangePoint(50		,0,(4)));
+    	cps.add(new ChangePoint(25		,0,(6)));
     	
     	addSequential(new MPDrive(cps));
-    	addSequential(new PlaceGear(2));
-    	addSequential(new MPDrive(new ChangePoint(150, .5, 1.5)));
-    	addSequential(new MPDrive(new ChangePoint(250, 0, 3)));
-    	addSequential(new TurnShoot(-20));    	
+    	addSequential(new PlaceGear(.5));
+
+    	addSequential(new MPDrive(new ChangePoint(-75, -.4*turn, 1.5)));
+    	addSequential(new MPDrive(new ChangePoint(50, 1*turn, 2.75)));
+    	addSequential(new TurnShoot(0));    	
 
     }
     

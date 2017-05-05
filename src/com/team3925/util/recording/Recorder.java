@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Recorder<T> extends Command implements Serializable {
+public class Recorder<T extends Serializable> extends Command implements Serializable {
 
 	private static final long serialVersionUID = 131800189448476133L;
 
 	private LinkedList<Double> recordTimes;
 	private LinkedList<T> recordActions;
-	private transient final Recordable<T> recordable;
+	private Recordable<T> recordable;
 	private transient T currentAction;
 	private transient double currentTime;
 	private transient boolean hasNextAction;
@@ -80,7 +80,7 @@ public class Recorder<T> extends Command implements Serializable {
 		if (recordMode) {
 			currentTime = Timer.getFPGATimestamp();
 			currentAction = recordable.record();
-			if (recordActions.size() < 1) {
+			if (recordActions.size() < 2) {
 				recordActions.add(currentAction);
 				recordTimes.add(currentTime - startTime);
 			} else if (!recordActions.getLast().equals(currentAction)) {
@@ -94,7 +94,7 @@ public class Recorder<T> extends Command implements Serializable {
 			hasNextAction = (currentIdx < recordTimes.size());
 			if (hasNextAction)
 				if (recordTimes.get(currentIdx) <= currentTime - startTime) {
-					SmartDashboard.putString("Time playback", Double.toString(currentTime-startTime));
+					SmartDashboard.putString("Time playback", Double.toString(currentTime - startTime));
 					recordable.repeat(recordActions.get(currentIdx++));
 				}
 		}
@@ -112,17 +112,20 @@ public class Recorder<T> extends Command implements Serializable {
 	@Override
 	protected void interrupted() {
 	}
-	
+
 	public static void save(Recorder<?> recorder, FileOutputStream out) throws IOException {
 		ObjectOutputStream objectOut = new ObjectOutputStream(out);
 		objectOut.writeObject(recorder);
 		objectOut.close();
 		out.close();
 	}
-	
+
 	/**
-	 * Returns null if the given FileInputStream does not point to a Recorder<?> object
-	 * @param in a FileInputStream that points to a Recorder<?> object
+	 * Returns null if the given FileInputStream does not point to a Recorder<?>
+	 * object
+	 * 
+	 * @param in
+	 *            a FileInputStream that points to a Recorder<?> object
 	 * @return the Recorder<?> pointed to by the FileInputStream
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -136,5 +139,5 @@ public class Recorder<T> extends Command implements Serializable {
 			return (Recorder<?>) obj;
 		return null;
 	}
-	
+
 }

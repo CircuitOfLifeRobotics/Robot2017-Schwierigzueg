@@ -1,4 +1,7 @@
 package com.team3925.util.recording;
+
+import java.io.Serializable;
+
 /**
  * This interface defines something whose actions can be recorded and played back<br/>
  * Use a {@link Recorder} to handle recording and playing back the actions of some {@link Recordable}
@@ -6,7 +9,7 @@ package com.team3925.util.recording;
  * 
  * @param <T> the type of Object that is a single snapshot in a recording
  */
-public interface Recordable<T> {
+public interface Recordable<T> extends Serializable {
 	
 	/**
 	 * @return a signle snapshot in a recording

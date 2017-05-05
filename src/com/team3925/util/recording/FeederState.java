@@ -1,7 +1,10 @@
 package com.team3925.util.recording;
 
-public class FeederState {
+import java.io.Serializable;
 
+public class FeederState implements Serializable {
+
+	private static final long serialVersionUID = 94923787096026432L;
 	public double speed;
 
 	public FeederState(double speed) {

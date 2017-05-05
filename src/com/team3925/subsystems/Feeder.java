@@ -30,9 +30,8 @@ public class Feeder extends Subsystem implements Recordable<FeederState> {
 		feeder.changeControlMode(TalonControlMode.Speed);
 		feeder.configEncoderCodesPerRev(4096);
 		feeder.setEncPosition(0);
-		feeder.enableBrakeMode(false);
 		feeder.setPID(0.2, 0, .6, .53, 0, 0, 0);
-		feeder.enableBrakeMode(true);
+		feeder.enableBrakeMode(false);
 		
 	}
 

@@ -39,9 +39,9 @@ public class DriveTrain extends Subsystem implements Recordable<DriveTrainState>
 		rightC = new CANTalon(TALON_ID_DRIVE_RIGHT_C);
 
 		// configure brake mode and switches
-		MiscUtil.configureTalon(leftA, false, false, false, false, true);
-		MiscUtil.configureTalon(leftB, false, false, false, false, true);
-		MiscUtil.configureTalon(leftC, false, false, false, false, true);
+		MiscUtil.configureTalon(leftA, false, false, false, false,  true);
+		MiscUtil.configureTalon(leftB, false, false, false, false,  true);
+		MiscUtil.configureTalon(leftC, false, false, false, false,  true);
 		MiscUtil.configureTalon(rightA, false, false, false, false, true);
 		MiscUtil.configureTalon(rightB, false, false, false, false, true);
 		MiscUtil.configureTalon(rightC, false, false, false, false, true);
@@ -65,15 +65,19 @@ public class DriveTrain extends Subsystem implements Recordable<DriveTrainState>
 		rightA.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 
 		// change polarity configs
-		leftA.setInverted(false);
+		leftA.setInverted(true);
 		leftA.reverseSensor(true);
 		leftB.reverseOutput(true);
 		leftC.reverseOutput(true);
 
+//		rightA.setInverted(false);
+//		rightA.reverseSensor(true);
+//		rightB.reverseOutput(true);
+//		rightC.reverseOutput(false);
 		rightA.setInverted(false);
 		rightA.reverseSensor(true);
 		rightB.reverseOutput(true);
-		rightC.reverseOutput(false);
+		rightC.reverseOutput(true);
 
 		// set electrical maximums
 		leftA.configMaxOutputVoltage(12);
@@ -109,8 +113,9 @@ public class DriveTrain extends Subsystem implements Recordable<DriveTrainState>
 
 		leftA.configEncoderCodesPerRev(Constants.DRIVETRAIN_ENC_TICKS_PER_REV);
 		rightA.configEncoderCodesPerRev(Constants.DRIVETRAIN_ENC_TICKS_PER_REV);
-		leftA.setPID(0.05, 0.0000, 0.07, 1.05, 0, 20, 0);
-		rightA.setPID(0.05, 0.0000, 0.07, 1.05, 0, 20, 0);
+		leftA.setPID(0.1, 0.0000, 0.0, 1.74, 0, 20, 0);
+		rightA.setPID(0.1, 0.0000, 0.0, 1.74, 0, 20, 0);
+//		rightA.setPID(0.1, 0.0000, 0.0, 1.53, 0, 20, 0);
 		leftA.setVoltageRampRate(10);
 		rightA.setVoltageRampRate(10);
 	}
@@ -138,12 +143,6 @@ public class DriveTrain extends Subsystem implements Recordable<DriveTrainState>
 
 		leftA.setPID(2, 130, 150, 0, 1, 50, 0);
 		rightA.setPID(2, 130, 150, 0, 1, 50, 0);
-		MiscUtil.configureTalon(leftA, false, false, false, false, true);
-		MiscUtil.configureTalon(leftB, false, false, false, false, true);
-		MiscUtil.configureTalon(leftC, false, false, false, false, true);
-		MiscUtil.configureTalon(rightA, false, false, false, false, true);
-		MiscUtil.configureTalon(rightB, false, false, false, false, true);
-		MiscUtil.configureTalon(rightC, false, false, false, false, true);
 	}
 
 	public void setEachMotorRaw(double leftA, double leftB, double leftC, double rightA, double rightB, double rightC) {
@@ -156,16 +155,24 @@ public class DriveTrain extends Subsystem implements Recordable<DriveTrainState>
 	}
 
 	public void setSideRaw(double left, double right) {
-		leftA.set(left);
-		rightA.set(right);
+		leftA.set(-left);
+		rightA.set(-right);
 	}
 
 	public double getLeftEncRaw() {
-		return leftA.getEncPosition();
+		return -leftA.getEncPosition();
 	}
 
 	public double getRightEncRaw() {
 		return rightA.getEncPosition();
+	}
+	
+	public double getLeftEncVel() {
+		return -leftA.getEncVelocity();
+	}
+	
+	public double getRightEncVel() {
+		return rightA.getEncVelocity();
 	}
 
 	public void zeroEncoders() {

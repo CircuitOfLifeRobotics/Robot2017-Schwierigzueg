@@ -32,14 +32,14 @@ public class HopperAuto extends CommandGroup {
     	addSequential(new Timeout(.2));
 
     	LinkedList<ChangePoint> cps = new LinkedList<ChangePoint>();
-    	cps.add(new ChangePoint(200		,0,(2.7)));
-    	cps.add(new ChangePoint(200		,-0.01*turn,(5.850)));
-    	cps.add(new ChangePoint(100		,0,(7)));
+    	cps.add(new ChangePoint(53.3		,0,(2.7)));
+    	cps.add(new ChangePoint(53.3		,-0.01*turn,(5.850)));
+    	cps.add(new ChangePoint(26.6		,0,(7)));
     	
     	addSequential(new MPDrive(cps));
-    	addSequential(new Timeout(1.2));
-    	addSequential(new MPDrive(new ChangePoint(-100, 0, .5)));
-    	addSequential(new TurnShoot(-90));
+    	addSequential(new Timeout(1));
+    	addSequential(new MPDrive(new ChangePoint(-26.6, 0, .5)));
+    	addSequential(new TurnShoot(-90*turn));
     	
 
     }

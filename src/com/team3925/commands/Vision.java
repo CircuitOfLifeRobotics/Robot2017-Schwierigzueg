@@ -16,10 +16,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoMode;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Vision extends Command {
@@ -27,11 +25,9 @@ public class Vision extends Command {
 	private static Vision instance;
 
 	private UsbCamera cams[];
-	private CvSink camSinks[];
-	private CvSource source;
-	private MjpegServer server;
-	private Mat frames[];
-	private Mat processeds[];
+	private CvSink camSink;
+	private Mat frame;
+	private Mat processed;
 	public Rect visionUpper;
 	public Rect visionLower;
 
@@ -39,7 +35,8 @@ public class Vision extends Command {
 	private Mat hierarchy;
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
-	private TimerTask[] grabFrameTasks;
+	private TimerTask grabFrameTask;
+	private TimerTask frickingCircumventTheDumbCantRunInDisabledThread;
 	java.util.Timer timer;
 
 	private final double[] hsvThresholdHue = { 63, 93 };
@@ -74,8 +71,9 @@ public class Vision extends Command {
 
 	public final TreeMap<Double, Double> visionData;
 
-	private boolean[] frameGottens;
-	private final boolean hasGearCam = UsbCamera.enumerateUsbCameras().length > 1;
+	private boolean frameGotten;
+	private final boolean hasGearCam;
+	private double frameTime;
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -93,57 +91,67 @@ public class Vision extends Command {
 			}
 		});
 		// Distance (FT) - Speed (RPM)
-		visionData.put(6.0, -2775.0);
-		visionData.put(7.0, -2950.0);
-		visionData.put(8.0, -3070.0);
-		visionData.put(9.0, -3200.0);
-		visionData.put(10.0, -3325.0);
-		visionData.put(11.0, -3450.0);
-		visionData.put(12.0,  -3575.0);
+//		visionData.put(6.0, -3775.0);
+//		visionData.put(7.0, -3950.0);
+//		visionData.put(8.0, -4070.0);
+//		visionData.put(9.0, -4200.0);
+//		visionData.put(10.0, -4325.0);
+//		visionData.put(11.0, -4450.0);
+//		visionData.put(12.0, -4575.0);
+		
+
+		visionData.put(6.0, -2100.0);
+		visionData.put(7.0, -3155.0);
+		visionData.put(8.0, -3175.0);
+		visionData.put(9.0, -3400.0);
+		visionData.put(10.0, -3525.0);
+		visionData.put(11.0, -3650.0);
+		visionData.put(12.0, -3775.0);
+		//
+		// visionData.put(6.0, -2675.0);
+		// visionData.put(7.0, -2850.0);
+		// visionData.put(8.0, -2970.0);
+		// visionData.put(9.0, -3100.0);
+		// visionData.put(10.0, -3225.0);
+		// visionData.put(11.0, -3350.0);
+		// visionData.put(12.0, -3475.0);
 
 		cams = new UsbCamera[2];
-		camSinks = new CvSink[2];
-		frames = new Mat[2];
-		processeds = new Mat[2];
+		cams[0] = new UsbCamera("Turret Cam", 1);
+		camSink = new CvSink("Turret Cam Sink");
+		camSink.setSource(cams[0]);
+		frame = new Mat();
+		processed = new Mat();
 
-		cams[0] = new UsbCamera("Turret Cam", 0);
-		camSinks[0] = new CvSink("Turret Cam Sink");
-		source = new CvSource("Turret Cam Processed Source", new VideoMode(VideoMode.PixelFormat.kBGR, 320, 240, 5));
-		server = new MjpegServer("Turret Cam Processed Server", 1185);
-		camSinks[0].setSource(cams[0]);
-		server.setSource(source);
-		frames[0] = new Mat();
-		processeds[0] = new Mat();
+		hasGearCam = UsbCamera.enumerateUsbCameras().length > 1;
 
 		if (hasGearCam) {
-			cams[1] = new UsbCamera("Gear Cam", 1);
-			camSinks[1] = new CvSink("Gear Cam Sink");
-			camSinks[1].setSource(cams[1]);
-			frames[1] = new Mat();
-			processeds[1] = new Mat();
+			cams[1] = new UsbCamera("Gear Cam", 0);
+			CameraServer.getInstance().startAutomaticCapture(cams[1]);
 		}
 
-		grabFrameTasks = new TimerTask[] { new TimerTask() {
+		grabFrameTask = new TimerTask() {
 			@Override
 			public void run() {
-				camSinks[0].grabFrame(frames[0]);
-				frameGottens[0] = true;
+				frameTime = camSink.grabFrame(frame);
+				frameGotten = true;
 			}
-		}, new TimerTask() {
+		};
+		
+		frickingCircumventTheDumbCantRunInDisabledThread = new TimerTask() {
 			@Override
 			public void run() {
-				camSinks[1].grabFrame(frames[1]);
-				frameGottens[1] = true;
+				execute();
 			}
-		} };
+		};
 
-		frameGottens = new boolean[] { false, false };
+		frameTime = 0;
+		frameGotten = false;
 
+		initialize();
 		timer = new java.util.Timer();
-		timer.scheduleAtFixedRate(grabFrameTasks[0], 0, 100);
-		if (hasGearCam) {
-			timer.scheduleAtFixedRate(grabFrameTasks[1], 0, 100);
-		}
+		timer.scheduleAtFixedRate(grabFrameTask, 0, 50);
+		timer.scheduleAtFixedRate(frickingCircumventTheDumbCantRunInDisabledThread, 0, 10);
 	}
 
 	@Override
@@ -155,25 +163,30 @@ public class Vision extends Command {
 		cams[0].setResolution(320, 240);
 
 		if (hasGearCam) {
-			cams[1].setFPS(5);
-			cams[1].setExposureManual(40);
-			cams[1].setWhiteBalanceManual(3000);
-			cams[1].setBrightness(40);
-			cams[1].setResolution(320, 240);
+			cams[1].setFPS(30);
+			cams[1].setExposureManual(70);
+			cams[1].setWhiteBalanceManual(4000);
+			cams[1].setBrightness(70);
+			cams[1].setResolution(160, 120);
 		}
 
 		findContoursOutput = new ArrayList<>();
 		filterContoursOutput = new ArrayList<>();
-		grabFrameTasks[0].run();
+		grabFrameTask.run();
+
 	}
 
 	@Override
 	protected void execute() {
-		if (frameGottens[0]) {
-			frameGottens[0] = false;
-			Imgproc.cvtColor(frames[0], processeds[0], Imgproc.COLOR_BGR2HSV);
+		if (frameGotten) {
+			frameGotten = false;
+			if (frame == null || frameTime == 0) {
+				System.out.println("Vision: frames[0] was null");
+				return;
+			}
+			Imgproc.cvtColor(frame, processed, Imgproc.COLOR_BGR2HSV);
 
-			Core.inRange(processeds[0], new Scalar(hsvThresholdHue[0], hsvThresholdSaturation[0], hsvThresholdValue[0]),
+			Core.inRange(processed, new Scalar(hsvThresholdHue[0], hsvThresholdSaturation[0], hsvThresholdValue[0]),
 					new Scalar(hsvThresholdHue[1], hsvThresholdSaturation[1], hsvThresholdValue[1]),
 					hsvThresholdOutput);
 
@@ -231,22 +244,13 @@ public class Vision extends Command {
 					visionLower = rect0;
 					visionUpper = rect1;
 				}
-				Imgproc.rectangle(frames[0], rect0.tl(), rect0.br(), color);
-				Imgproc.rectangle(frames[0], rect1.tl(), rect1.br(), color);
+				Imgproc.rectangle(frame, rect0.tl(), rect0.br(), color);
+				Imgproc.rectangle(frame, rect1.tl(), rect1.br(), color);
 			} else if (findContoursOutput.size() >= 2) {
-				Imgproc.drawContours(frames[0], findContoursOutput, 0, unfilteredColor, thickness);
-				Imgproc.drawContours(frames[0], findContoursOutput, 1, unfilteredColor, thickness);
+				Imgproc.drawContours(frame, findContoursOutput, 0, unfilteredColor, thickness);
+				Imgproc.drawContours(frame, findContoursOutput, 1, unfilteredColor, thickness);
 			}
 		} else {
-		}
-		if (frameGottens[1]) {
-			frameGottens[1] = false;
-		} else {
-		}
-		if (hasGearCam) {
-			source.putFrame(frames[1]);
-		} else {
-			source.putFrame(frames[0]);
 		}
 	}
 
@@ -271,7 +275,7 @@ public class Vision extends Command {
 	}
 
 	public double getSpeed() {
-		if (!visionData.equals(null)) {
+		if (visionData != null) {
 			if (visionData.ceilingEntry(getDistance()) == null) {
 				return visionData.floorEntry(getDistance()).getValue();
 			} else if (visionData.floorEntry(getDistance()) == null) {

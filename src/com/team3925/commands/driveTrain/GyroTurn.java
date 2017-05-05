@@ -28,6 +28,7 @@ public class GyroTurn extends PIDCommand {
 		DriveTrain.getInstance().enablePercentVbus();
 		setSetpoint(setPoint);
 		initTime = Timer.getFPGATimestamp();
+		System.out.println("it's doing stuff");
 	}
 
 	@Override

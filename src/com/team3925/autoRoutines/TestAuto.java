@@ -18,7 +18,7 @@ public class TestAuto extends CommandGroup {
 
     public TestAuto() {
 
-addSequential(new MPDrive(new ChangePoint(250, 0, 1000)));
+addSequential(new MPDrive(new ChangePoint(75, 0, 1000)));
 
     	
     }
