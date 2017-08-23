@@ -1,10 +1,8 @@
 
 package com.team3925.robot;
 
-import com.team3925.robot.commands.ProcessAndSendTargetCameraFeed;
-import com.team3925.robot.subsystems.Agitator;
-import com.team3925.robot.subsystems.ShooterFlyWheel;
-import com.team3925.robot.subsystems.ShooterLoader;
+import com.team3925.robot.commands.ClimberManual;
+import com.team3925.robot.commands.DriveManual;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -12,10 +10,14 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Robot extends IterativeRobot {
 
-	private final ProcessAndSendTargetCameraFeed cameraCommand;
+	// private final ProcessAndSendTargetCameraFeed cameraCommand;
+	private final DriveManual manualDrive;
+	private final ClimberManual manualClimb;
 
 	public Robot() {
-		cameraCommand = new ProcessAndSendTargetCameraFeed();
+		manualDrive = new DriveManual(OI.getInstance());
+		manualClimb = new ClimberManual(OI.getInstance());
+		// cameraCommand = new ProcessAndSendTargetCameraFeed();
 	}
 
 	@Override
@@ -24,7 +26,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-		cameraCommand.cancel();
+		// cameraCommand.cancel();
 		// ShooterLoader.getInstance().set(0);
 		// Agitator.getInstance().set(0);
 		// ShooterFlyWheel.getInstance().setShooter(0);
@@ -37,10 +39,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		cameraCommand.start();
-		Agitator.getInstance().set(0.4);
-		ShooterFlyWheel.getInstance().setShooter(0.9);
-		ShooterLoader.getInstance().set(0.3);
+		// cameraCommand.start();
 	}
 
 	@Override
@@ -50,7 +49,9 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		cameraCommand.start();
+		// cameraCommand.start();
+		manualDrive.start();
+		manualClimb.start();
 	}
 
 	@Override

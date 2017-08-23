@@ -1,18 +1,22 @@
 package com.team3925.robot.commands;
 
 import com.team3925.robot.subsystems.DriveTrain;
-import com.team3925.util.DriveTrainInput;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveManual extends Command {
-
-	private DriveTrainInput input;
+	
+	public interface DriveManualInput {
+		public abstract double getFwd();
+		public abstract double getLeft();
+	}
+	
+	private DriveManualInput input;
 	private double prelimLeft, prelimRight;
 	private double fwd, turn;
 	private double scale;
 
-	public DriveManual(DriveTrainInput input) {
+	public DriveManual(DriveManualInput input) {
 		this.input = input;
 		requires(DriveTrain.getInstance());
 	}

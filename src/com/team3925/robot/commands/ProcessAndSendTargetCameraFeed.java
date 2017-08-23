@@ -74,6 +74,7 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 
 	@Override
 	protected void initialize() {
+		System.out.println("started initializing camera stuff");
 		inputImageFrameTime = targetCameraSink.grabFrame(inputImage);
 		if (inputImageFrameTime > 0) {
 			if (processedFrameSource == null) {
@@ -89,6 +90,7 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 			targetCameraSink.setEnabled(true);
 		} else
 			cancel();
+		System.out.println("finished initializing camera stuff");
 	}
 
 	@Override

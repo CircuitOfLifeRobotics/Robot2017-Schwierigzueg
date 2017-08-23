@@ -28,10 +28,18 @@ public class DriveTrain extends Subsystem {
 	public DriveTrain() {
 		left = new MultiSpeedController();
 		right = new MultiSpeedController();
-		left.addController(new CANTalon(PORT_DRIVE_LEFT_A), POLARITY_DRIVE_LEFT_A);
-		left.addController(new CANTalon(PORT_DRIVE_LEFT_B), POLARITY_DRIVE_LEFT_B);
-		right.addController(new CANTalon(PORT_DRIVE_RIGHT_A), POLARITY_DRIVE_RIGHT_A);
-		right.addController(new CANTalon(PORT_DRIVE_RIGHT_B), POLARITY_DRIVE_RIGHT_B);
+		CANTalon talon = new CANTalon(PORT_DRIVE_LEFT_A);
+		talon.enableLimitSwitch(false, false);
+		left.addController(talon, POLARITY_DRIVE_LEFT_A);
+		talon = new CANTalon(PORT_DRIVE_LEFT_B);
+		talon.enableLimitSwitch(false, false);
+		left.addController(talon, POLARITY_DRIVE_LEFT_B);
+		talon = new CANTalon(PORT_DRIVE_RIGHT_A);
+		talon.enableLimitSwitch(false, false);
+		right.addController(talon, POLARITY_DRIVE_RIGHT_A);
+		talon = new CANTalon(PORT_DRIVE_RIGHT_B);
+		talon.enableLimitSwitch(false, false);
+		right.addController(talon, POLARITY_DRIVE_RIGHT_B);
 	}
 
 	@Override
@@ -42,6 +50,7 @@ public class DriveTrain extends Subsystem {
 	public void setRaw(double left, double right) {
 		left = MiscMath.capRange(-1, 1, left);
 		right = -MiscMath.capRange(-1, 1, right);
+		System.out.println(left);
 		this.left.set(left);
 		this.right.set(right);
 	}

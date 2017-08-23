@@ -27,6 +27,7 @@ public class ShooterLoader extends Subsystem {
 	}
 
 	public void set(double speed) {
+		System.out.println("loader set to " + speed);
 		motor.set(speed);
 	}
 }

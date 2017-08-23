@@ -1,10 +1,7 @@
 package com.team3925.util;
 
-import java.beans.XMLEncoder;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -125,16 +122,13 @@ import java.util.function.Function;
  */
 public class RIOConfigs {
 	private File file;
-	private BufferedReader reader;
 	private HashMap<String, String> values;
 	private StringBuilder fileFlaws;
 
-	private static final char PREFIX_CHAR = '>', VALUE_CHAR = ':', VALUE_END_CHAR = '.';
-
-	private StringBuilder block = new StringBuilder();
 	private String prefix;
 	private char data;
 
+	private static final char PREFIX_CHAR = '>', VALUE_CHAR = ':', VALUE_END_CHAR = '.';
 	private static HashMap<File, RIOConfigs> instances;
 
 	public static RIOConfigs getInstance() {
@@ -158,23 +152,13 @@ public class RIOConfigs {
 
 	private RIOConfigs(File file) {
 		this.file = file;
-		try {
-			file.createNewFile();
-			reader = new BufferedReader(new FileReader(file));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			reader = null;
-		} catch (IOException e) {
-			reader = null;
-			e.printStackTrace();
-		}
-		file.setWritable(false);
 		fileFlaws = new StringBuilder();
 		values = new HashMap<>();
-
+		StringBuilder block = new StringBuilder();
 		LinearStateMachine stateMachine = new LinearStateMachine(itr -> {
 			switch (data) {
 			case PREFIX_CHAR:
+				// buffer is comment. Do nothing
 				return true;
 			case VALUE_CHAR:
 			case VALUE_END_CHAR:
@@ -186,6 +170,7 @@ public class RIOConfigs {
 		}, itr -> {
 			switch (data) {
 			case VALUE_CHAR:
+				// buffer is prefix, store
 				prefix = block.toString();
 				block.setLength(0);
 				return true;
@@ -199,6 +184,7 @@ public class RIOConfigs {
 		}, itr -> {
 			switch (data) {
 			case VALUE_END_CHAR:
+				// buffer is value, store
 				values.put(prefix, block.toString());
 				block.setLength(0);
 				return true;
@@ -210,16 +196,20 @@ public class RIOConfigs {
 				return false;
 			}
 		});
-		while (true) {
-			try {
-				if (reader != null && reader.ready()) {
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			file.setWritable(false);
+			file.createNewFile();
+			while (true) {
+				if (reader.ready()) {
 					data = (char) reader.read();
 					stateMachine.run();
 				} else
 					break;
-			} catch (IOException e) {
-				break;
 			}
+			file.setWritable(true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -266,8 +256,8 @@ public class RIOConfigs {
 	 *         corresponding to the configuration with the given name or the
 	 *         given object if the configuration does not exist
 	 */
-	public <T> T getConfig(String name, T ifAbsent, Function<String, T> stringToT) {
-		Optional<String> value = getConfig(name);
+	public <T> T getConfigOrAdd(String name, T ifAbsent, Function<String, T> stringToT) {
+		Optional<String> value = getConfigOrEmptyOptional(name);
 		if (value.isPresent()) {
 			return stringToT.apply(value.get());
 		}
@@ -275,6 +265,30 @@ public class RIOConfigs {
 		return ifAbsent;
 	}
 
+	public Boolean getConfigOrAdd(String name, Boolean ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Boolean::parseBoolean);
+	}
+
+	public Integer getConfigOrAdd(String name, Integer ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Integer::parseInt);
+	}
+
+	public Long getConfigOrAdd(String name, Long ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Long::parseLong);
+	}
+
+	public Double getConfigOrAdd(String name, Double ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Double::parseDouble);
+	}
+
+	public Short getConfigOrAdd(String name, Short ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Short::parseShort);
+	}
+
+	public Byte getConfigOrAdd(String name, Byte ifAbsent) {
+		return getConfigOrAdd(name, ifAbsent, Byte::parseByte);
+	}
+	
 	/**
 	 * <p>
 	 * This method looks for a configuration with the given name.<br/>
@@ -298,8 +312,8 @@ public class RIOConfigs {
 	 * @return the corresponding value for the given configuration name or the
 	 *         value provided by ifAbsent
 	 */
-	public String getConfig(String name, String ifAbsent) {
-		Optional<String> value = getConfig(name);
+	public String getConfigOrAdd(String name, String ifAbsent) {
+		Optional<String> value = getConfigOrEmptyOptional(name);
 		if (value.isPresent())
 			return value.get();
 		addConfig(name, ifAbsent, false);
@@ -322,7 +336,7 @@ public class RIOConfigs {
 	 *         present or the value corresponding to the configuration with the
 	 *         given name
 	 */
-	public Optional<String> getConfig(String name) {
+	public Optional<String> getConfigOrEmptyOptional(String name) {
 		return Optional.ofNullable(values.get(name));
 	}
 
@@ -363,7 +377,6 @@ public class RIOConfigs {
 	 * @return true if the write to the file succeeded, false otherwise.
 	 */
 	public boolean resetConfigs() {
-		file.setWritable(true);
 		try (FileWriter writer = new FileWriter(file)) {
 			writer.write("");
 			values.clear();
@@ -371,12 +384,11 @@ public class RIOConfigs {
 			e.printStackTrace();
 			return false;
 		}
-		file.setWritable(false);
 		return true;
 	}
 
 	protected boolean appendToFile(String prefix, String value) {
-		file.setWritable(true);
+		file.setWritable(false);
 		try (FileWriter writer = new FileWriter(file, true)) {
 			writer.append(PREFIX_CHAR);
 			writer.append(prefix);
@@ -388,7 +400,7 @@ public class RIOConfigs {
 			e.printStackTrace();
 			return false;
 		}
-		file.setWritable(false);
+		file.setWritable(true);
 		return true;
 	}
 
