@@ -128,7 +128,7 @@ public class RIOConfigs {
 	private String prefix;
 	private char data;
 
-	private static final char PREFIX_CHAR = '>', VALUE_CHAR = ':', VALUE_END_CHAR = '.';
+	private static final char PREFIX_CHAR = '>', VALUE_CHAR = ':', VALUE_END_CHAR = '!';
 	private static HashMap<File, RIOConfigs> instances;
 
 	public static RIOConfigs getInstance() {
@@ -159,6 +159,7 @@ public class RIOConfigs {
 			switch (data) {
 			case PREFIX_CHAR:
 				// buffer is comment. Do nothing
+				block.setLength(0);
 				return true;
 			case VALUE_CHAR:
 			case VALUE_END_CHAR:
@@ -211,6 +212,8 @@ public class RIOConfigs {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
+		System.out.println("RIO configs " + fileFlaws);
 	}
 
 	/**
@@ -259,8 +262,10 @@ public class RIOConfigs {
 	public <T> T getConfigOrAdd(String name, T ifAbsent, Function<String, T> stringToT) {
 		Optional<String> value = getConfigOrEmptyOptional(name);
 		if (value.isPresent()) {
+			System.out.println("config "+name+" is present");
 			return stringToT.apply(value.get());
 		}
+		System.out.println("config "+name+" is NOT present");
 		addConfig(name, ifAbsent.toString(), false);
 		return ifAbsent;
 	}
@@ -388,7 +393,6 @@ public class RIOConfigs {
 	}
 
 	protected boolean appendToFile(String prefix, String value) {
-		file.setWritable(false);
 		try (FileWriter writer = new FileWriter(file, true)) {
 			writer.append(PREFIX_CHAR);
 			writer.append(prefix);
@@ -400,7 +404,6 @@ public class RIOConfigs {
 			e.printStackTrace();
 			return false;
 		}
-		file.setWritable(true);
 		return true;
 	}
 

@@ -1,6 +1,7 @@
 package com.team3925.robot.commands;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -35,8 +36,12 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 	private Scalar unfilteredColor;
 
 	private int horizOffSetPixels, vertOffsetPixels;
-	private double FOV_WIDTH_PIXELS;
-	private double FOV_HEIGHT_PIXELS;
+	private double FOV_WIDTH_PIXELS = 640;
+	private double FOV_HEIGHT_PIXELS = 480;
+	private double FOV_WIDTH_DEGREES = 30;
+	private double differenceThresh = 3;
+
+	private Double horizOffsetAngle;
 
 	// private final Point textLocation;
 	// private final int textThickness;
@@ -57,8 +62,8 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 		filterContoursOutput = new ArrayList<>();
 		hsvImage = new Mat();
 		binaryImage = new Mat();
-		loThresh = new Scalar(63, 79, 89);
-		hiThresh = new Scalar(93, 255, 255);
+		loThresh = new Scalar(40, 120, 89);
+		hiThresh = new Scalar(100, 255, 255);
 		hierarchy = new Mat();
 		unfilteredColor = new Scalar(0, 255, 128);
 
@@ -69,19 +74,20 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 		// fontScale = 4;
 		// fontColor = new Scalar(128, 255, 255);
 
+		horizOffsetAngle = null;
+
 		requires(CameraSubsystem.getInstance());
 	}
 
 	@Override
 	protected void initialize() {
-		System.out.println("started initializing camera stuff");
 		inputImageFrameTime = targetCameraSink.grabFrame(inputImage);
 		if (inputImageFrameTime > 0) {
 			if (processedFrameSource == null) {
 				processedFrameSource = new CvSource("Processed Target Source", PixelFormat.kBGR, inputImage.width(),
 						inputImage.height(), 30);
-				FOV_HEIGHT_PIXELS = inputImage.width();
-				FOV_WIDTH_PIXELS = inputImage.height();
+				/* FOV_HEIGHT_PIXELS = */System.out.println(inputImage.width());
+				/* FOV_WIDTH_PIXELS = */System.out.println(inputImage.height());
 			}
 			if (server == null) {
 				server = new MjpegServer("Processed Target Stream", 1185);
@@ -90,7 +96,6 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 			targetCameraSink.setEnabled(true);
 		} else
 			cancel();
-		System.out.println("finished initializing camera stuff");
 	}
 
 	@Override
@@ -99,6 +104,8 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 		if (inputImageFrameTime > 0) {
 			// Imgproc.putText(inputImage, "This is a test", textLocation,
 			// fontFace, fontScale, fontColor, textThickness);
+//			/*FOV_HEIGHT_PIXELS =*/System.out.println( inputImage.width());
+//			/*FOV_WIDTH_PIXELS = */System.out.println(inputImage.height());
 			Imgproc.cvtColor(inputImage, hsvImage, Imgproc.COLOR_BGR2HSV);
 			Core.inRange(hsvImage, loThresh, hiThresh, binaryImage);
 			findContoursOutput.clear();
@@ -107,6 +114,7 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 			Imgproc.drawContours(inputImage, findContoursOutput, -1, unfilteredColor);
 
 			Rect rect;
+			findContoursOutput.sort((a,b)->(int)Math.signum(Imgproc.boundingRect(a).width-Imgproc.boundingRect(b).width));
 			if (findContoursOutput.size() > 0) {
 				for (int i = 0; i < findContoursOutput.size(); ++i) {
 					rect = Imgproc.boundingRect(findContoursOutput.get(i));
@@ -114,6 +122,15 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 					vertOffsetPixels = (int) (rect.y + rect.height / 2 - FOV_HEIGHT_PIXELS / 2);
 					Imgproc.line(inputImage, new Point(rect.x + rect.width / 2, rect.y + rect.height / 2),
 							new Point(FOV_WIDTH_PIXELS / 2, FOV_HEIGHT_PIXELS / 2), unfilteredColor);
+				}
+			}
+			if (findContoursOutput.size()>1) {
+				double a = (0.5-(double)(Imgproc.boundingRect(findContoursOutput.get(0)).x+Imgproc.boundingRect(findContoursOutput.get(0)).width/2)/FOV_WIDTH_PIXELS)*FOV_WIDTH_DEGREES;
+				double b = (0.5-(double)(Imgproc.boundingRect(findContoursOutput.get(1)).x+Imgproc.boundingRect(findContoursOutput.get(1)).width/2)/FOV_WIDTH_PIXELS)*FOV_WIDTH_DEGREES;
+				if (Math.abs(a-b)>differenceThresh) {
+					horizOffsetAngle = null;
+				}else {
+					horizOffsetAngle = (a+b)/2;
 				}
 			}
 
@@ -138,6 +155,10 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 	@Override
 	protected void interrupted() {
 		targetCameraSink.setEnabled(false);
+	}
+
+	public Optional<Double> getHorizontalOffsetAngle() {
+		return Optional.ofNullable(horizOffsetAngle);
 	}
 
 	public double getElapsedErrorTime() {

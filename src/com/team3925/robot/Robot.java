@@ -3,21 +3,41 @@ package com.team3925.robot;
 
 import com.team3925.robot.commands.ClimberManual;
 import com.team3925.robot.commands.DriveManual;
+import com.team3925.robot.commands.ProcessAndSendTargetCameraFeed;
+import com.team3925.robot.subsystems.DriveTrain;
+import com.team3925.robot.subsystems.DriveTrain.DriveTrainState;
+import com.team3925.robot.subsystems.GearIntake;
+import com.team3925.robot.subsystems.GearIntake.GearIntakeState;
+import com.team3925.robot.subsystems.Gyro;
+import com.team3925.util.recordable.Record;
+import com.team3925.util.recordable.RecordCommand;
+import com.team3925.util.recordable.RepeatCommand;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	// private final ProcessAndSendTargetCameraFeed cameraCommand;
-	private final DriveManual manualDrive;
+	private final ProcessAndSendTargetCameraFeed cameraCommand;
+	public static final DriveManual DRIVE_MANUAL = new DriveManual(OI.getInstance());
 	private final ClimberManual manualClimb;
+	private Record<DriveTrainState> record;
+	private RecordCommand<DriveTrainState> recordCommand;
+	private RepeatCommand<DriveTrainState> repeatCommand;
+	private Record<GearIntakeState> recordOfGearIntake;
+	private RecordCommand<GearIntakeState> recordCommandForGearIntake;
+	private RepeatCommand<GearIntakeState> repeatCommandForGearIntake;
 
 	public Robot() {
-		manualDrive = new DriveManual(OI.getInstance());
 		manualClimb = new ClimberManual(OI.getInstance());
-		// cameraCommand = new ProcessAndSendTargetCameraFeed();
+		cameraCommand = new ProcessAndSendTargetCameraFeed();
+		recordCommand = new RecordCommand<DriveTrainState>(DriveTrain.getInstance());
+		repeatCommand = new RepeatCommand<>(DriveTrain.getInstance(), 0.1, 10);
+		recordCommandForGearIntake = new RecordCommand<GearIntakeState>(GearIntake.getInstance());
+		repeatCommandForGearIntake = new RepeatCommand<GearIntakeState>(GearIntake.getInstance(), 0.1, 10);
+		Gyro.getInstance();
 	}
 
 	@Override
@@ -26,10 +46,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-		// cameraCommand.cancel();
-		// ShooterLoader.getInstance().set(0);
-		// Agitator.getInstance().set(0);
-		// ShooterFlyWheel.getInstance().setShooter(0);
 	}
 
 	@Override
@@ -39,7 +55,16 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		// cameraCommand.start();
+		record = recordCommand.get();
+		recordOfGearIntake = recordCommandForGearIntake.get();
+		repeatCommandForGearIntake.set(recordOfGearIntake);
+		repeatCommandForGearIntake.reset();
+		repeatCommandForGearIntake.start();
+		if (record != null) {
+			repeatCommand.set(record);
+			repeatCommand.reset();
+			repeatCommand.start();
+		}
 	}
 
 	@Override
@@ -50,14 +75,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		// cameraCommand.start();
-		manualDrive.start();
+		DRIVE_MANUAL.start();
 		manualClimb.start();
+		recordCommandForGearIntake.reset();
+		recordCommandForGearIntake.start();
+		recordCommand.reset();
+		recordCommand.start();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-
+		SmartDashboard.putNumber("intake motor voltage", GearIntake.getInstance().getMotorVoltage());
+		SmartDashboard.putNumber("intake motor current", GearIntake.getInstance().getMotorCurrent());
 	}
 
 	@Override
