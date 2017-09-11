@@ -1,34 +1,32 @@
 package com.team3925.robot;
 
-import com.team3925.robot.commands.AgitatorShoot;
-import com.team3925.robot.commands.AutoPickup;
-
-import java.util.function.Supplier;
-
 import com.team3925.robot.commands.AgitatorOff;
 import com.team3925.robot.commands.AgitatorReverse;
+import com.team3925.robot.commands.AgitatorShoot;
+import com.team3925.robot.commands.AutoPickup;
 import com.team3925.robot.commands.DriveManual.DriveManualInput;
-import com.team3925.util.RIOConfigs;
-import com.team3925.robot.commands.IntakeShoot;
-import com.team3925.robot.commands.RaiseGearIntake;
 import com.team3925.robot.commands.IntakeOff;
 import com.team3925.robot.commands.IntakeOut;
+import com.team3925.robot.commands.IntakeShoot;
+import com.team3925.robot.commands.RaiseGearIntake;
 import com.team3925.robot.commands.ShooterOff;
 import com.team3925.robot.commands.ShooterReverse;
 import com.team3925.robot.commands.ShooterShoot;
+import com.team3925.util.RIOConfigs;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 
-public class OI implements DriveManualInput, Supplier<Double> {
+public class OI implements DriveManualInput {
 
 	private final Joystick stick;
+	private final Joystick wheel;
 
 	private static OI instance;
 
 	private OI() {
 		stick = new Joystick(0);
+		wheel = new Joystick(1);
 		JoystickButton agitatorIn = new JoystickButton(stick,
 				RIOConfigs.getInstance().getConfigOrAdd("btn_agitator_in", 6));
 		JoystickButton agitatorOut = new JoystickButton(stick,
@@ -56,14 +54,6 @@ public class OI implements DriveManualInput, Supplier<Double> {
 		JoystickButton gears = new JoystickButton(stick, 1);
 		gears.whenPressed(new AutoPickup());
 		gears.whenReleased(new RaiseGearIntake());
-		JoystickButton reload = new JoystickButton(stick, 11);
-		reload.whenActive(new Command() {
-			@Override
-			protected boolean isFinished() {
-				RobotMap.reloadFileAndSelectedConfigs();
-				return true;
-			}
-		});
 	}
 
 	public static OI getInstance() {
@@ -77,11 +67,7 @@ public class OI implements DriveManualInput, Supplier<Double> {
 
 	@Override
 	public double getLeft() {
-		return stick.getRawAxis(0);
+		return wheel.getRawAxis(0);
 	}
 
-	@Override
-	public Double get() {
-		return stick.getRawAxis(2);
-	}
 }

@@ -1,7 +1,6 @@
 
 package com.team3925.robot;
 
-import com.team3925.robot.commands.ClimberManual;
 import com.team3925.robot.commands.DriveManual;
 import com.team3925.robot.commands.ProcessAndSendTargetCameraFeed;
 import com.team3925.robot.subsystems.DriveTrain;
@@ -22,7 +21,6 @@ public class Robot extends IterativeRobot {
 
 	private final ProcessAndSendTargetCameraFeed cameraCommand;
 	public static final DriveManual DRIVE_MANUAL = new DriveManual(OI.getInstance());
-	private final ClimberManual manualClimb;
 	private Record<DriveTrainState> record;
 	private RecordCommand<DriveTrainState> recordCommand;
 	private RepeatCommand<DriveTrainState> repeatCommand;
@@ -31,7 +29,6 @@ public class Robot extends IterativeRobot {
 	private RepeatCommand<GearIntakeState> repeatCommandForGearIntake;
 
 	public Robot() {
-		manualClimb = new ClimberManual(OI.getInstance());
 		cameraCommand = new ProcessAndSendTargetCameraFeed();
 		recordCommand = new RecordCommand<DriveTrainState>(DriveTrain.getInstance());
 		repeatCommand = new RepeatCommand<>(DriveTrain.getInstance(), 0.1, 10);
@@ -76,11 +73,12 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// cameraCommand.start();
 		DRIVE_MANUAL.start();
-		manualClimb.start();
+		// manualClimb.start();
 		recordCommandForGearIntake.reset();
 		recordCommandForGearIntake.start();
 		recordCommand.reset();
 		recordCommand.start();
+		DriveTrain.getInstance().resetEncoders();
 	}
 
 	@Override
@@ -89,6 +87,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("intake motor voltage", GearIntake.getInstance().getMotorVoltage());
 		SmartDashboard.putNumber("intake motor current", GearIntake.getInstance().getMotorCurrent());
 	}
+
+	
 
 	@Override
 	public void testInit() {

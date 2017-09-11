@@ -21,6 +21,10 @@ public class MultiSpeedController implements SpeedController {
 		speedController.setInverted(inverted);
 	}
 	
+	public void addController(SpeedController speedController) {
+		controllers.add(speedController);
+	}
+
 	public void removeAll() {
 		controllers.clear();
 	}

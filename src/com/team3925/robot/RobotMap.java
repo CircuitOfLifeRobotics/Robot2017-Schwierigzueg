@@ -14,6 +14,10 @@ public class RobotMap {
 
 	public static final boolean POLARITY_DRIVE_LEFT_A, POLARITY_DRIVE_LEFT_B, POLARITY_DRIVE_RIGHT_A,
 			POLARITY_DRIVE_RIGHT_B;
+	public static final boolean REVERSE_OUTPUT_RIGHT_A, REVERSE_OUTPUT_RIGHT_B, REVERSE_OUTPUT_LEFT_A,
+			REVERSE_OUTPUT_LEFT_B;
+	public static final boolean REVERSE_SENSOR_RIGHT_A, REVERSE_SENSOR_RIGHT_B, REVERSE_SENSOR_LEFT_A,
+			REVERSE_SENSOR_LEFT_B;
 	public static final boolean POLARITY_SHOOTER_A, POLARITY_SHOOTER_B;
 	public static final boolean POLARITY_LOADER;
 	public static final boolean POLARITY_AGITATOR;
@@ -21,19 +25,22 @@ public class RobotMap {
 
 	public static final double INTAKE_PICKUP_TIMEOUT;
 	public static final double INTAKE_MOTOR_SPEED;
-	public static double INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD;
+	public static final double INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD;
+	public static final double MIN_TIME_GEAR_DETECTED_FOR;
 
-	public static RIOConfigs CONFIGS;
+	public static final double CLIMB_SPEED;
+
+	public static final RIOConfigs CONFIGS;
 
 	static {
 		// CONFIGS = RIOConfigs.getInstance(System.getProperty("user.home") +
 		// "/preferences/Schwierigzeug_comp.txt");
 		CONFIGS = RIOConfigs.getInstance();
 
-		PORT_DRIVE_LEFT_A = CONFIGS.getConfigOrAdd("port_drive_left_a", 1);
-		PORT_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("port_drive_left_b", 2);
-		PORT_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("port_drive_right_a", 12);
-		PORT_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("port_drive_right_b", 11);
+		PORT_DRIVE_LEFT_A = CONFIGS.getConfigOrAdd("PORT_driveLeftA", 1);
+		PORT_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("PORT_driveLeftB", 2);
+		PORT_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("PORT_driveRightA", 12);
+		PORT_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("PORT_driveRightB", 11);
 
 		PORT_SHOOTER_A = CONFIGS.getConfigOrAdd("port_shooter_flywheel_a", 3);
 		PORT_SHOOTER_B = CONFIGS.getConfigOrAdd("port_shooter_flywheel_b", 9);
@@ -41,6 +48,7 @@ public class RobotMap {
 		PORT_LOADER = CONFIGS.getConfigOrAdd("port_shooter_loader", 5);
 
 		PORT_AGITATOR = CONFIGS.getConfigOrAdd("port_agitator", 10);
+//		PORT_AGITATOR = 10;
 
 		PORT_CLIMBER_A = CONFIGS.getConfigOrAdd("port_climber_a", 8);
 		PORT_CLIMBER_B = CONFIGS.getConfigOrAdd("port_climber_b", 4);
@@ -49,6 +57,16 @@ public class RobotMap {
 		POLARITY_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_left_b", false);
 		POLARITY_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_right_a", false);
 		POLARITY_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_right_b", false);
+
+		REVERSE_OUTPUT_LEFT_A = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveLeftA", false);
+		REVERSE_OUTPUT_LEFT_B = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveLeftB", false);
+		REVERSE_OUTPUT_RIGHT_A = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveRightA", false);
+		REVERSE_OUTPUT_RIGHT_B = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveRightB", false);
+
+		REVERSE_SENSOR_LEFT_A = CONFIGS.getConfigOrAdd("REVERSESENSOR_driveLeftA", false);
+		REVERSE_SENSOR_LEFT_B = CONFIGS.getConfigOrAdd("REVERSESENSOR_driveLeftB", false);
+		REVERSE_SENSOR_RIGHT_A = CONFIGS.getConfigOrAdd("REVERSESENSOR_driveRightA", true);
+		REVERSE_SENSOR_RIGHT_B = CONFIGS.getConfigOrAdd("REVERSESENSOR_driveRightB", true);
 
 		POLARITY_SHOOTER_A = CONFIGS.getConfigOrAdd("POLARITY_shooter_flywheel_a", true);
 		POLARITY_SHOOTER_B = CONFIGS.getConfigOrAdd("POLARITY_shooter_flywheel_b", true);
@@ -62,17 +80,15 @@ public class RobotMap {
 
 		INTAKE_PICKUP_TIMEOUT = CONFIGS.getConfigOrAdd("INTAKE_PICKUP_TIMEOUT", 0.1);
 		INTAKE_MOTOR_SPEED = CONFIGS.getConfigOrAdd("INTAKE_MOTOR_SPEED", 1);
-		INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD = CONFIGS.getConfigOrAdd("INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD", 0.5);
+		INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD = CONFIGS.getConfigOrAdd("INTAKE_MOTOR_GEAR_CURRENT_OLD", 5);
 
 		PORT_INTAKE_MOTOR = CONFIGS.getConfigOrAdd("PORT_INTAKE_MOTOR", 7);
 		PORT_INTAKE_SOLENOID_FORWARD = CONFIGS.getConfigOrAdd("PORT_INTAKE_SOLENOID_FORWARD", 4);
 		PORT_INTAKE_SOLENOID_REVERSE = CONFIGS.getConfigOrAdd("PORT_INTAKE_SOLENOID_REVERSE", 5);
+		MIN_TIME_GEAR_DETECTED_FOR = CONFIGS.getConfigOrAdd("MIN_TIME_GEAR_DETECTED_FOR", 0.1);
+
+		CLIMB_SPEED = CONFIGS.getConfigOrAdd("CLIMB_SPEED", 1);
 
 	}
-	
-	public static void reloadFileAndSelectedConfigs() {
-		CONFIGS = RIOConfigs.getInstance();
-		INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD = CONFIGS.getConfigOrAdd("INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD", 0.5);
-	}
-	
+
 }

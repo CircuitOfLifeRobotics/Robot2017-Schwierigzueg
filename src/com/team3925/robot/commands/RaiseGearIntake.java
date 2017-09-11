@@ -6,9 +6,6 @@ import com.team3925.robot.subsystems.GearIntake;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-/**
- *
- */
 public class RaiseGearIntake extends Command {
 	
 	private double startTime;
