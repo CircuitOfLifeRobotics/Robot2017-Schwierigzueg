@@ -30,7 +30,7 @@ public class RobotMap {
 
 	public static final double CLIMB_SPEED;
 
-	public static final RIOConfigs CONFIGS;
+	private static final RIOConfigs CONFIGS;
 
 	static {
 		// CONFIGS = RIOConfigs.getInstance(System.getProperty("user.home") +
@@ -48,19 +48,18 @@ public class RobotMap {
 		PORT_LOADER = CONFIGS.getConfigOrAdd("port_shooter_loader", 5);
 
 		PORT_AGITATOR = CONFIGS.getConfigOrAdd("port_agitator", 10);
-//		PORT_AGITATOR = 10;
 
 		PORT_CLIMBER_A = CONFIGS.getConfigOrAdd("port_climber_a", 8);
 		PORT_CLIMBER_B = CONFIGS.getConfigOrAdd("port_climber_b", 4);
 
 		POLARITY_DRIVE_LEFT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_left_a", false);
 		POLARITY_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_left_b", false);
-		POLARITY_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_right_a", false);
+		POLARITY_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_right_a", true);
 		POLARITY_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_right_b", false);
 
 		REVERSE_OUTPUT_LEFT_A = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveLeftA", false);
 		REVERSE_OUTPUT_LEFT_B = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveLeftB", false);
-		REVERSE_OUTPUT_RIGHT_A = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveRightA", false);
+		REVERSE_OUTPUT_RIGHT_A = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveRightA", true);
 		REVERSE_OUTPUT_RIGHT_B = CONFIGS.getConfigOrAdd("REVERSEOUTPUT_driveRightB", false);
 
 		REVERSE_SENSOR_LEFT_A = CONFIGS.getConfigOrAdd("REVERSESENSOR_driveLeftA", false);
@@ -76,7 +75,7 @@ public class RobotMap {
 		POLARITY_AGITATOR = CONFIGS.getConfigOrAdd("POLARITY_agitator", true);
 
 		POLARITY_CLIMBER_A = CONFIGS.getConfigOrAdd("POLARITY_climber_a", false);
-		POLARITY_CLIMBER_B = CONFIGS.getConfigOrAdd("POLARITY_climber_b", false);
+		POLARITY_CLIMBER_B = CONFIGS.getConfigOrAdd("POLARITY_climber_b", true);
 
 		INTAKE_PICKUP_TIMEOUT = CONFIGS.getConfigOrAdd("INTAKE_PICKUP_TIMEOUT", 0.1);
 		INTAKE_MOTOR_SPEED = CONFIGS.getConfigOrAdd("INTAKE_MOTOR_SPEED", 1);
@@ -88,7 +87,6 @@ public class RobotMap {
 		MIN_TIME_GEAR_DETECTED_FOR = CONFIGS.getConfigOrAdd("MIN_TIME_GEAR_DETECTED_FOR", 0.1);
 
 		CLIMB_SPEED = CONFIGS.getConfigOrAdd("CLIMB_SPEED", 1);
-
 	}
 
 }

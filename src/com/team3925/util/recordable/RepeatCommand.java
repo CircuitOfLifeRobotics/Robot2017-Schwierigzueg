@@ -80,8 +80,9 @@ public class RepeatCommand<T> extends Command {
 				currentTime = Timer.getFPGATimestamp() - startTime;
 				// if the snapshot is too far in the past, delete it and
 				// immediately
-				// check the next snapshot in the future
+				// check the next snapshot in the past
 				if (currentTime - snapshotTime > postTolerance) {
+					System.out.println("LATE BY "+(currentTime-snapshotTime)+" SECONDS");
 					iterator.remove();
 					snapshotTime = iterator.next();
 					continue;
@@ -90,6 +91,7 @@ public class RepeatCommand<T> extends Command {
 				// though
 				// it's in the future), JUST DOOOOO IT.
 				if (snapshotTime - currentTime <= preTolerance) {
+					System.out.println("DONE " + (snapshotTime-currentTime) + " SECONDS EARLY");
 					recordable.repeat(record.get(snapshotTime));
 					iterator.remove();
 					snapshotTime = iterator.next();

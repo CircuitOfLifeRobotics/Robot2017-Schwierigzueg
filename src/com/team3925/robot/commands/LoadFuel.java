@@ -1,9 +1,8 @@
 package com.team3925.robot.commands;
 
-import static com.team3925.robot.RobotMap.CONFIGS;
-
 import com.team3925.robot.subsystems.Agitator;
 import com.team3925.robot.subsystems.ShooterLoader;
+import com.team3925.util.RIOConfigs;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -16,8 +15,8 @@ public class LoadFuel extends Command {
 
 	@Override
 	protected void initialize() {
-		ShooterLoader.getInstance().set(CONFIGS.getConfigOrAdd("power shooter loader", 0.5));
-		Agitator.getInstance().set(CONFIGS.getConfigOrAdd("power agitator", 0.5));
+		ShooterLoader.getInstance().set(RIOConfigs.getInstance().getConfigOrAdd("power shooter loader", 0.5));
+		Agitator.getInstance().set(RIOConfigs.getInstance().getConfigOrAdd("power agitator", 0.5));
 	}
 
 	@Override

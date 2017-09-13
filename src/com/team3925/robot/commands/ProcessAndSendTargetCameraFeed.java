@@ -81,8 +81,10 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 
 	@Override
 	protected void initialize() {
+		targetCameraSink.setEnabled(true);
 		inputImageFrameTime = targetCameraSink.grabFrame(inputImage);
 		if (inputImageFrameTime > 0) {
+			System.out.println("inputImageFrameTime>0");
 			if (processedFrameSource == null) {
 				processedFrameSource = new CvSource("Processed Target Source", PixelFormat.kBGR, inputImage.width(),
 						inputImage.height(), 30);
@@ -94,8 +96,9 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 				server.setSource(processedFrameSource);
 			}
 			targetCameraSink.setEnabled(true);
-		} else
+		} else {
 			cancel();
+		}
 	}
 
 	@Override
@@ -104,33 +107,39 @@ public class ProcessAndSendTargetCameraFeed extends Command {
 		if (inputImageFrameTime > 0) {
 			// Imgproc.putText(inputImage, "This is a test", textLocation,
 			// fontFace, fontScale, fontColor, textThickness);
-//			/*FOV_HEIGHT_PIXELS =*/System.out.println( inputImage.width());
-//			/*FOV_WIDTH_PIXELS = */System.out.println(inputImage.height());
+			// /*FOV_HEIGHT_PIXELS =*/System.out.println( inputImage.width());
+			// /*FOV_WIDTH_PIXELS = */System.out.println(inputImage.height());
 			Imgproc.cvtColor(inputImage, hsvImage, Imgproc.COLOR_BGR2HSV);
 			Core.inRange(hsvImage, loThresh, hiThresh, binaryImage);
 			findContoursOutput.clear();
 			Imgproc.findContours(binaryImage, findContoursOutput, hierarchy, Imgproc.RETR_LIST,
 					Imgproc.CHAIN_APPROX_SIMPLE);
-			Imgproc.drawContours(inputImage, findContoursOutput, -1, unfilteredColor);
 
 			Rect rect;
-			findContoursOutput.sort((a,b)->(int)Math.signum(Imgproc.boundingRect(a).width-Imgproc.boundingRect(b).width));
-			if (findContoursOutput.size() > 0) {
-				for (int i = 0; i < findContoursOutput.size(); ++i) {
+			findContoursOutput
+					.sort((a, b) -> (int) Math.signum(Imgproc.boundingRect(b).width - Imgproc.boundingRect(a).width));
+			if (findContoursOutput.size() > 1) {
+				for (int i = 0; i < 2; ++i) {
 					rect = Imgproc.boundingRect(findContoursOutput.get(i));
 					horizOffSetPixels = (int) (rect.x + rect.width / 2 - FOV_WIDTH_PIXELS / 2);
 					vertOffsetPixels = (int) (rect.y + rect.height / 2 - FOV_HEIGHT_PIXELS / 2);
 					Imgproc.line(inputImage, new Point(rect.x + rect.width / 2, rect.y + rect.height / 2),
 							new Point(FOV_WIDTH_PIXELS / 2, FOV_HEIGHT_PIXELS / 2), unfilteredColor);
 				}
+				Imgproc.drawContours(inputImage, findContoursOutput, 0, unfilteredColor);
+				Imgproc.drawContours(inputImage, findContoursOutput, 1, unfilteredColor);
 			}
-			if (findContoursOutput.size()>1) {
-				double a = (0.5-(double)(Imgproc.boundingRect(findContoursOutput.get(0)).x+Imgproc.boundingRect(findContoursOutput.get(0)).width/2)/FOV_WIDTH_PIXELS)*FOV_WIDTH_DEGREES;
-				double b = (0.5-(double)(Imgproc.boundingRect(findContoursOutput.get(1)).x+Imgproc.boundingRect(findContoursOutput.get(1)).width/2)/FOV_WIDTH_PIXELS)*FOV_WIDTH_DEGREES;
-				if (Math.abs(a-b)>differenceThresh) {
+			if (findContoursOutput.size() > 1) {
+				double a = (0.5 - (double) (Imgproc.boundingRect(findContoursOutput.get(0)).x
+						+ Imgproc.boundingRect(findContoursOutput.get(0)).width / 2) / FOV_WIDTH_PIXELS)
+						* FOV_WIDTH_DEGREES;
+				double b = (0.5 - (double) (Imgproc.boundingRect(findContoursOutput.get(1)).x
+						+ Imgproc.boundingRect(findContoursOutput.get(1)).width / 2) / FOV_WIDTH_PIXELS)
+						* FOV_WIDTH_DEGREES;
+				if (Math.abs(a - b) > differenceThresh) {
 					horizOffsetAngle = null;
-				}else {
-					horizOffsetAngle = (a+b)/2;
+				} else {
+					horizOffsetAngle = (a + b) / 2;
 				}
 			}
 

@@ -15,7 +15,7 @@ public class CameraSubsystem extends Subsystem {
 	}
 
 	private CameraSubsystem() {
-		targetCamera = new UsbCamera("Target Camera", 1);
+		targetCamera = new UsbCamera("Target Camera", 0);
 		otherCamera = null;
 		targetCamera.setBrightness(0);
 		targetCamera.setFPS(30);

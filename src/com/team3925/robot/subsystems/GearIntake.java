@@ -10,18 +10,30 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-/**
- *
- */
 public class GearIntake extends Subsystem implements Recordable<GearIntakeState> {
 
-	public class GearIntakeState {
+	public static class GearIntakeState {
 		public boolean isUp;
 		public double speed;
 
 		public GearIntakeState(boolean isUp, double speed) {
 			this.isUp = isUp;
 			this.speed = speed;
+		}
+
+		@Override
+		public String toString() {
+			return isUp + "`" + speed;
+		}
+
+		public static GearIntakeState fromString(String s) {
+			try {
+				boolean up = Boolean.parseBoolean(s.substring(0, s.indexOf('`')));
+				double speed = Double.parseDouble(s.substring(s.indexOf('`') + 1));
+				return new GearIntakeState(up, speed);
+			} catch (NumberFormatException e) {
+				return new GearIntakeState(true, 0);
+			}
 		}
 	}
 
@@ -61,12 +73,12 @@ public class GearIntake extends Subsystem implements Recordable<GearIntakeState>
 	public boolean gearDetected() {
 		return (intakeMotor.getOutputCurrent() > RobotMap.INTAKE_MOTOR_GEAR_CURRENT_THRESHOLD);
 	}
-	
+
 	@Deprecated
 	public double getMotorCurrent() {
 		return intakeMotor.getOutputCurrent();
 	}
-	
+
 	@Deprecated
 	public double getMotorVoltage() {
 		return intakeMotor.getOutputVoltage();

@@ -213,7 +213,7 @@ public class RIOConfigs {
 			e1.printStackTrace();
 		}
 		
-		System.out.println("RIO configs " + fileFlaws);
+		System.out.println("RIO configs initialized with following flaws: " + fileFlaws);
 	}
 
 	/**
@@ -262,10 +262,10 @@ public class RIOConfigs {
 	public <T> T getConfigOrAdd(String name, T ifAbsent, Function<String, T> stringToT) {
 		Optional<String> value = getConfigOrEmptyOptional(name);
 		if (value.isPresent()) {
-			System.out.println("config "+name+" is present");
+//			System.out.println("config "+name+" is present, with value "+value.get());
 			return stringToT.apply(value.get());
 		}
-		System.out.println("config "+name+" is NOT present");
+//		System.out.println("config "+name+" is NOT present");
 		addConfig(name, ifAbsent.toString(), false);
 		return ifAbsent;
 	}
@@ -405,6 +405,71 @@ public class RIOConfigs {
 			return false;
 		}
 		return true;
+	}
+	
+	public void reloadConfigs() {
+		fileFlaws = new StringBuilder();
+		values = new HashMap<>();
+		StringBuilder block = new StringBuilder();
+		LinearStateMachine stateMachine = new LinearStateMachine(itr -> {
+			switch (data) {
+			case PREFIX_CHAR:
+				// buffer is comment. Do nothing
+				block.setLength(0);
+				return true;
+			case VALUE_CHAR:
+			case VALUE_END_CHAR:
+				fileFlaws.append("Prefix char expected at index " + itr + "\n");
+			default:
+				block.append(data);
+				return false;
+			}
+		}, itr -> {
+			switch (data) {
+			case VALUE_CHAR:
+				// buffer is prefix, store
+				prefix = block.toString();
+				block.setLength(0);
+				return true;
+			case VALUE_END_CHAR:
+			case PREFIX_CHAR:
+				fileFlaws.append("Value start char expected at index " + itr + "\n");
+			default:
+				block.append(data);
+				return false;
+			}
+		}, itr -> {
+			switch (data) {
+			case VALUE_END_CHAR:
+				// buffer is value, store
+				values.put(prefix, block.toString());
+				block.setLength(0);
+				return true;
+			case PREFIX_CHAR:
+			case VALUE_CHAR:
+				fileFlaws.append("Value end char expected at index " + itr + "\n");
+			default:
+				block.append(data);
+				return false;
+			}
+		});
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			file.setWritable(false);
+			file.createNewFile();
+			while (true) {
+				if (reader.ready()) {
+					data = (char) reader.read();
+					stateMachine.run();
+				} else
+					break;
+			}
+			file.setWritable(true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		System.out.println("RIO configs has the flaws " + fileFlaws);
 	}
 
 	/**
