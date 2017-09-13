@@ -1,16 +1,19 @@
 package com.team3925.robot.commands;
 
 import com.team3925.robot.subsystems.DriveTrain;
+import com.team3925.util.RIOConfigs;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveManual extends Command {
-	
+
 	public interface DriveManualInput {
 		public abstract double getFwd();
+
 		public abstract double getLeft();
 	}
-	
+
+	private final boolean doReverseWhenReversing;
 	private DriveManualInput input;
 	private double prelimLeft, prelimRight;
 	private double fwd, turn;
@@ -18,6 +21,7 @@ public class DriveManual extends Command {
 
 	public DriveManual(DriveManualInput input) {
 		this.input = input;
+		doReverseWhenReversing = RIOConfigs.getInstance().getConfigOrAdd("DRIVING DO REVERSE WHEN REVERSING", false);
 		requires(DriveTrain.getInstance());
 	}
 
@@ -34,6 +38,8 @@ public class DriveManual extends Command {
 			fwd = 0;
 		if (Math.abs(turn) < 0.1)
 			turn = 0;
+		if (doReverseWhenReversing && fwd != 0)
+			turn *= Math.signum(fwd);
 		prelimLeft = fwd + turn;
 		prelimRight = fwd - turn;
 		if (prelimLeft != 0 || prelimRight != 0) {
