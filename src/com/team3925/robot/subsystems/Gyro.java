@@ -27,5 +27,9 @@ public class Gyro extends Subsystem {
 	public double getFusedHeading() {
 		return ahrs.getFusedHeading();
 	}
+	
+	public void setAngleToZero() {
+		ahrs.zeroYaw();
+	}
 
 }

@@ -90,7 +90,7 @@ public class GearIntake extends Subsystem implements Recordable<GearIntakeState>
 
 	@Override
 	public GearIntakeState record() {
-		return new GearIntakeState(gearSolenoid.get().equals(Value.kForward), intakeMotor.get());
+		return new GearIntakeState(!gearSolenoid.get().equals(Value.kReverse), intakeMotor.get());
 	}
 
 	@Override

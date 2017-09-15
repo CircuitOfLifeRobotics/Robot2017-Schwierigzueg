@@ -36,8 +36,9 @@ public class DriveManual extends Command {
 		turn = input.getLeft();
 		if (Math.abs(fwd) < 0.1)
 			fwd = 0;
-		if (Math.abs(turn) < 0.1)
-			turn = 0;
+//		if (Math.abs(turn) < 0.1)
+//			turn = 0;
+//		turn = Math.signum(turn)*Math.pow(Math.abs(turn), .5);
 		if (doReverseWhenReversing && fwd != 0)
 			turn *= Math.signum(fwd);
 		prelimLeft = fwd + turn;
