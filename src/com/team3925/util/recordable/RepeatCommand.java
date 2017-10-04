@@ -1,25 +1,24 @@
 package com.team3925.util.recordable;
 
-import java.io.Serializable;
 import java.util.Iterator;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class RepeatCommand<T> extends Command {
+public class RepeatCommand extends Command {
 
-	private Recordable<T> recordable;
-	private Record<T> recordStatic, record;
+	private Recordable recordable;
+	private Record recordStatic, record;
 	private Iterator<Double> iterator;
 	private double currentTime, snapshotTime, startTime;
 	private double preTolerance, postTolerance;
 
-	public RepeatCommand(Recordable<T> recordable, double preTolerance, double postTolerance) {
+	public RepeatCommand(Recordable recordable, double preTolerance, double postTolerance) {
 		this(recordable, preTolerance, postTolerance, true);
 	}
 
-	public RepeatCommand(Recordable<T> recordable, double preTolerance, double postTolerance, boolean doRequire) {
+	public RepeatCommand(Recordable recordable, double preTolerance, double postTolerance, boolean doRequire) {
 		this.recordable = recordable;
 		this.preTolerance = preTolerance;
 		this.postTolerance = postTolerance;
@@ -37,7 +36,7 @@ public class RepeatCommand<T> extends Command {
 	 * @param preTolerance
 	 * @param postTolerance
 	 */
-	public RepeatCommand(Recordable<T> recordable, Record<T> record, double preTolerance, double postTolerance) {
+	public RepeatCommand(Recordable recordable, Record record, double preTolerance, double postTolerance) {
 		this(recordable, record, preTolerance, postTolerance, true);
 	}
 
@@ -52,7 +51,7 @@ public class RepeatCommand<T> extends Command {
 	 * @param postTolerance
 	 * @param doRequire
 	 */
-	public RepeatCommand(Recordable<T> recordable, Record<T> record, double preTolerance, double postTolerance,
+	public RepeatCommand(Recordable recordable, Record record, double preTolerance, double postTolerance,
 			boolean doRequire) {
 		this.recordable = recordable;
 		this.recordStatic = record;
@@ -70,7 +69,8 @@ public class RepeatCommand<T> extends Command {
 		if (record == null)
 			cancel();
 		startTime = Timer.getFPGATimestamp();
-		snapshotTime = iterator.next();
+		if (iterator.hasNext())
+			snapshotTime = iterator.next();
 	}
 
 	@Override
@@ -82,7 +82,8 @@ public class RepeatCommand<T> extends Command {
 				// immediately
 				// check the next snapshot in the past
 				if (currentTime - snapshotTime > postTolerance) {
-//					System.out.println("LATE BY "+(currentTime-snapshotTime)+" SECONDS");
+					// System.out.println("LATE BY
+					// "+(currentTime-snapshotTime)+" SECONDS");
 					iterator.remove();
 					snapshotTime = iterator.next();
 					continue;
@@ -91,7 +92,8 @@ public class RepeatCommand<T> extends Command {
 				// though
 				// it's in the future), JUST DOOOOO IT.
 				if (snapshotTime - currentTime <= preTolerance) {
-//					System.out.println("DONE " + (snapshotTime-currentTime) + " SECONDS EARLY");
+					// System.out.println("DONE " + (snapshotTime-currentTime) +
+					// " SECONDS EARLY");
 					recordable.repeat(record.get(snapshotTime));
 					iterator.remove();
 					snapshotTime = iterator.next();
@@ -137,7 +139,7 @@ public class RepeatCommand<T> extends Command {
 	 * 
 	 * @param record
 	 */
-	public void set(Record<T> record) {
+	public void set(Record record) {
 		recordStatic = record;
 	}
 }

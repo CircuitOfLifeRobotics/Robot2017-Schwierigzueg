@@ -5,12 +5,10 @@ import com.team3925.robot.commands.AutoRelease;
 import com.team3925.robot.commands.Climb;
 import com.team3925.robot.commands.DriveManual.DriveManualInput;
 import com.team3925.robot.commands.RaiseGearIntake;
-import com.team3925.robot.commands.Shoot;
-import com.team3925.robot.commands.StopShooter;
 import com.team3925.util.RIOConfigs;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class OI implements DriveManualInput {
@@ -20,10 +18,16 @@ public class OI implements DriveManualInput {
 	private final Joystick xbox;
 
 	private static OI instance;
+	private final boolean WHEEL_CONTROL = true;
 
 	private OI() {
-		stick = new Joystick(0);
-		wheel = new Joystick(1);
+		if (WHEEL_CONTROL) {
+			stick = new Joystick(0);
+			wheel = new Joystick(1);
+		} else {
+			stick = null;
+			wheel = null;
+		}
 		xbox = new Joystick(2);
 
 		if (xbox != null) {
@@ -37,18 +41,9 @@ public class OI implements DriveManualInput {
 			gearPutButton.whileHeld(new AutoRelease());
 			gearPutButton.whenReleased(new RaiseGearIntake());
 
-			JoystickButton shootButton = new JoystickButton(xbox,
-					RIOConfigs.getInstance().getConfigOrAdd("OI_SHOOT_BUTTON", 4));
-			shootButton.whileHeld(new Shoot());
-			shootButton.whenReleased(new StopShooter());
-
 			JoystickButton climbButton = new JoystickButton(xbox,
 					RIOConfigs.getInstance().getConfigOrAdd("OI_CLIMB_BUTTON", 1));
 			climbButton.whileHeld(new Climb());
-
-			JoystickButton aimButton = new JoystickButton(xbox,
-					RIOConfigs.getInstance().getConfigOrAdd("OI_AIM_BUTTON", 11));
-			// aimButton.whenActive(new AimHorizontal());
 		} else {
 			System.err.println("The joysticks are null!!");
 		}
@@ -63,21 +58,25 @@ public class OI implements DriveManualInput {
 		// Note: the stick has backward = positive, forward = negative!
 		if (stick != null)
 			return -stick.getRawAxis(1);
-		return 0;
+		else
+			return -xbox.getRawAxis(1);
 	}
 
 	@Override
 	public double getLeft() {
 		if (wheel != null)
 			return wheel.getRawAxis(0);
-		return 0;
+		else
+			return xbox.getRawAxis(0);
 	}
-	
+
 	public void setXboxVibrate(boolean isVibrate) {
 		if (isVibrate) {
-			
-		}else {
+			xbox.setRumble(RumbleType.kLeftRumble, 1);
+			xbox.setRumble(RumbleType.kRightRumble, 1);
+		} else {
 			xbox.setRumble(RumbleType.kLeftRumble, 0);
+			xbox.setRumble(RumbleType.kRightRumble, 0);
 		}
 	}
 

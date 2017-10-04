@@ -3,14 +3,13 @@ package com.team3925.robot.subsystems;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import com.team3925.robot.RobotMap;
-import com.team3925.robot.subsystems.GearIntake.GearIntakeState;
 import com.team3925.util.recordable.Recordable;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class GearIntake extends Subsystem implements Recordable<GearIntakeState> {
+public class GearIntake extends Subsystem implements Recordable {
 
 	public static class GearIntakeState {
 		public boolean isUp;
@@ -89,12 +88,13 @@ public class GearIntake extends Subsystem implements Recordable<GearIntakeState>
 	}
 
 	@Override
-	public GearIntakeState record() {
-		return new GearIntakeState(!gearSolenoid.get().equals(Value.kReverse), intakeMotor.get());
+	public String record() {
+		return new GearIntakeState(!gearSolenoid.get().equals(Value.kReverse), intakeMotor.get()).toString();
 	}
 
 	@Override
-	public void repeat(GearIntakeState snapshot) {
+	public void repeat(String s) {
+		GearIntakeState snapshot = GearIntakeState.fromString(s);
 		setSolenoid(snapshot.isUp);
 		setMotor(snapshot.speed);
 	}

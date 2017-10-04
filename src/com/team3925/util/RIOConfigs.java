@@ -152,6 +152,7 @@ public class RIOConfigs {
 
 	private RIOConfigs(File file) {
 		this.file = file;
+		
 		fileFlaws = new StringBuilder();
 		values = new HashMap<>();
 		StringBuilder block = new StringBuilder();

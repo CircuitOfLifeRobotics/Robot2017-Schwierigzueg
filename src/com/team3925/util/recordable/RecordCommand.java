@@ -3,15 +3,15 @@ package com.team3925.util.recordable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class RecordCommand<T> extends Command {
+public class RecordCommand extends Command {
 
-	private Recordable<T> recordable;
-	private Record<T> record;
+	private Recordable recordable;
+	private Record record;
 	private double startTime;
 
-	public RecordCommand(Recordable<T> recordable) {
+	public RecordCommand(Recordable recordable) {
 		this.recordable = recordable;
-		record = new Record<>();
+		record = new Record();
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class RecordCommand<T> extends Command {
 
 	@Override
 	protected void execute() {
-		record.putIfNew(Timer.getFPGATimestamp()-startTime, recordable.record());
+		record.putIfNew(Timer.getFPGATimestamp() - startTime, recordable.record());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class RecordCommand<T> extends Command {
 	/**
 	 * Gets a copy of the recording.
 	 */
-	public Record<T> get() {
+	public Record get() {
 		return record.clone();
 	}
 }

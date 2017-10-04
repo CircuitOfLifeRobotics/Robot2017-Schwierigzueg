@@ -17,9 +17,10 @@ import static com.team3925.robot.RobotMap.REVERSE_SENSOR_LEFT_B;
 import static com.team3925.robot.RobotMap.REVERSE_SENSOR_RIGHT_A;
 import static com.team3925.robot.RobotMap.REVERSE_SENSOR_RIGHT_B;
 
+import java.util.ArrayList;
+
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
-import com.team3925.robot.subsystems.DriveTrain.PolarDriveTrainState;
 import com.team3925.util.MiscMath;
 import com.team3925.util.RIOConfigs;
 import com.team3925.util.recordable.Recordable;
@@ -27,61 +28,59 @@ import com.team3925.util.recordable.Recordable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriveTrain extends Subsystem implements Recordable<PolarDriveTrainState> {
+public class DriveTrain extends Subsystem implements Recordable {
 
-	public static class PolarDriveTrainState {
-		public double angle, l, r;
+	public static class GyroDriveTrainState {
 
-		public PolarDriveTrainState(double angle, double l, double r) {
+		public double l, r, angle, fusedFloorAccel, xv, yv, zv, xa, ya, za;
+
+		public GyroDriveTrainState() {
+			this(DriveTrain.getInstance().getLeftSetpoint(), DriveTrain.getInstance().getRightSetpoint(),
+					Gyro.getInstance().getFusedHeading(), Gyro.getInstance().getFusedFloorAccel(),
+					Gyro.getInstance().getXVelocity(), Gyro.getInstance().getYVelocity(),
+					Gyro.getInstance().getZVelocity(), Gyro.getInstance().getXAccel(), Gyro.getInstance().getYAccel(),
+					Gyro.getInstance().getZAccel());
+		}
+
+		public GyroDriveTrainState(double l, double r, double angle, double fusedFloorAccel, double xv, double yv,
+				double zv, double xa, double ya, double za) {
+			this.l = l;
+			this.r = r;
 			this.angle = angle;
-			this.l = l;
-			this.r = r;
+			this.fusedFloorAccel = fusedFloorAccel;
+			this.xv = xv;
+			this.yv = yv;
+			this.zv = zv;
+			this.xa = xa;
+			this.ya = ya;
+			this.za = za;
 		}
 
-		@Override
-		public String toString() {
-			return angle + "`" + l + "`" + r;
-		}
-
-		public static PolarDriveTrainState fromString(String s) {
+		public static GyroDriveTrainState fromString(String s) {
 			try {
-				double angle = Double.parseDouble(s.substring(0, s.indexOf('`')));
-				double l = Double.parseDouble(s.substring(s.indexOf('`') + 1, s.lastIndexOf('`')));
-				double r = Double.parseDouble(s.substring(s.lastIndexOf('`') + 1));
-				return new PolarDriveTrainState(angle, l, r);
+				ArrayList<Double> list = new ArrayList<>();
+				int idx1;
+				int idx0 = 0;
+				while ((idx1 = s.indexOf('`', idx0)) != -1) {
+					list.add(Double.parseDouble(s.substring(idx0, idx1)));
+					idx0 = idx1 + 1;
+				}
+				if (list.size() >= 9)
+					return new GyroDriveTrainState(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4),
+							list.get(5), list.get(6), list.get(7), list.get(8), list.get(9));
 			} catch (NumberFormatException e) {
-				return new PolarDriveTrainState(0, 0, 0);
+				e.printStackTrace();
 			}
+			return new GyroDriveTrainState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		}
 
+		public String toString() {
+			return l + "`" + r + "`" + angle + "`" + fusedFloorAccel + "`" + xv + "`" + yv + "`" + zv + "`" + xa + "`"
+					+ ya + "`" + za + "`";
 		}
 	}
 
-	public static class PercentVBusDriveTrainState {
-		public double l, r;
-
-		public PercentVBusDriveTrainState(double l, double r) {
-			this.l = l;
-			this.r = r;
-		}
-
-		@Override
-		public String toString() {
-			return l + "`" + r;
-		}
-
-		public static PercentVBusDriveTrainState fromString(String s) {
-			try {
-				double l = Double.parseDouble(s.substring(0, s.indexOf('`')));
-				double r = Double.parseDouble(s.substring(s.indexOf('`') + 1));
-				return new PercentVBusDriveTrainState(l, r);
-			} catch (NumberFormatException e) {
-				return new PercentVBusDriveTrainState(0, 0);
-			}
-
-		}
-	}
-
-	private CANTalon lA, rA;
+	private static CANTalon lA, rA;
 
 	private static DriveTrain instance;
 
@@ -144,16 +143,12 @@ public class DriveTrain extends Subsystem implements Recordable<PolarDriveTrainS
 	}
 
 	@Override
-	public PolarDriveTrainState record() {
-		return new PolarDriveTrainState(Gyro.getInstance().getFusedHeading(), lA.getSetpoint(), rA.getSetpoint());
+	public String record() {
+		return new GyroDriveTrainState().toString();
 	}
 
-	public double getRightSpeed() {
-		return rA.getSpeed();
-	}
-
-	public double getRightEncVelocity() {
-		return rA.getEncVelocity();
+	public double getLeftSetpoint() {
+		return lA.getSetpoint();
 	}
 
 	public double getRightSetpoint() {
@@ -161,7 +156,8 @@ public class DriveTrain extends Subsystem implements Recordable<PolarDriveTrainS
 	}
 
 	@Override
-	public void repeat(PolarDriveTrainState snapshot) {
+	public void repeat(String s) {
+		GyroDriveTrainState snapshot = GyroDriveTrainState.fromString(s);
 		double angleError = (snapshot.angle - Gyro.getInstance().getFusedHeading()) % 360;
 		if (angleError > 180)
 			angleError -= 360;
@@ -172,49 +168,40 @@ public class DriveTrain extends Subsystem implements Recordable<PolarDriveTrainS
 
 		// correction with gyro
 		if (RIOConfigs.getInstance().getConfigOrAdd("DO AUTO GYRO CORRECTION", false)) {
-			prelimL += angleError / 10;
-			prelimR -= angleError / 10;
-			if (prelimL > 1) {
-				prelimR += (1 - prelimL);
-				prelimL = 1;
-			}
-			if (prelimL < -1) {
-				prelimR += (-1 - prelimL);
-				prelimL = -1;
-			}
-			if (prelimR > 1) {
-				prelimL += (1 - prelimR);
-				prelimR = 1;
-			}
-			if (prelimR < -1) {
-				prelimL += (-1 - prelimR);
-				prelimR = -1;
-			}
+			prelimL += angleError * RIOConfigs.getInstance().getConfigOrAdd("AUTO GYRO CORRECTION CONSTANT", 0.05);
+			prelimR -= angleError * RIOConfigs.getInstance().getConfigOrAdd("AUTO GYRO CORRECTION CONSTANT", 0.05);
 			SmartDashboard.putBoolean("DO AUTO GYRO CORRECTION", true);
 		} else {
 			SmartDashboard.putBoolean("DO AUTO GYRO CORRECTION", false);
 		}
 
-		SmartDashboard.putNumber("error angle", angleError);
-		SmartDashboard.putNumber("record l", snapshot.l);
-		SmartDashboard.putNumber("record r", snapshot.r);
-		SmartDashboard.putNumber("repeat l", prelimL);
-		SmartDashboard.putNumber("repeat r", prelimR);
+		double mag = snapshot.fusedFloorAccel;
+		double curr = Math
+				.sqrt(Math.pow(Gyro.getInstance().getXVelocity(), 2) + Math.pow(Gyro.getInstance().getYVelocity(), 2));
+		double errorMagnitude = curr - mag;
+		SmartDashboard.putNumber("GYRO MAG ERROR", errorMagnitude);
+		prelimL += RIOConfigs.getInstance().getConfigOrAdd("AUTO MAG CORRECTION CONSTANT", 1.5) * errorMagnitude;
+		prelimR += RIOConfigs.getInstance().getConfigOrAdd("AUTO MAG CORRECTION CONSTANT", 1.5) * errorMagnitude;
+
+		if (prelimL > 1) {
+			prelimR += (1 - prelimL);
+			prelimL = 1;
+		}
+		if (prelimL < -1) {
+			prelimR += (-1 - prelimL);
+			prelimL = -1;
+		}
+		if (prelimR > 1) {
+			prelimL += (1 - prelimR);
+			prelimR = 1;
+		}
+		if (prelimR < -1) {
+			prelimL += (-1 - prelimR);
+			prelimR = -1;
+		}
+
 		lA.set(prelimL);
 		rA.set(prelimR);
 	}
 
-	// @Override
-	// public PercentVBusDriveTrainState record() {
-	// // Note: getSetpoint() returns the correct value (both positive) in
-	// // spite of inversions. get() returns the incorrect value
-	// return new PercentVBusDriveTrainState(lA.getSetpoint(),
-	// rA.getSetpoint());
-	// }
-	//
-	// @Override
-	// public void repeat(PercentVBusDriveTrainState snapshot) {
-	// lA.set(snapshot.l);
-	// rA.set(snapshot.r);
-	// }
 }

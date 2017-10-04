@@ -13,10 +13,10 @@ import java.io.Serializable;
  *            and should override the {@link #equals(Object)} method in order to
  *            compare and contrast snapshots in time.
  */
-public interface Recordable<T> {
+public interface Recordable {
 	
-	T record();
+	String record();
 	
-	void repeat(T snapshot);
+	void repeat(String snapshot);
 	
 }
