@@ -1,87 +1,95 @@
 package com.team3925.robot;
 
-import java.util.HashMap;
+import com.team3925.robot.commands.AutoPickup;
+import com.team3925.robot.commands.AutoRelease;
+import com.team3925.robot.commands.Climb;
+import com.team3925.robot.commands.GearOutput;
+import com.team3925.robot.commands.DriveManual.DriveManualInput;
+import com.team3925.robot.commands.RaiseGearIntake;
+import com.team3925.util.RIOConfigs;
 
-import com.team3925.util.DriveManualInput;
-
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 
-/**
- * This class is the glue that binds the controls on the physical operator
- * interface to the commands and command groups that allow control of the robot.
- */
 public class OI implements DriveManualInput {
 
+	private final Joystick stick;
+	private final Joystick wheel;
+	private final Joystick xbox;
+
 	private static OI instance;
-
-	public Joystick wheel, stick, xbox;
-
-	public HashMap<Integer, JoystickButton> wheelButtonTriggers;
-	public HashMap<Integer, JoystickButton> stickButtonTriggers;
-	public HashMap<Integer, JoystickButton> xboxButtonTriggers;
-
-	public static OI getInstance() {
-		if (instance == null)
-			instance = new OI();
-		return instance;
-	}
+	private final boolean WHEEL_CONTROL = true;
 
 	private OI() {
-		wheel = new Joystick(0);
-		stick = new Joystick(1);
+		if (WHEEL_CONTROL) {
+			stick = new Joystick(0);
+			wheel = new Joystick(1);
+		} else {
+			stick = null;
+			wheel = null;
+		}
 		xbox = new Joystick(2);
+//		xbox = null;
 
-		wheelButtonTriggers = new HashMap<>();
-		stickButtonTriggers = new HashMap<>();
-		xboxButtonTriggers = new HashMap<>();
+		if (xbox != null) {
+			JoystickButton gearPickupButton = new JoystickButton(xbox,
+					RIOConfigs.getInstance().getConfigOrAdd("OI_GEAR_BUTTON", 2));
+			gearPickupButton.whileHeld(new AutoPickup());
+			gearPickupButton.whenReleased(new RaiseGearIntake());
+
+			JoystickButton gearPutButton = new JoystickButton(xbox,
+					RIOConfigs.getInstance().getConfigOrAdd("OI_GEAR_PUT_BUTTON", 1));
+			gearPutButton.whileHeld(new AutoRelease());
+			gearPutButton.whenReleased(new RaiseGearIntake());
+
+			JoystickButton climbButton = new JoystickButton(xbox,
+					RIOConfigs.getInstance().getConfigOrAdd("OI_CLIMB_BUTTON", 1));
+			climbButton.whileHeld(new Climb());
+			
+			JoystickButton outputButton = new JoystickButton(xbox, 4);
+			outputButton.whileHeld(new GearOutput());
+		} else {
+			System.err.println("The joysticks are null!!");
+		}
 	}
 
-	public void whenWheelButtonPressed(int button, Command command) {
-		if (!wheelButtonTriggers.containsKey(button))
-			wheelButtonTriggers.put(button, new JoystickButton(wheel, button));
-		wheelButtonTriggers.get(button).whenActive(command);
-	}
-
-	public void whenWheelButtonReleased(int button, Command command) {
-		if (!wheelButtonTriggers.containsKey(button))
-			wheelButtonTriggers.put(button, new JoystickButton(wheel, button));
-		wheelButtonTriggers.get(button).whenInactive(command);
-	}
-
-	public void whenStickButtonPressed(int button, Command command) {
-		if (!stickButtonTriggers.containsKey(button))
-			stickButtonTriggers.put(button, new JoystickButton(stick, button));
-		stickButtonTriggers.get(button).whenActive(command);
-	}
-
-	public void whenStickButtonReleased(int button, Command command) {
-		if (!stickButtonTriggers.containsKey(button))
-			stickButtonTriggers.put(button, new JoystickButton(stick, button));
-		stickButtonTriggers.get(button).whenInactive(command);
-	}
-
-	public void whenXboxButtonPressed(int button, Command command) {
-		if (!xboxButtonTriggers.containsKey(button))
-			xboxButtonTriggers.put(button, new JoystickButton(xbox, button));
-		xboxButtonTriggers.get(button).whenActive(command);
-	}
-
-	public void whenXboxButtonReleased(int button, Command command) {
-		if (!xboxButtonTriggers.containsKey(button))
-			xboxButtonTriggers.put(button, new JoystickButton(xbox, button));
-		xboxButtonTriggers.get(button).whenInactive(command);
+	public static OI getInstance() {
+		return instance == null ? instance = new OI() : instance;
 	}
 
 	@Override
-	public double getForward() {
-		return -stick.getRawAxis(1);
+	public double getFwd() {
+		// Note: the stick has backward = positive, forward = negative!
+		if (stick != null)
+			return -stick.getRawAxis(1);
+		else if (xbox != null)
+			return -xbox.getRawAxis(1);
+		else {
+			return 0;
+		}
 	}
 
 	@Override
-	public double getRight() {
-		return -wheel.getRawAxis(0);
+	public double getLeft() {
+		if (wheel != null)
+			return wheel.getRawAxis(0);
+		else if(xbox != null)
+			return xbox.getRawAxis(0);
+		else{
+			return 0;
+		}
+	}
+
+	public void setXboxVibrate(boolean isVibrate) {
+		if (xbox != null)
+			if (isVibrate) {
+				xbox.setRumble(RumbleType.kLeftRumble, 1);
+				xbox.setRumble(RumbleType.kRightRumble, 1);
+			} else {
+				xbox.setRumble(RumbleType.kLeftRumble, 0);
+				xbox.setRumble(RumbleType.kRightRumble, 0);
+			}
 	}
 
 }
