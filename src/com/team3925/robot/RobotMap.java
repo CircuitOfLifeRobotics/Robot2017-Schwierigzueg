@@ -44,28 +44,28 @@ public class RobotMap {
 		CONFIGS = RIOConfigs.getInstance();
 		
 		DRIVETRAIN_WHEEL_DIAMETER = 4.12;
-		DRIVETRAIN_TICKS_PER_REV = 256;
+		DRIVETRAIN_TICKS_PER_REV = 1024;
 
-		PORT_DRIVE_LEFT_A = CONFIGS.getConfigOrAdd("PORT_driveLeftA", 1);
-		PORT_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("PORT_driveLeftB", 2);
-		PORT_DRIVE_LEFT_C = CONFIGS.getConfigOrAdd("PORT_driveLeftC", 30);
-		PORT_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("PORT_driveRightA", 12);
-		PORT_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("PORT_driveRightB", 11);
-		PORT_DRIVE_RIGHT_C = CONFIGS.getConfigOrAdd("PORT_driveRightB", 29);
+		PORT_DRIVE_LEFT_A = 1;
+		PORT_DRIVE_LEFT_B = 2;
+		PORT_DRIVE_LEFT_C = 30;
+		PORT_DRIVE_RIGHT_A = 12;
+		PORT_DRIVE_RIGHT_B = 11;
+		PORT_DRIVE_RIGHT_C = 29;
 
 		PORT_SHOOTER_A = CONFIGS.getConfigOrAdd("port_shooter_flywheel_a", 3);
 		PORT_SHOOTER_B = CONFIGS.getConfigOrAdd("port_shooter_flywheel_b", 9);
 
 		PORT_LOADER = CONFIGS.getConfigOrAdd("port_shooter_loader", 5);
 
-		PORT_AGITATOR = CONFIGS.getConfigOrAdd("port_agitator", 10);
+		PORT_AGITATOR = 13;
 
 		PORT_CLIMBER_A = CONFIGS.getConfigOrAdd("port_climber_a", 8);
 		PORT_CLIMBER_B = CONFIGS.getConfigOrAdd("port_climber_b", 4);
 
 		POLARITY_DRIVE_LEFT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_left_a", false);
 		POLARITY_DRIVE_LEFT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_left_b", false);
-		POLARITY_DRIVE_LEFT_C= CONFIGS.getConfigOrAdd("POLARITY_drive_left_c", false);
+		POLARITY_DRIVE_LEFT_C = CONFIGS.getConfigOrAdd("POLARITY_drive_left_c", false);
 		POLARITY_DRIVE_RIGHT_A = CONFIGS.getConfigOrAdd("POLARITY_drive_right_a", true);
 		POLARITY_DRIVE_RIGHT_B = CONFIGS.getConfigOrAdd("POLARITY_drive_right_b", false);
 		POLARITY_DRIVE_RIGHT_C = CONFIGS.getConfigOrAdd("POLARITY_drive_left_c", false);

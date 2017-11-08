@@ -76,12 +76,12 @@ public class SimpleGyroDrive extends PIDCommand {
 	// * (Math.PI * RobotMap.DRIVETRAIN_WHEEL_DIAMETER);
 	// }
 	private double getRightDistance() {
-		return ((DriveTrain.getInstance().getRightEncoder() - zeroRightEncoder) / (RobotMap.DRIVETRAIN_TICKS_PER_REV * 4 )) //*4 cuz its quadrature
+		return ((DriveTrain.getInstance().getRightTicks() - zeroRightEncoder) / (RobotMap.DRIVETRAIN_TICKS_PER_REV * 4 )) //*4 cuz its quadrature
 				* (Math.PI * RobotMap.DRIVETRAIN_WHEEL_DIAMETER);
 	}
 
 	private void zeroEncoders() {
-		zeroRightEncoder = DriveTrain.getInstance().getRightEncoder();
+		zeroRightEncoder = DriveTrain.getInstance().getRightTicks();
 	}
 
 	private void zeroGyro() {

@@ -31,6 +31,7 @@ import com.team3925.util.MiscMath;
 import com.team3925.util.RIOConfigs;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem{
 
@@ -47,11 +48,15 @@ public class DriveTrain extends Subsystem{
 	public DriveTrain() {
 		CANTalon talon;
 		talon = new CANTalon(PORT_DRIVE_RIGHT_A);
+		talon.setPID(0,0.00,0);
+		talon.setIZone(100);
+		talon.setF(1);
 		talon.enableLimitSwitch(false, false);
 		talon.enableBrakeMode(true);
 		talon.setInverted(POLARITY_DRIVE_RIGHT_A);
-		talon.reverseOutput(REVERSE_OUTPUT_RIGHT_A);
-		talon.reverseSensor(REVERSE_SENSOR_RIGHT_A);
+		talon.reverseOutput(false);
+		talon.reverseSensor(true);
+		talon.configEncoderCodesPerRev(256);
 		talon.changeControlMode(TalonControlMode.PercentVbus);
 		talon.setVoltageRampRate(RIOConfigs.getInstance().getConfigOrAdd("DRIVE TRAIN RAMP RATE", 8));
 		rA = talon;
@@ -62,6 +67,7 @@ public class DriveTrain extends Subsystem{
 		talon.setInverted(POLARITY_DRIVE_RIGHT_B);
 		talon.reverseOutput(REVERSE_OUTPUT_RIGHT_B);
 		talon.reverseSensor(REVERSE_SENSOR_RIGHT_B);
+//		talon.changeControlMode(TalonControlMode.Disabled);
 		talon.changeControlMode(TalonControlMode.Follower);
 		talon.setVoltageRampRate(RIOConfigs.getInstance().getConfigOrAdd("DRIVE TRAIN RAMP RATE", 8));
 		talon.set(rA.getDeviceID());
@@ -74,16 +80,21 @@ public class DriveTrain extends Subsystem{
 		talon.reverseOutput(REVERSE_OUTPUT_RIGHT_C);
 		talon.reverseSensor(REVERSE_SENSOR_RIGHT_C);
 		talon.changeControlMode(TalonControlMode.Follower);
+//		talon.changeControlMode(TalonControlMode.Disabled);
 		talon.setVoltageRampRate(RIOConfigs.getInstance().getConfigOrAdd("DRIVE TRAIN RAMP RATE", 8));
 		talon.set(rA.getDeviceID());
 		rC = talon;
 
 		talon = new CANTalon(PORT_DRIVE_LEFT_A);
+		talon.setPID(0,0,0);
+		talon.setIZone(100);
+		talon.setF(1); //.645
+		talon.configEncoderCodesPerRev(256);
 		talon.enableBrakeMode(true);
 		talon.enableLimitSwitch(false, false);
 		talon.setInverted(POLARITY_DRIVE_LEFT_A);
 		talon.reverseOutput(REVERSE_OUTPUT_LEFT_A);
-		talon.reverseSensor(REVERSE_SENSOR_LEFT_A);
+		talon.reverseSensor(false);
 		talon.changeControlMode(TalonControlMode.PercentVbus);
 		talon.setVoltageRampRate(RIOConfigs.getInstance().getConfigOrAdd("DRIVE TRAIN RAMP RATE", 8));
 		lA = talon;
@@ -109,6 +120,8 @@ public class DriveTrain extends Subsystem{
 		talon.setVoltageRampRate(RIOConfigs.getInstance().getConfigOrAdd("DRIVE TRAIN RAMP RATE", 8));
 		talon.set(lA.getDeviceID());
 		lC = talon;
+		
+
 	}
 
 	@Override
@@ -122,13 +135,37 @@ public class DriveTrain extends Subsystem{
 		lA.set(left);
 		rA.set(right);
 		
-		
 	}
-	public double getLeftEncoder(){
+	public double getLeftTicks(){
 		return lA.getEncPosition();
 	}
-	public double getRightEncoder(){
+	public double getRightTicks(){
 		return rA.getEncPosition();
+	}
+	
+	public CANTalon getLeft(){
+		return lA;
+	}
+	public CANTalon getRIght(){
+		return lA;
+	}
+	
+	public void setVelocity(double left, double right){
+		System.out.println("SETPOINT: "+ left);
+		lA.setSetpoint(left);
+		rA.setSetpoint(right);
+	}
+	
+	public void changeControlModes(TalonControlMode controlMode){
+		lA.changeControlMode(controlMode);
+		rA.changeControlMode(controlMode);
+	}
+	
+	public double getLeftVoltage(){
+		return lA.getOutputVoltage();
+	}
+	public double getRightVoltage(){
+		return rA.getOutputVoltage();
 	}
 
 
@@ -141,10 +178,16 @@ public class DriveTrain extends Subsystem{
 	}
 
 	public double getRightSpeed() {
-		return rA.getEncVelocity();
+		return rA.getSpeed();
 	}
 	public double getLeftSpeed() {
+		return lA.getSpeed();
+	}
+	public double getLeftVelocity() {
 		return lA.getEncVelocity();
+	}
+	public double getRightVelocity() {
+		return rA.getEncVelocity();
 	}
 	
 }
